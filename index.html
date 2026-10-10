@@ -1733,11 +1733,11 @@ logoutButton.addEventListener("click", async function () {
             .filter(item => item && item.id !== undefined && item.id !== null);
 
         window.masirCurrentUser = user;
-        renderAll();
+renderAll();
 
-        overlay.style.display = "none
-        logoutButton.style.display = "block";
-        showMessage("");
+overlay.style.display = "none";
+logoutButton.style.display = "block";
+showMessage("");
     }
 
     async function login() {
