@@ -819,7 +819,19 @@ const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_yvGvqqX8tw245uhuV4DEsQ_xviAIFUJ
 
 const supabaseClient = window.supabase.createClient(
     SUPABASE_URL,
-    SUPABASE_PUBLISHABLE_KEY
+    SUPABASE_PUBLISHABLE_KEY,
+    {
+        auth: {
+            autoRefreshToken: true,
+            persistSession: true,
+            detectSessionInUrl: true
+        },
+        global: {
+            headers: {
+                "X-Client-Info": "masir-app"
+            }
+        }
+    }
 );
 const STORAGE_KEY = "masir_activities_v1";
 
