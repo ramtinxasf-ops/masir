@@ -1497,5 +1497,123 @@ saveActivities();
 renderAll();
 const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIAHtnJki0xPxuFv_-52ZO8FChV8muEnUNAzjFyy4SZ9zlDejBG4oxCQ/exec';
 </script>
+    <!-- فرم ورود و ثبت‌نام مسیر -->
+<div id="masir-auth-overlay" style="
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    background: #0b1020;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    font-family: sans-serif;
+    direction: rtl;
+">
+    <div style="
+        width: 100%;
+        max-width: 380px;
+        background: #151c30;
+        padding: 28px;
+        border-radius: 18px;
+        box-sizing: border-box;
+        color: white;
+    ">
+        <h2 style="text-align:center; margin-top:0;">
+            مسیر
+        </h2>
+
+        <p style="text-align:center; color:#aab3ca;">
+            برای دسترسی به برنامه وارد حساب خود شوید.
+        </p>
+
+        <label for="masir-email">ایمیل</label>
+
+        <input
+            id="masir-email"
+            type="email"
+            autocomplete="email"
+            placeholder="ایمیل شما"
+            required
+            style="
+                width:100%;
+                box-sizing:border-box;
+                padding:12px;
+                margin:8px 0 16px;
+                border-radius:8px;
+                border:1px solid #39445f;
+                background:#0b1020;
+                color:white;
+            "
+        >
+
+        <label for="masir-password">رمز عبور</label>
+
+        <input
+            id="masir-password"
+            type="password"
+            autocomplete="current-password"
+            placeholder="حداقل ۶ کاراکتر"
+            minlength="6"
+            required
+            style="
+                width:100%;
+                box-sizing:border-box;
+                padding:12px;
+                margin:8px 0 16px;
+                border-radius:8px;
+                border:1px solid #39445f;
+                background:#0b1020;
+                color:white;
+            "
+        >
+
+        <button
+            id="masir-login"
+            type="button"
+            style="
+                width:100%;
+                padding:12px;
+                border:0;
+                border-radius:8px;
+                background:#a78bfa;
+                color:#0b1020;
+                font-weight:bold;
+                cursor:pointer;
+            "
+        >
+            ورود
+        </button>
+
+        <button
+            id="masir-signup"
+            type="button"
+            style="
+                width:100%;
+                padding:12px;
+                margin-top:10px;
+                border:1px solid #a78bfa;
+                border-radius:8px;
+                background:transparent;
+                color:white;
+                cursor:pointer;
+            "
+        >
+            ساخت حساب جدید
+        </button>
+
+        <p
+            id="masir-auth-message"
+            role="status"
+            aria-live="polite"
+            style="
+                margin-bottom:0;
+                text-align:center;
+                line-height:1.8;
+                overflow-wrap:anywhere;
+            "
+        ></p>
+    </div>
+</div>
 </body>
 </html>
