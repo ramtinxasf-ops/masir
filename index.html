@@ -937,16 +937,69 @@ function loadActivities() {
     }
 }
 
-let activities = loadActivities();
+let activities = [];
+
 
 function saveActivities() {
-    try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(activities));
-    } catch (error) {
-        alert("ذخیره اطلاعات انجام نشد. فضای مرورگر را بررسی کن.");
-        console.error(error);
-    }
+    const user = window.masirCurrentUser;
+
+    // تا قبل از ورود کاربر، چیزی در پایگاه داده ذخیره نکن.
+    if (!user) return;
+
+    // از وضعیت فعلی فعالیت‌ها یک نسخه می‌گیریم.
+    const snapshot = JSON.parse(JSON.stringify(activities));
+
+    // ذخیره‌ها را پشت سر هم اجرا می‌کنیم تا با هم تداخل نکنند.
+    window.masirSaveQueue = (window.masirSaveQueue || Promise.resolve())
+        .then(async () => {
+            const { data: existing, error: readError } =
+                await supabaseClient
+                    .from("user_activities")
+                    .select("activity_id")
+                    .eq("user_id", user.id);
+
+            if (readError) throw readError;
+
+            const currentIds = new Set(
+                snapshot.map(activity => String(activity.id))
+            );
+
+            // حذف فعالیت‌هایی که از برنامه حذف شده‌اند.
+            for (const row of (existing || [])) {
+                if (!currentIds.has(String(row.activity_id))) {
+                    const { error } = await supabaseClient
+                        .from("user_activities")
+                        .delete()
+                        .eq("user_id", user.id)
+                        .eq("activity_id", row.activity_id);
+
+                    if (error) throw error;
+                }
+            }
+
+            // ذخیره یا به‌روزرسانی فعالیت‌های فعلی.
+            if (snapshot.length > 0) {
+                const rows = snapshot.map(activity => ({
+                    user_id: user.id,
+                    activity_id: String(activity.id),
+                    data: activity
+                }));
+
+                const { error } = await supabaseClient
+                    .from("user_activities")
+                    .upsert(rows, {
+                        onConflict: "user_id,activity_id"
+                    });
+
+                if (error) throw error;
+            }
+        })
+        .catch(error => {
+            console.error("خطا در ذخیره فعالیت‌ها:", error);
+            alert("ذخیره اطلاعات در سرور انجام نشد. اتصال و دسترسی را بررسی کن.");
+        });
 }
+
 
 function activityBelongsToDate(activity, date) {
     return activity.days.includes("daily") ||
@@ -1615,5 +1668,153 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
         ></p>
     </div>
 </div>
+    
+<script>
+(function () {
+    const overlay = document.getElementById("masir-auth-overlay");
+    const emailInput = document.getElementById("masir-email");
+    const passwordInput = document.getElementById("masir-password");
+    const loginButton = document.getElementById("masir-login");
+    const signupButton = document.getElementById("masir-signup");
+    const message = document.getElementById("masir-auth-message");
+
+    function showMessage(text, isError = false) {
+        message.textContent = text;
+        message.style.color = isError ? "#ff8b8b" : "#a7f3d0";
+    }
+
+    function setBusy(busy) {
+        loginButton.disabled = busy;
+        signupButton.disabled = busy;
+        loginButton.style.opacity = busy ? "0.6" : "1";
+        signupButton.style.opacity = busy ? "0.6" : "1";
+    }
+
+    async function loadUserActivities(user) {
+        // تا وقتی اطلاعات این حساب بارگذاری نشده، ذخیره را غیرفعال نگه می‌داریم.
+        window.masirCurrentUser = null;
+        activities = [];
+
+        const { data, error } = await supabaseClient
+            .from("user_activities")
+            .select("activity_id, data")
+            .eq("user_id", user.id);
+
+        if (error) {
+            throw error;
+        }
+
+        activities = (data || [])
+            .map(row => row.data)
+            .filter(item => item && item.id !== undefined && item.id !== null);
+
+        window.masirCurrentUser = user;
+        renderAll();
+
+        overlay.style.display = "none";
+        showMessage("");
+    }
+
+    async function login() {
+        const email = emailInput.value.trim();
+        const password = passwordInput.value;
+
+        if (!email || !password) {
+            showMessage("ایمیل و رمز عبور را وارد کن.", true);
+            return;
+        }
+
+        setBusy(true);
+        showMessage("در حال ورود...");
+
+        try {
+            const { data, error } = await supabaseClient.auth.signInWithPassword({
+                email,
+                password
+            });
+
+            if (error) throw error;
+
+            await loadUserActivities(data.user);
+        } catch (error) {
+            console.error(error);
+            showMessage("ورود انجام نشد. ایمیل و رمز عبور یا اتصال را بررسی کن.", true);
+        } finally {
+            setBusy(false);
+        }
+    }
+
+    async function signup() {
+        const email = emailInput.value.trim();
+        const password = passwordInput.value;
+
+        if (!email || !password) {
+            showMessage("ایمیل و رمز عبور را وارد کن.", true);
+            return;
+        }
+
+        if (password.length < 6) {
+            showMessage("رمز عبور باید حداقل ۶ کاراکتر باشد.", true);
+            return;
+        }
+
+        setBusy(true);
+        showMessage("در حال ساخت حساب...");
+
+        try {
+            const { data, error } = await supabaseClient.auth.signUp({
+                email,
+                password
+            });
+
+            if (error) throw error;
+
+            if (data.session && data.user) {
+                await loadUserActivities(data.user);
+            } else {
+                showMessage("حساب ساخته شد. اگر ایمیل تأیید دریافت کردی، آن را تأیید کن؛ سپس وارد حساب شو.");
+            }
+        } catch (error) {
+            console.error(error);
+            showMessage("ساخت حساب انجام نشد. ایمیل را بررسی کن یا پیام خطا را ببین.", true);
+        } finally {
+            setBusy(false);
+        }
+    }
+
+    loginButton.addEventListener("click", login);
+    signupButton.addEventListener("click", signup);
+
+    passwordInput.addEventListener("keydown", function (event) {
+        if (event.key === "Enter") login();
+    });
+
+    // اگر کاربر از قبل وارد شده باشد، اطلاعات همان حساب را بارگذاری کن.
+    (async function restoreSession() {
+        try {
+            const { data, error } = await supabaseClient.auth.getSession();
+            if (error) throw error;
+
+            if (data.session && data.session.user) {
+                await loadUserActivities(data.session.user);
+            }
+        } catch (error) {
+            console.error("خطا در بازیابی حساب:", error);
+            showMessage("بازیابی حساب انجام نشد. صفحه را تازه‌سازی کن.", true);
+        }
+    })();
+
+    // اگر ورود یا خروج از جای دیگری انجام شد، وضعیت حساب را هماهنگ کن.
+    supabaseClient.auth.onAuthStateChange(async function (event, session) {
+        if (event === "SIGNED_OUT" || !session) {
+            window.masirCurrentUser = null;
+            activities = [];
+            overlay.style.display = "flex";
+            renderAll();
+        }
+    });
+})();
+</script>
+
 </body>
 </html>
