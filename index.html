@@ -1183,6 +1183,35 @@ function renderActivities() {
         const name = document.createElement("div");
         name.className = "activity-name";
         name.textContent = activity.name;
+        
+        // اگر فعالیت هنوز اولویتی ندارد، اولویت متوسط در نظر گرفته شود.
+        if (!activity.priority) {
+            activity.priority = "medium";
+        }
+
+        const priority = document.createElement("select");
+        priority.className = "activity-priority";
+        priority.setAttribute("aria-label", "اولویت فعالیت");
+
+        const priorityOptions = [
+            { value: "high", label: "🔴 اولویت زیاد" },
+            { value: "medium", label: "🟡 اولویت متوسط" },
+            { value: "low", label: "🟢 اولویت کم" }
+        ];
+
+        priorityOptions.forEach(optionData => {
+            const option = document.createElement("option");
+            option.value = optionData.value;
+            option.textContent = optionData.label;
+            priority.appendChild(option);
+        });
+
+        priority.value = activity.priority;
+
+        priority.addEventListener("change", () => {
+            activity.priority = priority.value;
+            saveActivities();
+        });
 
         const time = document.createElement("div");
         time.className = "activity-time";
@@ -1201,7 +1230,9 @@ function renderActivities() {
             schedule.textContent = `روزهای برنامه: ${names.join("، ")}`;
         }
 
-        info.append(name, time, schedule);
+        
+        info.append(name, priority, time, schedule);
+
 
         const deleteButton = document.createElement("button");
         deleteButton.type = "button";
