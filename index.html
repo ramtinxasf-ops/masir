@@ -1691,19 +1691,7 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
     const message = document.getElementById("masir-auth-message");
     const logoutButton = document.createElement("button");
 logoutButton.textContent = "خروج از حساب";
-logoutButton.style.cssText = `
-    position: fixed;
-    top: 15px;
-    left: 15px;
-    z-index: 10000;
-    padding: 10px 16px;
-    background: #a78bfa;
-    color: #0b1020;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    display: none;
-`;
+logoutButton.style.cssText = "position:fixed;top:15px;left:15px;z-index:10000;padding:10px 16px;background:#a78bfa;color:#0b1020;border:none;border-radius:10px;cursor:pointer;display:none;";
 document.body.appendChild(logoutButton);
 
 logoutButton.addEventListener("click", async function () {
