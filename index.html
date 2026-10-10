@@ -1,0 +1,1492 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مسیر | برنامه‌ریز شخصی</title>
+
+<style>
+:root {
+    --background: #0b1020;
+    --card: #151c30;
+    --card-light: #1d2740;
+    --purple: #a78bfa;
+    --purple-dark: #7c3aed;
+    --text: #f3f4f6;
+    --muted: #a5b4cc;
+    --green: #34d399;
+    --red: #fb7185;
+    --border: #303b57;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 20px;
+    background: var(--background);
+    color: var(--text);
+    font-family: Tahoma, Arial, sans-serif;
+    line-height: 1.8;
+}
+
+.container {
+    width: 100%;
+    max-width: 1000px;
+    margin: auto;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 28px;
+}
+
+header h1 {
+    color: var(--purple);
+    font-size: 35px;
+    margin-bottom: 5px;
+}
+
+header p {
+    color: var(--muted);
+    margin-top: 0;
+}
+
+.card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 8px 25px rgba(0,0,0,.15);
+}
+
+h2 {
+    font-size: 20px;
+    margin-top: 0;
+    margin-bottom: 16px;
+}
+
+h3 {
+    font-size: 16px;
+    margin-top: 0;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.stat-card {
+    background: var(--card-light);
+    border-radius: 14px;
+    padding: 15px 8px;
+    text-align: center;
+}
+
+.stat-number {
+    display: block;
+    font-size: 27px;
+    font-weight: bold;
+    color: var(--purple);
+}
+
+.stat-label {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.progress-track {
+    width: 100%;
+    height: 12px;
+    background: #29334d;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-top: 12px;
+}
+
+.progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--purple-dark), var(--purple));
+    border-radius: 20px;
+    transition: width .3s ease;
+}
+
+.progress-label {
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: 8px;
+}
+
+label {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--muted);
+    font-size: 14px;
+}
+
+input[type="text"],
+input[type="time"] {
+    width: 100%;
+    min-width: 0;
+    padding: 12px;
+    background: #0d1426;
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 15px;
+}
+
+input:focus {
+    outline: 2px solid var(--purple-dark);
+    border-color: var(--purple);
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 15px;
+}
+
+.form-field {
+    min-width: 0;
+}
+
+.full-width {
+    grid-column: 1 / -1;
+}
+
+.days-box {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 9px;
+    margin-top: 10px;
+}
+
+.day-option {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 10px 5px;
+    background: #0d1426;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
+    font-size: 13px;
+    cursor: pointer;
+    margin: 0;
+}
+
+.day-option:has(input:checked) {
+    background: #302451;
+    border-color: var(--purple);
+}
+
+.day-option input {
+    accent-color: var(--purple-dark);
+    cursor: pointer;
+}
+
+.help-text {
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 8px;
+}
+
+button {
+    font-family: inherit;
+    cursor: pointer;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 14px;
+    transition: opacity .2s ease;
+}
+
+button:hover {
+    opacity: .85;
+}
+
+.primary-button {
+    background: var(--purple-dark);
+    color: white;
+    font-weight: bold;
+}
+
+.secondary-button {
+    background: var(--card-light);
+    color: var(--text);
+    border: 1px solid var(--border);
+}
+
+.today-button {
+    background: #253654;
+    color: #c4b5fd;
+}
+
+.calendar-header,
+.report-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+}
+
+.calendar-header h2,
+.report-header h2 {
+    margin: 0;
+}
+
+.calendar-month {
+    color: var(--purple);
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+.week-calendar {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 7px;
+}
+
+.calendar-day {
+    background: #0d1426;
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 10px 3px;
+    min-width: 0;
+    text-align: center;
+}
+
+.calendar-day.selected {
+    background: #302451;
+    border: 2px solid var(--purple);
+}
+
+.calendar-day.today {
+    box-shadow: inset 0 0 0 1px var(--green);
+}
+
+.day-name {
+    font-size: 11px;
+    color: var(--muted);
+}
+
+.day-number {
+    font-size: 20px;
+    font-weight: bold;
+    margin: 4px 0;
+}
+
+.day-count {
+    font-size: 10px;
+    color: var(--purple);
+    overflow-wrap: anywhere;
+}
+
+.selected-date-title {
+    margin-top: 20px;
+    margin-bottom: 12px;
+    color: var(--purple);
+    font-size: 16px;
+}
+
+.activity-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.activity-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #0d1426;
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    padding: 13px;
+}
+
+.activity-item.done {
+    border-color: #236d59;
+    background: #102820;
+}
+
+.activity-checkbox {
+    width: 21px;
+    height: 21px;
+    flex-shrink: 0;
+    accent-color: var(--green);
+    cursor: pointer;
+}
+
+.activity-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.activity-name {
+    font-weight: bold;
+    overflow-wrap: anywhere;
+}
+
+.activity-item.done .activity-name {
+    color: var(--green);
+    text-decoration: line-through;
+}
+
+.activity-time {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 3px;
+}
+
+.activity-schedule {
+    font-size: 11px;
+    color: #c4b5fd;
+    margin-top: 3px;
+}
+
+.delete-button {
+    flex-shrink: 0;
+    background: #3b1c2b;
+    color: var(--red);
+    padding: 8px 10px;
+}
+
+.empty-message {
+    text-align: center;
+    color: var(--muted);
+    padding: 25px 10px;
+    background: #0d1426;
+    border-radius: 12px;
+}
+
+.report-summary {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 22px;
+}
+
+.report-stat {
+    background: var(--card-light);
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    padding: 15px 8px;
+    text-align: center;
+}
+
+.report-stat strong {
+    display: block;
+    font-size: 25px;
+    color: var(--purple);
+}
+
+.report-stat span {
+    font-size: 12px;
+    color: var(--muted);
+}
+
+.chart {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-around;
+    gap: 10px;
+    height: 220px;
+    padding: 20px 8px 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 12px;
+}
+
+.chart-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    flex: 1;
+    height: 100%;
+    min-width: 0;
+    gap: 6px;
+}
+
+.chart-value {
+    font-size: 11px;
+    color: var(--muted);
+}
+
+.chart-bar-area {
+    height: 150px;
+    width: 100%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+.chart-bar {
+    width: min(34px, 75%);
+    height: 0%;
+    min-height: 0;
+    background: linear-gradient(to top, var(--purple-dark), var(--purple));
+    border-radius: 8px 8px 2px 2px;
+    transition: height .3s ease;
+}
+
+.chart-bar.best {
+    background: linear-gradient(to top, #059669, var(--green));
+}
+
+.chart-day {
+    font-size: 11px;
+    color: var(--muted);
+    white-space: nowrap;
+}
+
+.daily-report-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 18px;
+}
+
+.daily-report {
+    background: #0d1426;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px;
+}
+
+.daily-report-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.daily-report-name {
+    font-weight: bold;
+}
+
+.daily-report-percent {
+    color: var(--purple);
+    font-size: 13px;
+}
+
+.mini-track {
+    width: 100%;
+    height: 8px;
+    border-radius: 10px;
+    background: #29334d;
+    overflow: hidden;
+}
+
+.mini-fill {
+    height: 100%;
+    background: var(--purple);
+    border-radius: 10px;
+}
+
+.daily-report-details {
+    margin-top: 7px;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.best-day-box {
+    background: #102820;
+    border: 1px solid #236d59;
+    border-radius: 12px;
+    padding: 14px;
+    margin-top: 20px;
+}
+
+.best-day-box strong {
+    color: var(--green);
+}
+
+.footer-note {
+    color: var(--muted);
+    text-align: center;
+    font-size: 12px;
+    margin: 25px 0 10px;
+}
+
+@media (max-width: 600px) {
+    body {
+        padding: 12px;
+    }
+
+    header h1 {
+        font-size: 29px;
+    }
+
+    .card {
+        padding: 15px;
+    }
+
+    .stats,
+    .report-summary {
+        gap: 7px;
+    }
+
+    .stat-number {
+        font-size: 22px;
+    }
+
+    .stat-label {
+        font-size: 11px;
+    }
+
+    .report-stat strong {
+        font-size: 20px;
+    }
+
+    .report-stat span {
+        font-size: 10px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .full-width {
+        grid-column: auto;
+    }
+
+    .days-box {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .week-calendar {
+        gap: 4px;
+    }
+
+    .calendar-day {
+        padding: 8px 1px;
+        border-radius: 8px;
+    }
+
+    .day-name {
+        font-size: 10px;
+    }
+
+    .day-number {
+        font-size: 17px;
+    }
+
+    .day-count {
+        font-size: 9px;
+    }
+
+    .activity-item {
+        gap: 8px;
+        padding: 10px;
+    }
+
+    .delete-button {
+        padding: 7px;
+        font-size: 12px;
+    }
+
+    .chart {
+        gap: 4px;
+        padding-right: 0;
+        padding-left: 0;
+    }
+
+    .chart-day {
+        font-size: 9px;
+    }
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<header>
+    <h1>مسیر 💜</h1>
+    <p>هر روز یک قدم به زندگی دلخواهت نزدیک‌تر شو.</p>
+</header>
+
+<section class="stats">
+    <div class="stat-card">
+        <span class="stat-number" id="totalActivities">۰</span>
+        <span class="stat-label">فعالیت‌های روز</span>
+    </div>
+
+    <div class="stat-card">
+        <span class="stat-number" id="completedActivities">۰</span>
+        <span class="stat-label">انجام‌شده</span>
+    </div>
+
+    <div class="stat-card">
+        <span class="stat-number" id="progressPercent">۰٪</span>
+        <span class="stat-label">پیشرفت روز</span>
+    </div>
+</section>
+
+<section class="card">
+    <h2>📊 پیشرفت روز انتخاب‌شده</h2>
+
+    <div class="progress-track">
+        <div class="progress-fill" id="progressFill"></div>
+    </div>
+
+    <div class="progress-label" id="progressLabel"></div>
+</section>
+
+<section class="card">
+    <h2>➕ افزودن فعالیت جدید</h2>
+
+    <form id="activityForm">
+        <div class="form-grid">
+
+            <div class="form-field full-width">
+                <label for="activityName">نام فعالیت</label>
+                <input
+                    type="text"
+                    id="activityName"
+                    placeholder="مثلاً مطالعه یا ورزش"
+                    maxlength="100"
+                    required
+                >
+            </div>
+
+            <div class="form-field">
+                <label for="startTime">ساعت شروع</label>
+                <input type="time" id="startTime" required>
+            </div>
+
+            <div class="form-field">
+                <label for="endTime">ساعت پایان</label>
+                <input type="time" id="endTime" required>
+            </div>
+
+            <div class="form-field full-width">
+                <label>روزهای انجام فعالیت</label>
+
+                <div class="days-box">
+                    <label class="day-option">
+                        <input type="checkbox" name="activityDays" value="daily" id="dailyOption">
+                        هر روز
+                    </label>
+
+                    <label class="day-option">
+                        <input type="checkbox" name="activityDays" value="6">
+                        شنبه
+                    </label>
+
+                    <label class="day-option">
+                        <input type="checkbox" name="activityDays" value="0">
+                        یکشنبه
+                    </label>
+
+                    <label class="day-option">
+                        <input type="checkbox" name="activityDays" value="1">
+                        دوشنبه
+                    </label>
+
+                    <label class="day-option">
+                        <input type="checkbox" name="activityDays" value="2">
+                        سه‌شنبه
+                    </label>
+
+                    <label class="day-option">
+                        <input type="checkbox" name="activityDays" value="3">
+                        چهارشنبه
+                    </label>
+
+                    <label class="day-option">
+                        <input type="checkbox" name="activityDays" value="4">
+                        پنجشنبه
+                    </label>
+
+                    <label class="day-option">
+                        <input type="checkbox" name="activityDays" value="5">
+                        جمعه
+                    </label>
+                </div>
+
+                <div class="help-text">
+                    یک روز، چند روز یا هر روز را انتخاب کن.
+                </div>
+            </div>
+
+            <div class="form-field full-width">
+                <button type="submit" class="primary-button" style="width:100%">
+                    افزودن فعالیت
+                </button>
+            </div>
+
+        </div>
+    </form>
+</section>
+
+<section class="card">
+    <div class="calendar-header">
+        <div>
+            <h2>📅 تقویم هفتگی</h2>
+            <div class="calendar-month" id="calendarMonth"></div>
+        </div>
+
+        <button type="button" class="today-button" id="todayButton">
+            رفتن به امروز
+        </button>
+    </div>
+
+    <div class="week-calendar" id="weekCalendar"></div>
+
+    <div class="selected-date-title" id="selectedDateTitle"></div>
+
+    <div class="activity-list" id="activityList"></div>
+</section>
+
+<section class="card" id="reportSection">
+    <div class="report-header">
+        <h2>📈 گزارش عملکرد هفتگی</h2>
+
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="secondary-button" id="previousWeekButton" type="button">
+                هفته قبل ←
+            </button>
+
+            <button class="secondary-button" id="currentWeekButton" type="button">
+                هفته جاری
+            </button>
+
+            <button class="secondary-button" id="nextWeekButton" type="button">
+                → هفته بعد
+            </button>
+        </div>
+    </div>
+
+    <div class="calendar-month" id="reportWeekLabel"></div>
+
+    <div class="report-summary">
+        <div class="report-stat">
+            <strong id="weeklyTotal">۰</strong>
+            <span>مجموع فعالیت‌ها</span>
+        </div>
+
+        <div class="report-stat">
+            <strong id="weeklyCompleted">۰</strong>
+            <span>فعالیت‌های انجام‌شده</span>
+        </div>
+
+        <div class="report-stat">
+            <strong id="weeklyPercent">۰٪</strong>
+            <span>درصد موفقیت هفته</span>
+        </div>
+    </div>
+
+    <h3>مقایسهٔ عملکرد روزها</h3>
+
+    <div class="help-text">
+        ارتفاع هر ستون نشان‌دهندهٔ درصد فعالیت‌های انجام‌شده در آن روز است.
+    </div>
+
+    <div class="chart" id="weeklyChart"></div>
+
+    <div class="best-day-box" id="bestDayBox"></div>
+
+    <h3 style="margin-top:24px">جزئیات هر روز</h3>
+
+    <div class="daily-report-list" id="dailyReportList"></div>
+</section>
+
+<div class="footer-note">
+    مسیر تو با قدم‌های کوچک ساخته می‌شود 💜
+</div>
+
+</div>
+
+<script>
+const STORAGE_KEY = "masir_activities_v1";
+
+const WEEKDAY_NAMES = [
+    "یکشنبه",
+    "دوشنبه",
+    "سه‌شنبه",
+    "چهارشنبه",
+    "پنجشنبه",
+    "جمعه",
+    "شنبه"
+];
+
+const WEEK_ORDER = [6, 0, 1, 2, 3, 4, 5];
+
+let selectedDate = new Date();
+selectedDate.setHours(12, 0, 0, 0);
+
+function getDateKey(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+}
+
+function toPersianNumber(value) {
+    return String(value).replace(/\d/g, digit => "۰۱۲۳۴۵۶۷۸۹"[Number(digit)]);
+}
+
+function getPersianDate(date) {
+    return new Intl.DateTimeFormat("fa-IR-u-ca-persian", {
+        year: "numeric",
+        month: "long",
+        day: "numeric"
+    }).format(date);
+}
+
+function getPersianWeekday(date) {
+    return WEEKDAY_NAMES[date.getDay()];
+}
+
+function loadActivities() {
+    try {
+        const savedData = localStorage.getItem(STORAGE_KEY);
+
+        if (!savedData) {
+            return [];
+        }
+
+        const parsed = JSON.parse(savedData);
+
+        if (!Array.isArray(parsed)) {
+            return [];
+        }
+
+        return parsed
+            .filter(activity => activity && typeof activity === "object")
+            .map(activity => {
+                if (!activity.id) {
+                    activity.id = Date.now().toString() +
+                        Math.random().toString(16).slice(2);
+                }
+
+                if (!Array.isArray(activity.days)) {
+                    if (activity.day === "daily") {
+                        activity.days = ["daily"];
+                    } else if (activity.day !== undefined && activity.day !== null) {
+                        activity.days = [String(activity.day)];
+                    } else {
+                        activity.days = ["daily"];
+                    }
+                }
+
+                delete activity.day;
+
+                if (!Array.isArray(activity.completedDates)) {
+                    activity.completedDates = [];
+                }
+
+                if (activity.completed === true) {
+                    const todayKey = getDateKey(new Date());
+
+                    if (!activity.completedDates.includes(todayKey)) {
+                        activity.completedDates.push(todayKey);
+                    }
+                }
+
+                delete activity.completed;
+
+                activity.name = String(activity.name || "فعالیت بدون نام");
+                activity.start = String(activity.start || "00:00");
+                activity.end = String(activity.end || "00:00");
+
+                activity.days = activity.days
+                    .map(String)
+                    .filter(day =>
+                        day === "daily" ||
+                        ["0", "1", "2", "3", "4", "5", "6"].includes(day)
+                    );
+
+                if (activity.days.length === 0) {
+                    activity.days = ["daily"];
+                }
+
+                if (activity.days.includes("daily")) {
+                    activity.days = ["daily"];
+                }
+
+                return activity;
+            });
+    } catch (error) {
+        console.error("خطا در خواندن اطلاعات:", error);
+        return [];
+    }
+}
+
+let activities = loadActivities();
+
+function saveActivities() {
+    try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(activities));
+    } catch (error) {
+        alert("ذخیره اطلاعات انجام نشد. فضای مرورگر را بررسی کن.");
+        console.error(error);
+    }
+}
+
+function activityBelongsToDate(activity, date) {
+    return activity.days.includes("daily") ||
+        activity.days.includes(String(date.getDay()));
+}
+
+function getActivitiesForDate(date) {
+    return activities
+        .filter(activity => activityBelongsToDate(activity, date))
+        .sort((a, b) => a.start.localeCompare(b.start));
+}
+
+function isActivityCompleted(activity, date) {
+    return activity.completedDates.includes(getDateKey(date));
+}
+
+function getWeekDates(date) {
+    const start = new Date(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate(),
+        12
+    );
+
+    const daysSinceSaturday = (start.getDay() + 1) % 7;
+
+    start.setDate(start.getDate() - daysSinceSaturday);
+
+    const dates = [];
+
+    for (let index = 0; index < 7; index++) {
+        const day = new Date(start);
+        day.setDate(start.getDate() + index);
+        dates.push(day);
+    }
+
+    return dates;
+}
+
+function getPersianDayNumber(date) {
+    return new Intl.DateTimeFormat("fa-IR-u-ca-persian", {
+        day: "numeric"
+    }).format(date);
+}
+
+function renderCalendarMonth() {
+    const dates = getWeekDates(selectedDate);
+
+    const first = new Intl.DateTimeFormat("fa-IR-u-ca-persian", {
+        month: "long",
+        year: "numeric"
+    }).format(dates[0]);
+
+    const last = new Intl.DateTimeFormat("fa-IR-u-ca-persian", {
+        month: "long",
+        year: "numeric"
+    }).format(dates[6]);
+
+    document.getElementById("calendarMonth").textContent =
+        first === last ? first : `${first} تا ${last}`;
+}
+
+function renderCalendar() {
+    const calendar = document.getElementById("weekCalendar");
+    calendar.innerHTML = "";
+
+    const dates = getWeekDates(selectedDate);
+    const todayKey = getDateKey(new Date());
+    const selectedKey = getDateKey(selectedDate);
+
+    dates.forEach(date => {
+        const dateKey = getDateKey(date);
+        const dayActivities = getActivitiesForDate(date);
+
+        const completedCount = dayActivities.filter(activity =>
+            isActivityCompleted(activity, date)
+        ).length;
+
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "calendar-day";
+
+        if (dateKey === selectedKey) {
+            button.classList.add("selected");
+        }
+
+        if (dateKey === todayKey) {
+            button.classList.add("today");
+        }
+
+        const name = document.createElement("div");
+        name.className = "day-name";
+        name.textContent = getPersianWeekday(date);
+
+        const number = document.createElement("div");
+        number.className = "day-number";
+        number.textContent = getPersianDayNumber(date);
+
+        const count = document.createElement("div");
+        count.className = "day-count";
+        count.textContent =
+            `${toPersianNumber(completedCount)}/${toPersianNumber(dayActivities.length)}`;
+
+        button.append(name, number, count);
+
+        button.addEventListener("click", () => {
+            selectedDate = new Date(date);
+            renderAll();
+        });
+
+        calendar.appendChild(button);
+    });
+
+    renderCalendarMonth();
+}
+
+function renderActivities() {
+    const list = document.getElementById("activityList");
+    list.innerHTML = "";
+
+    document.getElementById("selectedDateTitle").textContent =
+        `فعالیت‌های ${getPersianWeekday(selectedDate)}، ${getPersianDate(selectedDate)}`;
+
+    const dayActivities = getActivitiesForDate(selectedDate);
+
+    if (dayActivities.length === 0) {
+        const empty = document.createElement("div");
+        empty.className = "empty-message";
+        empty.textContent = "برای این روز فعالیتی ثبت نشده است.";
+        list.appendChild(empty);
+        return;
+    }
+
+    dayActivities.forEach(activity => {
+        const completed = isActivityCompleted(activity, selectedDate);
+
+        const item = document.createElement("div");
+        item.className = "activity-item";
+
+        if (completed) {
+            item.classList.add("done");
+        }
+
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.className = "activity-checkbox";
+        checkbox.checked = completed;
+        checkbox.setAttribute("aria-label", `انجام ${activity.name}`);
+
+        checkbox.addEventListener("change", () => {
+            const key = getDateKey(selectedDate);
+
+            if (checkbox.checked) {
+                if (!activity.completedDates.includes(key)) {
+                    activity.completedDates.push(key);
+                }
+            } else {
+                activity.completedDates =
+                    activity.completedDates.filter(dateKey => dateKey !== key);
+            }
+
+            saveActivities();
+            renderAll();
+        });
+
+        const info = document.createElement("div");
+        info.className = "activity-info";
+
+        const name = document.createElement("div");
+        name.className = "activity-name";
+        name.textContent = activity.name;
+
+        const time = document.createElement("div");
+        time.className = "activity-time";
+        time.textContent = `⏰ ${activity.start} تا ${activity.end}`;
+
+        const schedule = document.createElement("div");
+        schedule.className = "activity-schedule";
+
+        if (activity.days.includes("daily")) {
+            schedule.textContent = "برنامه: هر روز";
+        } else {
+            const names = WEEK_ORDER
+                .filter(day => activity.days.includes(String(day)))
+                .map(day => WEEKDAY_NAMES[day]);
+
+            schedule.textContent = `روزهای برنامه: ${names.join("، ")}`;
+        }
+
+        info.append(name, time, schedule);
+
+        const deleteButton = document.createElement("button");
+        deleteButton.type = "button";
+        deleteButton.className = "delete-button";
+        deleteButton.textContent = "حذف";
+
+        deleteButton.addEventListener("click", () => {
+            if (!confirm(`فعالیت «${activity.name}» حذف شود؟`)) {
+                return;
+            }
+
+            activities = activities.filter(item => item.id !== activity.id);
+            saveActivities();
+            renderAll();
+        });
+
+        item.append(checkbox, info, deleteButton);
+        list.appendChild(item);
+    });
+}
+
+function updateStats() {
+    const dayActivities = getActivitiesForDate(selectedDate);
+
+    const completedCount = dayActivities.filter(activity =>
+        isActivityCompleted(activity, selectedDate)
+    ).length;
+
+    const totalCount = dayActivities.length;
+
+    const percentage = totalCount === 0
+        ? 0
+        : Math.round(completedCount / totalCount * 100);
+
+    document.getElementById("totalActivities").textContent =
+        toPersianNumber(totalCount);
+
+    document.getElementById("completedActivities").textContent =
+        toPersianNumber(completedCount);
+
+    document.getElementById("progressPercent").textContent =
+        `${toPersianNumber(percentage)}٪`;
+
+    document.getElementById("progressFill").style.width =
+        `${percentage}%`;
+
+    const label = document.getElementById("progressLabel");
+
+    if (totalCount === 0) {
+        label.textContent = "برای این روز فعالیتی برنامه‌ریزی نشده است.";
+    } else if (percentage === 100) {
+        label.textContent = "عالی است! تمام فعالیت‌های این روز انجام شده‌اند. 💜";
+    } else {
+        label.textContent =
+            `${toPersianNumber(completedCount)} فعالیت از ${toPersianNumber(totalCount)} فعالیت انجام شده است.`;
+    }
+}
+
+function getDayReport(date) {
+    const dayActivities = getActivitiesForDate(date);
+
+    const completedCount = dayActivities.filter(activity =>
+        isActivityCompleted(activity, date)
+    ).length;
+
+    const totalCount = dayActivities.length;
+
+    const percentage = totalCount === 0
+        ? 0
+        : Math.round(completedCount / totalCount * 100);
+
+    return {
+        date,
+        total: totalCount,
+        completed: completedCount,
+        remaining: totalCount - completedCount,
+        percentage
+    };
+}
+
+function renderWeeklyReport() {
+    const dates = getWeekDates(selectedDate);
+    const reports = dates.map(date => getDayReport(date));
+
+    const total = reports.reduce((sum, report) => sum + report.total, 0);
+    const completed = reports.reduce((sum, report) => sum + report.completed, 0);
+    const remaining = total - completed;
+
+    const percentage = total === 0
+        ? 0
+        : Math.round(completed / total * 100);
+
+    document.getElementById("weeklyTotal").textContent =
+        toPersianNumber(total);
+
+    document.getElementById("weeklyCompleted").textContent =
+        toPersianNumber(completed);
+
+    document.getElementById("weeklyPercent").textContent =
+        `${toPersianNumber(percentage)}٪`;
+
+    const startLabel = getPersianDate(dates[0]);
+    const endLabel = getPersianDate(dates[6]);
+
+    document.getElementById("reportWeekLabel").textContent =
+        `از ${startLabel} تا ${endLabel} | ${toPersianNumber(remaining)} فعالیت باقی‌مانده`;
+
+    renderWeeklyChart(reports);
+    renderDailyReportList(reports);
+    renderBestDay(reports);
+}
+
+function renderWeeklyChart(reports) {
+    const chart = document.getElementById("weeklyChart");
+    chart.innerHTML = "";
+
+    const nonEmptyReports = reports.filter(report => report.total > 0);
+
+    let bestPercentage = -1;
+
+    if (nonEmptyReports.length > 0) {
+        bestPercentage = Math.max(
+            ...nonEmptyReports.map(report => report.percentage)
+        );
+    }
+
+    reports.forEach(report => {
+        const column = document.createElement("div");
+        column.className = "chart-column";
+
+        const value = document.createElement("div");
+        value.className = "chart-value";
+        value.textContent = report.total === 0
+            ? "—"
+            : `${toPersianNumber(report.percentage)}٪`;
+
+        const barArea = document.createElement("div");
+        barArea.className = "chart-bar-area";
+
+        const bar = document.createElement("div");
+        bar.className = "chart-bar";
+
+        if (report.total > 0) {
+            bar.style.height = `${report.percentage}%`;
+
+            if (report.percentage === bestPercentage) {
+                bar.classList.add("best");
+            }
+        }
+
+        const dayName = document.createElement("div");
+        dayName.className = "chart-day";
+        dayName.textContent = getPersianWeekday(report.date);
+
+        barArea.appendChild(bar);
+        column.append(value, barArea, dayName);
+        chart.appendChild(column);
+    });
+}
+
+function renderDailyReportList(reports) {
+    const list = document.getElementById("dailyReportList");
+    list.innerHTML = "";
+
+    reports.forEach(report => {
+        const item = document.createElement("div");
+        item.className = "daily-report";
+
+        const top = document.createElement("div");
+        top.className = "daily-report-top";
+
+        const name = document.createElement("div");
+        name.className = "daily-report-name";
+        name.textContent =
+            `${getPersianWeekday(report.date)}، ${getPersianDayNumber(report.date)}`;
+
+        const percentage = document.createElement("div");
+        percentage.className = "daily-report-percent";
+        percentage.textContent = report.total === 0
+            ? "بدون فعالیت"
+            : `${toPersianNumber(report.percentage)}٪`;
+
+        top.append(name, percentage);
+
+        const track = document.createElement("div");
+        track.className = "mini-track";
+
+        const fill = document.createElement("div");
+        fill.className = "mini-fill";
+        fill.style.width = `${report.percentage}%`;
+
+        track.appendChild(fill);
+
+        const details = document.createElement("div");
+        details.className = "daily-report-details";
+        details.textContent =
+            `${toPersianNumber(report.completed)} انجام‌شده از ${toPersianNumber(report.total)} فعالیت`;
+
+        item.append(top, track, details);
+        list.appendChild(item);
+    });
+}
+
+function renderBestDay(reports) {
+    const box = document.getElementById("bestDayBox");
+
+    const reportsWithActivities = reports.filter(report => report.total > 0);
+
+    if (reportsWithActivities.length === 0) {
+        box.textContent =
+            "هنوز فعالیتی در این هفته ثبت نشده است. پس از ثبت فعالیت‌ها، بهترین روز مشخص می‌شود.";
+        return;
+    }
+
+    const bestPercentage = Math.max(
+        ...reportsWithActivities.map(report => report.percentage)
+    );
+
+    const bestDays = reportsWithActivities.filter(report =>
+        report.percentage === bestPercentage
+    );
+
+    const bestNames = bestDays.map(report =>
+        getPersianWeekday(report.date)
+    );
+
+    box.innerHTML = "";
+
+    const title = document.createElement("strong");
+    title.textContent = bestDays.length > 1
+        ? "🏆 بهترین روزها: "
+        : "🏆 بهترین روز: ";
+
+    const description = document.createElement("span");
+    description.textContent =
+        `${bestNames.join("، ")} با ${toPersianNumber(bestPercentage)}٪ موفقیت`;
+
+    box.append(title, description);
+}
+
+function renderAll() {
+    renderCalendar();
+    renderActivities();
+    updateStats();
+    renderWeeklyReport();
+}
+
+const dailyOption = document.getElementById("dailyOption");
+
+const dayCheckboxes = Array.from(
+    document.querySelectorAll(
+        'input[name="activityDays"]:not(#dailyOption)'
+    )
+);
+
+dailyOption.addEventListener("change", () => {
+    if (dailyOption.checked) {
+        dayCheckboxes.forEach(checkbox => {
+            checkbox.checked = false;
+        });
+    }
+});
+
+dayCheckboxes.forEach(checkbox => {
+    checkbox.addEventListener("change", () => {
+        if (checkbox.checked) {
+            dailyOption.checked = false;
+        }
+    });
+});
+
+document.getElementById("activityForm").addEventListener("submit", event => {
+    event.preventDefault();
+
+    const name = document.getElementById("activityName").value.trim();
+    const start = document.getElementById("startTime").value;
+    const end = document.getElementById("endTime").value;
+
+    const selectedDays = Array.from(
+        document.querySelectorAll('input[name="activityDays"]:checked')
+    ).map(checkbox => checkbox.value);
+
+    if (!name) {
+        alert("لطفاً نام فعالیت را وارد کن.");
+        return;
+    }
+
+    if (!start || !end) {
+        alert("لطفاً ساعت شروع و پایان را وارد کن.");
+        return;
+    }
+
+    if (end <= start) {
+        alert("ساعت پایان باید بعد از ساعت شروع باشد.");
+        return;
+    }
+
+    if (selectedDays.length === 0) {
+        alert("لطفاً حداقل یک روز را انتخاب کن.");
+        return;
+    }
+
+    const newActivity = {
+        id: Date.now().toString() + Math.random().toString(16).slice(2),
+        name,
+        start,
+        end,
+        days: selectedDays,
+        completedDates: []
+    };
+
+    activities.push(newActivity);
+    saveActivities();
+
+    if (!selectedDays.includes("daily")) {
+        const firstDay = Number(selectedDays[0]);
+
+        const difference =
+            (firstDay - selectedDate.getDay() + 7) % 7;
+
+        selectedDate.setDate(selectedDate.getDate() + difference);
+    } else {
+        selectedDate = new Date();
+    }
+
+    selectedDate.setHours(12, 0, 0, 0);
+
+    document.getElementById("activityForm").reset();
+
+    renderAll();
+    alert("فعالیت با موفقیت اضافه شد. 💜");
+});
+
+document.getElementById("todayButton").addEventListener("click", () => {
+    selectedDate = new Date();
+    selectedDate.setHours(12, 0, 0, 0);
+    renderAll();
+});
+
+document.getElementById("previousWeekButton").addEventListener("click", () => {
+    selectedDate.setDate(selectedDate.getDate() - 7);
+    renderAll();
+});
+
+document.getElementById("nextWeekButton").addEventListener("click", () => {
+    selectedDate.setDate(selectedDate.getDate() + 7);
+    renderAll();
+});
+
+document.getElementById("currentWeekButton").addEventListener("click", () => {
+    selectedDate = new Date();
+    selectedDate.setHours(12, 0, 0, 0);
+    renderAll();
+});
+
+// ذخیره ساختار جدید اطلاعات و نمایش برنامه
+saveActivities();
+renderAll();
+</script>
+</body>
+</html>
