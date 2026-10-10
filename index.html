@@ -633,6 +633,18 @@ button:hover {
     color: #e2e8f0;
 }
 
+.activity-item.priority-high {
+    border-right: 4px solid #f87171;
+}
+
+.activity-item.priority-medium {
+    border-right: 4px solid #fbbf24;
+}
+
+.activity-item.priority-low {
+    border-right: 4px solid #4ade80;
+}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -1174,6 +1186,11 @@ function renderActivities() {
 
         const item = document.createElement("div");
         item.className = "activity-item";
+        
+        // رنگ حاشیه کارت بر اساس اولویت فعالیت
+        item.classList.remove("priority-high", "priority-medium", "priority-low");
+        item.classList.add(`priority-${activity.priority || "medium"}`);
+
 
         if (completed) {
             item.classList.add("done");
