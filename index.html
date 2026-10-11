@@ -1133,63 +1133,55 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 
+
 function saveActivities() {
     const user = window.masirCurrentUser;
 
-    // تا قبل از ورود کاربر، چیزی در پایگاه داده ذخیره نکن.
+    // بدون ورود کاربر، ذخیره در سرور انجام نمی‌شود.
     if (!user) return;
+
+    // وقتی فهرست خالی است، اطلاعات قبلی را تغییر نده.
     if (activities.length === 0) return;
-    // از وضعیت فعلی فعالیت‌ها یک نسخه می‌گیریم.
+
+    // تهیه نسخه مستقل از فعالیت‌ها
     const snapshot = JSON.parse(JSON.stringify(activities));
 
-    // ذخیره‌ها را پشت سر هم اجرا می‌کنیم تا با هم تداخل نکنند.
-    window.masirSaveQueue = (window.masirSaveQueue || Promise.resolve())
+    // نسخه پشتیبان محلی در مرورگر
+    try {
+        localStorage.setItem(
+            STORAGE_KEY + "_" + user.id,
+            JSON.stringify(snapshot)
+        );
+    } catch (error) {
+        console.error("خطا در پشتیبان محلی:", error);
+        alert("ذخیره پشتیبان در مرورگر انجام نشد.");
+    }
+
+    // ذخیره‌های سرور پشت سر هم اجرا می‌شوند.
+    window.masirSaveQueue =
+        (window.masirSaveQueue || Promise.resolve())
         .then(async () => {
-            const { data: existing, error: readError } =
-                await supabaseClient
-                    .from("user_activities")
-                    .select("activity_id")
-                    .eq("user_id", user.id);
+            const rows = snapshot.map(activity => ({
+                user_id: user.id,
+                activity_id: String(activity.id),
+                data: activity
+            }));
 
-            if (readError) throw readError;
+            // فقط ذخیره یا به‌روزرسانی؛ حذف گروهی انجام نمی‌شود.
+            const { error } = await supabaseClient
+                .from("user_activities")
+                .upsert(rows, {
+                    onConflict: "user_id,activity_id"
+                });
 
-            const currentIds = new Set(
-                snapshot.map(activity => String(activity.id))
-            );
-
-            // حذف فعالیت‌هایی که از برنامه حذف شده‌اند.
-            for (const row of (existing || [])) {
-                if (!currentIds.has(String(row.activity_id))) {
-                    const { error } = await supabaseClient
-                        .from("user_activities")
-                        .delete()
-                        .eq("user_id", user.id)
-                        .eq("activity_id", row.activity_id);
-
-                    if (error) throw error;
-                }
-            }
-
-            // ذخیره یا به‌روزرسانی فعالیت‌های فعلی.
-            if (snapshot.length > 0) {
-                const rows = snapshot.map(activity => ({
-                    user_id: user.id,
-                    activity_id: String(activity.id),
-                    data: activity
-                }));
-
-                const { error } = await supabaseClient
-                    .from("user_activities")
-                    .upsert(rows, {
-                        onConflict: "user_id,activity_id"
-                    });
-
-                if (error) throw error;
-            }
+            if (error) throw error;
         })
         .catch(error => {
             console.error("خطا در ذخیره فعالیت‌ها:", error);
-            alert("ذخیره اطلاعات در سرور انجام نشد. اتصال و دسترسی را بررسی کن.");
+            alert(
+                "ذخیره در سرور انجام نشد؛ " +
+                "نسخه محلی را حفظ کن و اتصال را بررسی کن."
+            );
         });
 }
 
@@ -1931,31 +1923,85 @@ logoutButton.addEventListener("click", async function () {
         signupButton.style.opacity = busy ? "0.6" : "1";
     }
 
-    async function loadUserActivities(user) {
-        // تا وقتی اطلاعات این حساب بارگذاری نشده، ذخیره را غیرفعال نگه می‌داریم.
-        window.masirCurrentUser = null;
-        activities = [];
+    
+async function loadUserActivities(user) {
+    // تا پایان بارگذاری، ذخیره‌سازی غیرفعال می‌ماند.
+    window.masirCurrentUser = null;
 
-        const { data, error } = await supabaseClient
-            .from("user_activities")
-            .select("activity_id, data")
-            .eq("user_id", user.id);
+    // نسخه پشتیبان مخصوص همین حساب
+    const backupKey = STORAGE_KEY + "_" + user.id;
 
-        if (error) {
-            throw error;
+    // ابتدا اطلاعات سرور را می‌خوانیم.
+    const { data, error } = await supabaseClient
+        .from("user_activities")
+        .select("activity_id, data")
+        .eq("user_id", user.id);
+
+    // اگر سرور خطا داد، اطلاعات را خالی نکن.
+    if (error) {
+        throw error;
+    }
+
+    const serverActivities = (data || [])
+        .map(row => row.data)
+        .filter(item =>
+            item &&
+            item.id !== undefined &&
+            item.id !== null
+        );
+
+    // اگر سرور اطلاعات دارد، همان‌ها معتبر هستند.
+    if (serverActivities.length > 0) {
+        activities = serverActivities;
+
+        // پشتیبان محلی همان حساب را به‌روز می‌کنیم.
+        localStorage.setItem(
+            backupKey,
+            JSON.stringify(activities)
+        );
+    } else {
+        // اگر سرور خالی است، پشتیبان همین حساب را بررسی می‌کنیم.
+        let backupActivities = [];
+
+        try {
+            const savedData = localStorage.getItem(backupKey);
+
+            if (savedData) {
+                const parsed = JSON.parse(savedData);
+
+                if (Array.isArray(parsed)) {
+                    backupActivities = parsed.filter(
+                        item =>
+                            item &&
+                            item.id !== undefined &&
+                            item.id !== null
+                    );
+                }
+            }
+        } catch (backupError) {
+            console.error(
+                "خطا در خواندن نسخه پشتیبان:",
+                backupError
+            );
         }
 
-        activities = (data || [])
-            .map(row => row.data)
-            .filter(item => item && item.id !== undefined && item.id !== null);
-
-        window.masirCurrentUser = user;
-renderAll();
-
-overlay.style.display = "none";
-logoutButton.style.display = "block";
-showMessage("");
+        activities = backupActivities;
     }
+
+    // فقط پس از بارگذاری، حساب فعال می‌شود.
+    window.masirCurrentUser = user;
+
+    renderAll();
+
+    overlay.style.display = "none";
+    logoutButton.style.display = "block";
+    showMessage("");
+
+    // اگر سرور خالی بود و پشتیبان داشتیم، آن را به سرور می‌فرستیم.
+    if (activities.length > 0 && serverActivities.length === 0) {
+        saveActivities();
+    }
+}
 
     async function login() {
         const email = emailInput.value.trim();
