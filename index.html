@@ -645,6 +645,41 @@ button:hover {
     border-right: 4px solid #4ade80;
 }
 
+/* منوی پایین برنامه مسیر */
+#bottomNav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    gap: 5px;
+    padding: 12px 6px;
+    box-sizing: border-box;
+    background: #17132b;
+    border-top: 1px solid #514477;
+    z-index: 999;
+}
+
+#bottomNav button {
+    flex: 1;
+    padding: 12px 4px;
+    border: none;
+    border-radius: 10px;
+    background: transparent;
+    color: #ffffff;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+#bottomNav button:hover {
+    background: #352653;
+}
+
+body {
+    padding-bottom: 90px;
+}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -842,6 +877,32 @@ button:hover {
 
     <div class="daily-report-list" id="dailyReportList"></div>
 </section>
+    
+<section class="card" id="profileSection" style="display:none;">
+    <h2>👤 پروفایل من</h2>
+
+    <div class="help-text">
+        اطلاعات حساب کاربری و تنظیمات برنامه
+    </div>
+
+    <div class="report-stat" style="margin-top:16px;">
+        <span>ایمیل حساب</span>
+        <strong id="profileEmail" style="font-size:14px;overflow-wrap:anywhere;">—</strong>
+    </div>
+
+    <h3 style="margin-top:24px;">ℹ️ اطلاعات برنامه</h3>
+
+    <div class="help-text">
+        نام برنامه: مسیر
+    </div>
+
+    <div class="help-text">
+        برنامه‌ریز شخصی برای مدیریت فعالیت‌ها، پیگیری پیشرفت و بررسی گزارش‌ها
+    </div>
+
+    <div id="profileLogoutArea" style="margin-top:24px;"></div>
+</section>
+
 <nav id="bottomNav">
     <button type="button" id="nav-home" onclick="showPage('home')">🏠 خانه</button>
     <button type="button" id="nav-planning" onclick="showPage('planning')">📅 برنامه‌ریزی</button>
@@ -991,6 +1052,67 @@ function loadActivities() {
 }
 
 let activities = [];
+
+function showPage(page) {
+    const sections = {
+        home: ["homeStats", "homeProgress", "calendarSection"],
+        planning: ["planningSection"],
+        reports: ["reportSection"],
+        profile: ["profileSection"]
+    };
+
+    const allSections = [
+        "homeStats",
+        "homeProgress",
+        "planningSection",
+        "calendarSection",
+        "reportSection",
+        "profileSection"
+    ];
+
+    allSections.forEach(function(id) {
+        const section = document.getElementById(id);
+
+        if (section) {
+            section.style.display = "none";
+        }
+    });
+
+    if (!sections[page]) {
+        return;
+    }
+
+    sections[page].forEach(function(id) {
+        const section = document.getElementById(id);
+
+        if (section) {
+            section.style.display = "";
+        }
+    });
+
+    document.querySelectorAll("#bottomNav button").forEach(function(button) {
+        button.style.background = "transparent";
+    });
+
+    const activeButton = document.getElementById("nav-" + page);
+
+    if (activeButton) {
+        activeButton.style.background = "#514477";
+    }
+
+    if (page === "profile" && window.masirCurrentUser) {
+        const emailElement = document.getElementById("profileEmail");
+
+        if (emailElement) {
+            emailElement.textContent =
+                window.masirCurrentUser.email || "بدون ایمیل";
+        }
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    showPage("home");
+});
 
 
 function saveActivities() {
