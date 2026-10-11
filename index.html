@@ -891,6 +891,16 @@ body {
     </div>
 
    
+<button
+    type="button"
+    class="secondary-button"
+    id="exportBackupButton"
+    style="width:100%;margin-top:16px;text-align:right;"
+>
+    💾 دریافت نسخه پشتیبان
+    <span style="float:left;">↓</span>
+</button>
+
 <button type="button" class="secondary-button" id="appInfoButton"
     style="width:100%;margin-top:24px;text-align:right;">
     ℹ️ اطلاعات برنامه
@@ -1118,6 +1128,7 @@ function showPage(page) {
 document.addEventListener("DOMContentLoaded", function() {
     showPage("home");
 
+    // باز و بسته کردن اطلاعات برنامه
     const appInfoButton = document.getElementById("appInfoButton");
     const appInfoDetails = document.getElementById("appInfoDetails");
 
@@ -1130,7 +1141,49 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         });
     }
+
+    // دانلود فایل پشتیبان فعالیت‌ها
+    const exportBackupButton = document.getElementById("exportBackupButton");
+
+    if (exportBackupButton) {
+        exportBackupButton.addEventListener("click", function() {
+            const user = window.masirCurrentUser;
+
+            if (!user) {
+                alert("ابتدا وارد حساب کاربری شو.");
+                return;
+            }
+
+            const backup = {
+                app: "masir",
+                version: 1,
+                exportedAt: new Date().toISOString(),
+                activities: activities
+            };
+
+            const blob = new Blob(
+                [JSON.stringify(backup, null, 2)],
+                { type: "application/json;charset=utf-8" }
+            );
+
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+
+            link.href = url;
+            link.download = "masir-backup-" +
+                new Date().toISOString().slice(0, 10) + ".json";
+
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+
+            URL.revokeObjectURL(url);
+
+            alert("فایل پشتیبان آماده شد. آن را در جای امن نگه دار.");
+        });
+    }
 });
+
 
 
 
