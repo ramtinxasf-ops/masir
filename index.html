@@ -901,6 +901,23 @@ body {
     <span style="float:left;">↓</span>
 </button>
 
+<button
+    type="button"
+    class="secondary-button"
+    id="importBackupButton"
+    style="width:100%;margin-top:12px;text-align:right;"
+>
+    📂 بازیابی از فایل پشتیبان
+    <span style="float:left;">↑</span>
+</button>
+
+<input
+    type="file"
+    id="backupFileInput"
+    accept=".json,application/json"
+    style="display:none;"
+>
+
 <button type="button" class="secondary-button" id="appInfoButton"
     style="width:100%;margin-top:24px;text-align:right;">
     ℹ️ اطلاعات برنامه
@@ -1182,6 +1199,75 @@ document.addEventListener("DOMContentLoaded", function() {
             alert("فایل پشتیبان آماده شد. آن را در جای امن نگه دار.");
         });
     }
+    
+    // انتخاب و بررسی فایل پشتیبان
+    const importBackupButton = document.getElementById("importBackupButton");
+    const backupFileInput = document.getElementById("backupFileInput");
+
+    if (importBackupButton && backupFileInput) {
+        importBackupButton.addEventListener("click", function() {
+            backupFileInput.click();
+        });
+
+        backupFileInput.addEventListener("change", async function() {
+            const file = backupFileInput.files[0];
+
+            if (!file) return;
+
+            try {
+                const text = await file.text();
+                const backup = JSON.parse(text);
+
+                if (
+                    !backup ||
+                    backup.app !== "masir" ||
+                    backup.version !== 1 ||
+                    !Array.isArray(backup.activities)
+                ) {
+                    alert("ساختار فایل پشتیبان معتبر نیست.");
+                    return;
+                }
+
+                const validActivities = backup.activities.filter(activity =>
+                    activity &&
+                    activity.id !== undefined &&
+                    activity.id !== null &&
+                    typeof activity.name === "string"
+                );
+
+                if (validActivities.length !== backup.activities.length) {
+                    alert("فایل شامل فعالیت‌های نامعتبر است؛ بازیابی انجام نشد.");
+                    return;
+                }
+
+                if (validActivities.length === 0) {
+                    alert("فایل پشتیبان هیچ فعالیتی ندارد.");
+                    return;
+                }
+
+                const confirmed = confirm(
+                    "تعداد " + validActivities.length +
+                    " فعالیت در فایل پیدا شد.\n\n" +
+                    "در مرحله بعد، قبل از ذخیره، روش بازیابی را مشخص می‌کنیم.\n" +
+                    "فعلاً هیچ اطلاعاتی تغییر نخواهد کرد."
+                );
+
+                if (confirmed) {
+                    alert(
+                        "فایل معتبر است و شامل " +
+                        validActivities.length +
+                        " فعالیت است. هنوز چیزی بازیابی نشده است."
+                    );
+                }
+            } catch (error) {
+                console.error("خطا در بررسی فایل پشتیبان:", error);
+                alert("فایل خوانده نشد. یک فایل پشتیبان معتبر انتخاب کن.");
+            } finally {
+                backupFileInput.value = "";
+            }
+        });
+    }
+
 });
 
 
