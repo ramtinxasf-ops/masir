@@ -1245,20 +1245,82 @@ document.addEventListener("DOMContentLoaded", function() {
                     return;
                 }
 
+               
                 const confirmed = confirm(
                     "تعداد " + validActivities.length +
-                    " فعالیت در فایل پیدا شد.\n\n" +
-                    "در مرحله بعد، قبل از ذخیره، روش بازیابی را مشخص می‌کنیم.\n" +
-                    "فعلاً هیچ اطلاعاتی تغییر نخواهد کرد."
+                    " فعالیت معتبر پیدا شد.\n\n" +
+                    "این فعالیت‌ها با فعالیت‌های فعلی ادغام می‌شوند.\n" +
+                    "فعالیت‌های فعلی حذف نخواهند شد.\n\n" +
+                    "آیا می‌خواهی ادامه بدهی؟"
                 );
 
-                if (confirmed) {
-                    alert(
-                        "فایل معتبر است و شامل " +
-                        validActivities.length +
-                        " فعالیت است. هنوز چیزی بازیابی نشده است."
-                    );
+                if (!confirmed) return;
+
+                const user = window.masirCurrentUser;
+
+                if (!user) {
+                    alert("ابتدا وارد حساب کاربری شو.");
+                    return;
                 }
+
+                // ادغام بر اساس شناسه؛ فعالیت‌های فعلی حفظ می‌شوند.
+                const merged = new Map(
+                    activities.map(activity => [
+                        String(activity.id),
+                        activity
+                    ])
+                );
+
+                for (const activity of validActivities) {
+                    merged.set(String(activity.id), activity);
+                }
+
+                const mergedActivities = Array.from(merged.values());
+
+                // تهیه نسخه پشتیبان از وضعیت فعلی پیش از تغییر
+                const backupKey = STORAGE_KEY + "_" + user.id;
+
+                localStorage.setItem(
+                    backupKey,
+                    JSON.stringify(activities)
+                );
+
+                const rows = validActivities.map(activity => ({
+                    user_id: user.id,
+                    activity_id: String(activity.id),
+                    data: activity
+                }));
+
+                const { error } = await supabaseClient
+                    .from("user_activities")
+                    .upsert(rows, {
+                        onConflict: "user_id,activity_id"
+                    });
+
+                if (error) {
+                    console.error("خطا در بازیابی:", error);
+                    alert(
+                        "ذخیره در سرور ناموفق بود. " +
+                        "فعالیت‌های فعلی برنامه تغییر نکردند."
+                    );
+                    return;
+                }
+
+                activities = mergedActivities;
+
+                localStorage.setItem(
+                    backupKey,
+                    JSON.stringify(activities)
+                );
+
+                renderAll();
+
+                alert(
+                    "بازیابی با موفقیت انجام شد.\n" +
+                    "تعداد فعالیت‌ها در برنامه: " +
+                    activities.length
+                );
+
             } catch (error) {
                 console.error("خطا در بررسی فایل پشتیبان:", error);
                 alert("فایل خوانده نشد. یک فایل پشتیبان معتبر انتخاب کن.");
