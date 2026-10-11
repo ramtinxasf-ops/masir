@@ -1406,9 +1406,7 @@ function saveActivities() {
     // بدون ورود کاربر، ذخیره در سرور انجام نمی‌شود.
     if (!user) return;
 
-    // وقتی فهرست خالی است، اطلاعات قبلی را تغییر نده.
-    if (activities.length === 0) return;
-
+  
     // تهیه نسخه مستقل از فعالیت‌ها
     const snapshot = JSON.parse(JSON.stringify(activities));
 
@@ -1422,6 +1420,7 @@ function saveActivities() {
         console.error("خطا در پشتیبان محلی:", error);
         alert("ذخیره پشتیبان در مرورگر انجام نشد.");
     }
+
 
     // ذخیره‌های سرور پشت سر هم اجرا می‌شوند.
     window.masirSaveQueue =
@@ -1450,7 +1449,27 @@ function saveActivities() {
             );
         });
 }
+async function deleteActivityFromServer(activityId) {
+    const user = window.masirCurrentUser;
 
+    if (!user) {
+        throw new Error("کاربر وارد حساب نشده است.");
+    }
+
+    window.masirSaveQueue =
+        (window.masirSaveQueue || Promise.resolve())
+        .then(async () => {
+            const { error } = await supabaseClient
+                .from("user_activities")
+                .delete()
+                .eq("user_id", user.id)
+                .eq("activity_id", String(activityId));
+
+            if (error) throw error;
+        });
+
+    await window.masirSaveQueue;
+}
 
 function activityBelongsToDate(activity, date) {
     return activity.days.includes("daily") ||
@@ -1618,6 +1637,7 @@ function renderActivities() {
             }
 
             saveActivities();
+           
             renderAll();
         });
 
@@ -1683,16 +1703,35 @@ function renderActivities() {
         deleteButton.className = "delete-button";
         deleteButton.textContent = "حذف";
 
-        deleteButton.addEventListener("click", () => {
-            if (!confirm(`فعالیت «${activity.name}» حذف شود؟`)) {
-                return;
-            }
+deleteButton.addEventListener("click", async () => {
+    if (!confirm(`فعالیت «${activity.name}» حذف شود؟`)) {
+        return;
+    }
 
-            activities = activities.filter(item => item.id !== activity.id);
-            saveActivities();
-            renderAll();
-        });
+    const previousActivities = [...activities];
 
+    activities = activities.filter(
+        item => String(item.id) !== String(activity.id)
+    );
+
+    try {
+        await deleteActivityFromServer(activity.id);
+
+        saveActivities();
+        renderAll();
+
+        alert("فعالیت با موفقیت حذف شد.");
+    } catch (error) {
+        console.error("خطا در حذف فعالیت:", error);
+
+        activities = previousActivities;
+        renderAll();
+
+        alert(
+            "حذف از سرور انجام نشد؛ فعالیت به فهرست برگردانده شد."
+        );
+    }
+});
         item.append(checkbox, info, deleteButton);
         list.appendChild(item);
     });
