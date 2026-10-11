@@ -1138,7 +1138,7 @@ function saveActivities() {
 
     // تا قبل از ورود کاربر، چیزی در پایگاه داده ذخیره نکن.
     if (!user) return;
-
+    if (activities.length === 0) return;
     // از وضعیت فعلی فعالیت‌ها یک نسخه می‌گیریم.
     const snapshot = JSON.parse(JSON.stringify(activities));
 
