@@ -1449,6 +1449,18 @@ function saveActivities() {
             );
         });
 }
+    
+ // تلاش مجدد برای ذخیره پس از وصل‌شدن اینترنت
+window.addEventListener("online", function() {
+    const user = window.masirCurrentUser;
+
+    if (!user) return;
+
+    console.log("اینترنت وصل شد؛ تلاش برای ذخیره مجدد اطلاعات.");
+
+    saveActivities();
+});
+
 async function deleteActivityFromServer(activityId) {
     const user = window.masirCurrentUser;
 
