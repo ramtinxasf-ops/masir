@@ -657,7 +657,7 @@ button:hover {
     <p>هر روز یک قدم به زندگی دلخواهت نزدیک‌تر شو.</p>
 </header>
 
-<section class="stats">
+<section class="stats" id="homeStats">
     <div class="stat-card">
         <span class="stat-number" id="totalActivities">۰</span>
         <span class="stat-label">فعالیت‌های روز</span>
@@ -674,7 +674,7 @@ button:hover {
     </div>
 </section>
 
-<section class="card">
+<section class="card" id="homeProgress">
     <h2>📊 پیشرفت روز انتخاب‌شده</h2>
 
     <div class="progress-track">
@@ -684,7 +684,7 @@ button:hover {
     <div class="progress-label" id="progressLabel"></div>
 </section>
 
-<section class="card">
+<section class="card" id="planningSection">
     <h2>➕ افزودن فعالیت جدید</h2>
 
     <form id="activityForm">
@@ -771,7 +771,7 @@ button:hover {
     </form>
 </section>
 
-<section class="card">
+<section class="card" id="calendarSection">
     <div class="calendar-header">
         <div>
             <h2>📅 تقویم هفتگی</h2>
@@ -842,7 +842,12 @@ button:hover {
 
     <div class="daily-report-list" id="dailyReportList"></div>
 </section>
-
+<nav id="bottomNav">
+    <button type="button" id="nav-home" onclick="showPage('home')">🏠 خانه</button>
+    <button type="button" id="nav-planning" onclick="showPage('planning')">📅 برنامه‌ریزی</button>
+    <button type="button" id="nav-reports" onclick="showPage('reports')">📊 گزارش‌ها</button>
+    <button type="button" id="nav-profile" onclick="showPage('profile')">👤 پروفایل</button>
+</nav>
 <div class="footer-note">
     مسیر تو با قدم‌های کوچک ساخته می‌شود 💜
 </div>
