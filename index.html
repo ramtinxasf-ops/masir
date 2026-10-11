@@ -890,15 +890,18 @@ body {
         <strong id="profileEmail" style="font-size:14px;overflow-wrap:anywhere;">—</strong>
     </div>
 
-    <h3 style="margin-top:24px;">ℹ️ اطلاعات برنامه</h3>
+   
+<button type="button" class="secondary-button" id="appInfoButton"
+    style="width:100%;margin-top:24px;text-align:right;">
+    ℹ️ اطلاعات برنامه
+    <span style="float:left;">←</span>
+</button>
 
-    <div class="help-text">
-        نام برنامه: مسیر
-    </div>
-
-    <div class="help-text">
-        برنامه‌ریز شخصی برای مدیریت فعالیت‌ها، پیگیری پیشرفت و بررسی گزارش‌ها
-    </div>
+<div id="appInfoDetails" style="display:none;margin-top:16px;">
+    <h3>مسیر</h3>
+    <p>برنامه‌ریز شخصی برای مدیریت فعالیت‌ها، پیگیری پیشرفت و بررسی گزارش‌ها.</p>
+    <p>هدف برنامه: کمک به مدیریت بهتر زمان و پیگیری عادت‌های روزانه.</p>
+</div>
 
     <div id="profileLogoutArea" style="margin-top:24px;"></div>
 </section>
@@ -1110,8 +1113,24 @@ function showPage(page) {
     }
 }
 
+
 document.addEventListener("DOMContentLoaded", function() {
     showPage("home");
+
+    const appInfoButton = document.getElementById("appInfoButton");
+    const appInfoDetails = document.getElementById("appInfoDetails");
+
+    if (appInfoButton && appInfoDetails) {
+        appInfoButton.addEventListener("click", function() {
+            if (appInfoDetails.style.display === "none") {
+                appInfoDetails.style.display = "block";
+            } else {
+                appInfoDetails.style.display = "none";
+            }
+        });
+    }
+});
+
 });
 
 
