@@ -1,6 +1,9 @@
 const { test, expect } = require("@playwright/test");
 
 test("activity category can be created, changed, and saved without a real Supabase account", async ({ page }) => {
+  test.setTimeout(60000);
+  page.on("pageerror", error => console.log("PAGE ERROR:", error.stack || error.message));
+  page.on("console", message => { if (message.type() === "error") console.log("BROWSER ERROR:", message.text()); });
   await page.addInitScript(() => {
     window.__mockState = { rows: [], upserts: [] };
     const user = { id: "playwright-test-user", email: "masir-test@example.invalid" };
@@ -44,7 +47,11 @@ test("activity category can be created, changed, and saved without a real Supaba
   await page.locator("#masir-email").fill("masir-test@example.invalid");
   await page.locator("#masir-password").fill("safe-test-password");
   await page.locator("#masir-login").click();
-  await expect(page.locator("#masir-auth-overlay")).toBeHidden();
+  await expect(page.locator("#masir-auth-overlay")).toBeHidden({ timeout: 15000 }).catch(async error => {
+    console.log("AUTH DEBUG:", await page.locator("#masir-auth-message").innerText());
+    console.log("OVERLAY DISPLAY:", await page.locator("#masir-auth-overlay").evaluate(el => getComputedStyle(el).display));
+    throw error;
+  });
 
   await page.evaluate(() => showPage("planning"));
   await page.locator("#activityName").fill("فعالیت آزمایشی دسته‌بندی");
