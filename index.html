@@ -654,6 +654,38 @@ button:hover {
     color: #e2e8f0;
 }
 
+.activity-filter-row {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 0 0 14px;
+    padding: 12px;
+    background: #111a2e;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+}
+
+.activity-filter-field {
+    flex: 1;
+    min-width: 180px;
+}
+
+.activity-filter-field label {
+    margin-bottom: 6px;
+}
+
+.activity-filter-field select {
+    width: 100%;
+}
+
+.activity-filter-count {
+    color: var(--muted);
+    font-size: 12px;
+    padding-bottom: 8px;
+}
+
 .activity-priority option {
     background: #151c30;
     color: #e2e8f0;
@@ -860,6 +892,22 @@ body {
 
     <div class="selected-date-title" id="selectedDateTitle"></div>
 
+    <div class="activity-filter-row">
+        <div class="activity-filter-field">
+            <label for="activityCategoryFilter">نمایش بر اساس دسته‌بندی</label>
+            <select id="activityCategoryFilter" class="activity-category">
+                <option value="all">همه دسته‌بندی‌ها</option>
+                <option value="general">بدون دسته‌بندی</option>
+                <option value="work">کار</option>
+                <option value="study">آموزش و مطالعه</option>
+                <option value="health">سلامتی و ورزش</option>
+                <option value="personal">شخصی</option>
+                <option value="finance">مالی</option>
+            </select>
+        </div>
+        <div class="activity-filter-count" id="activityFilterCount" aria-live="polite"></div>
+    </div>
+
     <div class="activity-list" id="activityList"></div>
 </section>
 
@@ -1035,6 +1083,7 @@ const ACTIVITY_CATEGORIES = [
 
 let selectedDate = new Date();
 selectedDate.setHours(12, 0, 0, 0);
+let selectedCategoryFilter = "all";
 
 function getDateKey(date) {
     const year = date.getFullYear();
@@ -1655,12 +1704,24 @@ function renderActivities() {
     document.getElementById("selectedDateTitle").textContent =
         `فعالیت‌های ${getPersianWeekday(selectedDate)}، ${getPersianDate(selectedDate)}`;
 
-    const dayActivities = getActivitiesForDate(selectedDate);
+    const allDayActivities = getActivitiesForDate(selectedDate);
+    const dayActivities = selectedCategoryFilter === "all"
+        ? allDayActivities
+        : allDayActivities.filter(activity =>
+            (activity.category || "general") === selectedCategoryFilter
+        );
+
+    const filterCount = document.getElementById("activityFilterCount");
+    filterCount.textContent = selectedCategoryFilter === "all"
+        ? `نمایش همه فعالیت‌ها: ${toPersianNumber(allDayActivities.length)} مورد`
+        : `نمایش ${toPersianNumber(dayActivities.length)} از ${toPersianNumber(allDayActivities.length)} فعالیت`;
 
     if (dayActivities.length === 0) {
         const empty = document.createElement("div");
         empty.className = "empty-message";
-        empty.textContent = "برای این روز فعالیتی ثبت نشده است.";
+        empty.textContent = allDayActivities.length === 0
+            ? "برای این روز فعالیتی ثبت نشده است."
+            : "در این روز فعالیتی با این دسته‌بندی وجود ندارد.";
         list.appendChild(empty);
         return;
     }
@@ -2132,6 +2193,11 @@ document.getElementById("activityForm").addEventListener("submit", event => {
 
     renderAll();
     alert("فعالیت با موفقیت اضافه شد. 💜");
+});
+
+document.getElementById("activityCategoryFilter").addEventListener("change", event => {
+    selectedCategoryFilter = event.target.value;
+    renderActivities();
 });
 
 document.getElementById("todayButton").addEventListener("click", () => {
