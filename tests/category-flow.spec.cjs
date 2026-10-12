@@ -83,20 +83,21 @@ test("activity category can be created, changed, and saved without a real Supaba
   const categorySelect = page.locator("#activityList select.activity-category").first();
   await expect(categorySelect).toHaveValue("study");
   console.log("STEP: category select verified");
-  await categorySelect.evaluate(select => {
-    select.value = "work";
-    select.dispatchEvent(new Event("change", { bubbles: true }));
-  });
+  await categorySelect.selectOption("work");
   console.log("STEP: category change event dispatched");
 
+  console.log("STEP: waiting for local save");
   await expect.poll(async () => page.evaluate(() => {
     const saved = JSON.parse(localStorage.getItem("masir_activities_v1_playwright-test-user") || "[]");
     return saved.some(activity => activity.name === "فعالیت آزمایشی دسته‌بندی" && activity.category === "work");
-  })).toBe(true);
+  }), { timeout: 10000 }).toBe(true);
+  console.log("STEP: local save verified");
   await page.evaluate(async () => { await window.masirSaveQueue; });
+  console.log("STEP: save queue settled");
   await expect.poll(async () => page.evaluate(() =>
     window.__mockState.rows.some(row => row.data?.name === "فعالیت آزمایشی دسته‌بندی" && row.data?.category === "work")
-  )).toBe(true);
+  ), { timeout: 10000 }).toBe(true);
+  console.log("STEP: server mock save verified");
 
   const saved = await page.evaluate(() => JSON.parse(localStorage.getItem("masir_activities_v1_playwright-test-user") || "[]"));
   expect(saved).toHaveLength(1);
