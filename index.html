@@ -2487,6 +2487,68 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
     });
     if (profileLogoutArea) profileLogoutArea.appendChild(logoutButton);
 
+    // حذف دائمی حساب فقط پس از یک تأیید صریح کاربر
+    const deleteAccountButton = document.createElement("button");
+    deleteAccountButton.type = "button";
+    deleteAccountButton.textContent = "حذف دائمی حساب";
+    deleteAccountButton.className = "secondary-button";
+    deleteAccountButton.style.cssText = "width:100%;padding:12px;margin-top:10px;background:#3b1c2b;color:#fb7185;border:1px solid #7f1d1d;";
+    deleteAccountButton.addEventListener("click", async function () {
+        const user = window.masirCurrentUser;
+        if (!user) {
+            alert("برای حذف حساب، ابتدا وارد حساب خود شو.");
+            return;
+        }
+
+        const confirmed = window.confirm(
+            "آیا مطمئن هستی که می‌خواهی حساب خود را برای همیشه حذف کنی؟\\n" +
+            "اطلاعات پروفایل و فعالیت‌های ذخیره‌شده این حساب از سیستم حذف می‌شوند و این کار قابل بازگشت نیست."
+        );
+        if (!confirmed) return;
+
+        deleteAccountButton.disabled = true;
+        logoutButton.disabled = true;
+        deleteAccountButton.textContent = "در حال حذف حساب...";
+        try {
+            const { data, error } = await supabaseClient.functions.invoke("delete-account", {
+                method: "POST",
+                body: {}
+            });
+            if (error) {
+                let details = error.message || "خطای نامشخص";
+                try {
+                    if (error.context && typeof error.context.json === "function") {
+                        const payload = await error.context.json();
+                        if (payload && payload.error) details = payload.error;
+                    }
+                } catch (_) {}
+                throw new Error(details);
+            }
+            if (!data || data.success !== true) {
+                throw new Error((data && data.error) || "حذف حساب تأیید نشد.");
+            }
+
+            try {
+                localStorage.removeItem(STORAGE_KEY + "_" + user.id);
+                localStorage.removeItem(rememberedEmailKey);
+                localStorage.removeItem("masir_last_backup_" + user.id);
+            } catch (storageError) {
+                console.warn("پاک‌سازی داده‌های محلی انجام نشد:", storageError);
+            }
+
+            alert("حساب و فعالیت‌های ذخیره‌شده آن حذف شدند.");
+            await supabaseClient.auth.signOut().catch(() => {});
+            window.location.reload();
+        } catch (error) {
+            console.error("حذف حساب انجام نشد:", error);
+            alert("حذف حساب انجام نشد: " + (error.message || "اتصال را بررسی کن."));
+            deleteAccountButton.disabled = false;
+            logoutButton.disabled = false;
+            deleteAccountButton.textContent = "حذف دائمی حساب";
+        }
+    });
+    if (profileLogoutArea) profileLogoutArea.appendChild(deleteAccountButton);
+
     function setAuthMode(mode) {
         authMode = mode;
         const usePhone = mode === "phone";
