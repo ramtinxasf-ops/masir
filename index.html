@@ -1286,12 +1286,7 @@ function showPage(page) {
     }
 
     if (page === "profile" && window.masirCurrentUser) {
-        const emailElement = document.getElementById("profileEmail");
-
-        if (emailElement) {
-            emailElement.textContent =
-                window.masirCurrentUser.email || "بدون ایمیل";
-        }
+        if (window.masirPopulateProfile) window.masirPopulateProfile(window.masirCurrentUser);
     }
 }
 
@@ -2372,18 +2367,177 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
     const loginButton = document.getElementById("masir-login");
     const signupButton = document.getElementById("masir-signup");
     const message = document.getElementById("masir-auth-message");
+    const emailTab = document.getElementById("masir-email-tab");
+    const phoneTab = document.getElementById("masir-phone-tab");
+    const emailAuthPanel = document.getElementById("masir-email-auth");
+    const phoneAuthPanel = document.getElementById("masir-phone-auth");
+    const signupFields = document.getElementById("masir-signup-fields");
+    const firstNameInput = document.getElementById("masir-first-name");
+    const lastNameInput = document.getElementById("masir-last-name");
+    const signupPhoneInput = document.getElementById("masir-phone");
+    const birthDateInput = document.getElementById("masir-birth-date");
+    const phoneLoginInput = document.getElementById("masir-phone-login");
+    const otpInput = document.getElementById("masir-otp");
+    const otpArea = document.getElementById("masir-otp-area");
+    const sendOtpButton = document.getElementById("masir-send-otp");
+    const verifyOtpButton = document.getElementById("masir-verify-otp");
+    const forgotPasswordButton = document.getElementById("masir-forgot-password");
+    const passwordRules = document.getElementById("masir-password-rules");
+    const profileLogoutArea = document.getElementById("profileLogoutArea");
+    let authMode = "email";
+    let signupMode = false;
+
     const logoutButton = document.createElement("button");
-logoutButton.textContent = "خروج از حساب";
-logoutButton.style.cssText = "position:fixed;top:15px;left:15px;z-index:10000;padding:10px 16px;background:#a78bfa;color:#0b1020;border:none;border-radius:10px;cursor:pointer;display:none;";
-document.body.appendChild(logoutButton);
+    logoutButton.type = "button";
+    logoutButton.textContent = "خروج از حساب";
+    logoutButton.className = "secondary-button";
+    logoutButton.style.cssText = "width:100%;padding:12px;background:#3b1c2b;color:#fb7185;border:1px solid #7f1d1d;";
+    logoutButton.addEventListener("click", async function () {
+        logoutButton.disabled = true;
+        try {
+            const { error } = await supabaseClient.auth.signOut();
+            if (error) throw error;
+        } catch (error) {
+            alert("خروج انجام نشد: " + (error.message || "خطای نامشخص"));
+        } finally {
+            logoutButton.disabled = false;
+        }
+    });
+    if (profileLogoutArea) profileLogoutArea.appendChild(logoutButton);
 
-logoutButton.addEventListener("click", async function () {
-    const { error } = await supabaseClient.auth.signOut();
-
-    if (error) {
-        alert("خروج انجام نشد: " + error.message);
+    function setAuthMode(mode) {
+        authMode = mode;
+        const usePhone = mode === "phone";
+        emailAuthPanel.style.display = usePhone ? "none" : "block";
+        phoneAuthPanel.style.display = usePhone ? "block" : "none";
+        emailTab.style.background = usePhone ? "transparent" : "#352653";
+        emailTab.style.borderColor = usePhone ? "#39445f" : "#a78bfa";
+        phoneTab.style.background = usePhone ? "#352653" : "transparent";
+        phoneTab.style.borderColor = usePhone ? "#a78bfa" : "#39445f";
+        showMessage("");
     }
-});
+    emailTab.addEventListener("click", () => setAuthMode("email"));
+    phoneTab.addEventListener("click", () => setAuthMode("phone"));
+
+    function validatePassword(password) {
+        return {
+            length: password.length >= 8,
+            upper: /[A-Z]/.test(password),
+            number: /[0-9]/.test(password),
+            english: /[A-Za-z]/.test(password)
+        };
+    }
+    function updatePasswordRules() {
+        const rules = validatePassword(passwordInput.value);
+        Object.keys(rules).forEach(rule => {
+            const item = passwordRules.querySelector('[data-rule="' + rule + '"]');
+            if (!item) return;
+            item.style.color = rules[rule] ? "#34d399" : "#fca5a5";
+            item.textContent = (rules[rule] ? "✓ " : "○ ") + ({
+                length: "حداقل ۸ کاراکتر",
+                upper: "حداقل یک حرف بزرگ انگلیسی (A-Z)",
+                number: "حداقل یک عدد (0-9)",
+                english: "دارای حروف انگلیسی"
+            }[rule]);
+        });
+        return Object.values(rules).every(Boolean);
+    }
+    passwordInput.addEventListener("input", updatePasswordRules);
+    updatePasswordRules();
+
+    function showProfileMessage(text, isError = false) {
+        const target = document.getElementById("profileSaveMessage");
+        if (target) {
+            target.textContent = text;
+            target.style.color = isError ? "#fb7185" : "#34d399";
+        }
+    }
+    function populateProfile(user) {
+        const metadata = user && user.user_metadata ? user.user_metadata : {};
+        const setValue = (id, value) => {
+            const element = document.getElementById(id);
+            if (element) element.value = value || "";
+        };
+        const emailElement = document.getElementById("profileEmail");
+        const phoneElement = document.getElementById("profilePhone");
+        if (emailElement) emailElement.textContent = user.email || "بدون ایمیل";
+        if (phoneElement) phoneElement.textContent = user.phone || metadata.phone || "ثبت نشده";
+        setValue("profileFirstName", metadata.first_name || metadata.firstName);
+        setValue("profileLastName", metadata.last_name || metadata.lastName);
+        setValue("profilePhoneInput", user.phone || metadata.phone);
+        setValue("profileBirthDate", metadata.birth_date || metadata.birthDate);
+    }
+    window.masirPopulateProfile = populateProfile;
+
+    const profileForm = document.getElementById("profileForm");
+    if (profileForm) profileForm.addEventListener("submit", async function(event) {
+        event.preventDefault();
+        const user = window.masirCurrentUser;
+        if (!user) return showProfileMessage("ابتدا وارد حساب شو.", true);
+        const firstName = document.getElementById("profileFirstName").value.trim();
+        const lastName = document.getElementById("profileLastName").value.trim();
+        const phone = document.getElementById("profilePhoneInput").value.trim();
+        const birthDate = document.getElementById("profileBirthDate").value;
+        if (!firstName || !lastName) return showProfileMessage("نام و نام خانوادگی را وارد کن.", true);
+        const button = document.getElementById("saveProfileButton");
+        button.disabled = true;
+        showProfileMessage("در حال ذخیره اطلاعات...");
+        try {
+            const { data, error } = await supabaseClient.auth.updateUser({
+                data: { ...(user.user_metadata || {}), first_name: firstName, last_name: lastName, phone, birth_date: birthDate }
+            });
+            if (error) throw error;
+            window.masirCurrentUser = data && data.user ? data.user : {
+                ...user, user_metadata: { ...(user.user_metadata || {}), first_name: firstName, last_name: lastName, phone, birth_date: birthDate }
+            };
+            populateProfile(window.masirCurrentUser);
+            showProfileMessage("اطلاعات پروفایل ذخیره شد.");
+        } catch (error) {
+            console.error("ذخیره پروفایل ناموفق بود:", error);
+            showProfileMessage("ذخیره اطلاعات انجام نشد. اتصال حساب را بررسی کن.", true);
+        } finally {
+            button.disabled = false;
+        }
+    });
+
+    const resetPasswordButton = document.getElementById("profileResetPasswordButton");
+    if (resetPasswordButton) resetPasswordButton.addEventListener("click", async function() {
+        const user = window.masirCurrentUser;
+        const target = document.getElementById("profileSecurityMessage");
+        if (!user || !user.email) {
+            target.textContent = "برای بازیابی رمز عبور، حساب باید ایمیل داشته باشد.";
+            target.style.color = "#fb7185";
+            return;
+        }
+        resetPasswordButton.disabled = true;
+        target.textContent = "در حال ارسال لینک بازیابی...";
+        try {
+            const { error } = await supabaseClient.auth.resetPasswordForEmail(user.email, { redirectTo: window.location.href.split("#")[0] });
+            if (error) throw error;
+            target.textContent = "اگر تنظیمات سرویس اجازه دهد، لینک بازیابی به ایمیل حساب ارسال می‌شود.";
+            target.style.color = "#34d399";
+        } catch (error) {
+            target.textContent = "ارسال لینک بازیابی انجام نشد: " + (error.message || "اتصال را بررسی کن.");
+            target.style.color = "#fb7185";
+        } finally {
+            resetPasswordButton.disabled = false;
+        }
+    });
+    if (forgotPasswordButton) forgotPasswordButton.addEventListener("click", async function() {
+        const email = emailInput.value.trim();
+        if (!email) return showMessage("ابتدا ایمیل حسابت را وارد کن.", true);
+        forgotPasswordButton.disabled = true;
+        showMessage("در حال ارسال لینک بازیابی...");
+        try {
+            const { error } = await supabaseClient.auth.resetPasswordForEmail(email, { redirectTo: window.location.href.split("#")[0] });
+            if (error) throw error;
+            showMessage("اگر ایمیل در حساب ثبت شده باشد، لینک بازیابی برای آن ارسال می‌شود.");
+        } catch (error) {
+            showMessage("ارسال لینک بازیابی انجام نشد: " + (error.message || "اتصال را بررسی کن."), true);
+        } finally {
+            forgotPasswordButton.disabled = false;
+        }
+    });
 
     function showMessage(text, isError = false) {
         message.textContent = text;
@@ -2474,6 +2628,7 @@ async function loadUserActivities(user) {
 
     overlay.style.display = "none";
     logoutButton.style.display = "block";
+    populateProfile(user);
     showMessage("");
 
     // اگر سرور خالی بود و پشتیبان داشتیم، آن را به سرور می‌فرستیم.
@@ -2514,43 +2669,84 @@ async function loadUserActivities(user) {
     async function signup() {
         const email = emailInput.value.trim();
         const password = passwordInput.value;
-
-        if (!email || !password) {
-            showMessage("ایمیل و رمز عبور را وارد کن.", true);
-            return;
-        }
-
-        if (password.length < 6) {
-            showMessage("رمز عبور باید حداقل ۶ کاراکتر باشد.", true);
-            return;
-        }
-
+        const firstName = firstNameInput.value.trim();
+        const lastName = lastNameInput.value.trim();
+        const phone = signupPhoneInput.value.trim();
+        const birthDate = birthDateInput.value;
+        if (!email || !password) return showMessage("ایمیل و رمز عبور را وارد کن.", true);
+        if (!firstName || !lastName) return showMessage("نام و نام خانوادگی را وارد کن.", true);
+        if (!updatePasswordRules()) return showMessage("رمز عبور باید هر چهار شرط نمایش‌داده‌شده را داشته باشد.", true);
         setBusy(true);
         showMessage("در حال ساخت حساب...");
-
         try {
             const { data, error } = await supabaseClient.auth.signUp({
-                email,
-                password
+                email, password,
+                options: { data: { first_name: firstName, last_name: lastName, phone, birth_date: birthDate } }
             });
-
             if (error) throw error;
-
-            if (data.session && data.user) {
-                await loadUserActivities(data.user);
-            } else {
-                showMessage("حساب ساخته شد. اگر ایمیل تأیید دریافت کردی، آن را تأیید کن؛ سپس وارد حساب شو.");
-            }
+            if (data.session && data.user) await loadUserActivities(data.user);
+            else showMessage("حساب ساخته شد. اگر ایمیل تأیید دریافت کردی، آن را تأیید کن؛ سپس وارد حساب شو.");
         } catch (error) {
             console.error(error);
-            showMessage("ساخت حساب انجام نشد. ایمیل را بررسی کن یا پیام خطا را ببین.", true);
+            showMessage("ساخت حساب انجام نشد. " + (error.message || "ایمیل یا اتصال را بررسی کن."), true);
         } finally {
             setBusy(false);
         }
     }
 
-    loginButton.addEventListener("click", login);
-    signupButton.addEventListener("click", signup);
+    async function sendPhoneOtp() {
+        const phone = phoneLoginInput.value.trim();
+        if (!/^\\+[1-9]\\d{7,14}$/.test(phone)) return showMessage("شماره را با کد کشور وارد کن؛ نمونه: +989123456789", true);
+        sendOtpButton.disabled = true;
+        showMessage("در حال ارسال کد پیامکی...");
+        try {
+            const { error } = await supabaseClient.auth.signInWithOtp({ phone, options: { shouldCreateUser: true } });
+            if (error) throw error;
+            otpArea.style.display = "block";
+            showMessage("کد تأیید ارسال شد. کد پیامک‌شده را وارد کن.");
+        } catch (error) {
+            showMessage("ارسال کد انجام نشد: " + (error.message || "تنظیمات ورود پیامکی را بررسی کن."), true);
+        } finally { sendOtpButton.disabled = false; }
+    }
+
+    async function verifyPhoneOtp() {
+        const phone = phoneLoginInput.value.trim();
+        const token = otpInput.value.trim();
+        if (!token) return showMessage("کد پیامک‌شده را وارد کن.", true);
+        verifyOtpButton.disabled = true;
+        showMessage("در حال بررسی کد...");
+        try {
+            const { data, error } = await supabaseClient.auth.verifyOtp({ phone, token, type: "sms" });
+            if (error) throw error;
+            if (data && data.user) await loadUserActivities(data.user);
+            else showMessage("کد تأیید شد، اما حساب برنگشت. دوباره تلاش کن.", true);
+        } catch (error) {
+            showMessage("کد تأیید نشد: " + (error.message || "کد را بررسی کن."), true);
+        } finally { verifyOtpButton.disabled = false; }
+    }
+
+    loginButton.addEventListener("click", function() {
+        if (signupMode) {
+            signupMode = false;
+            signupFields.style.display = "none";
+            signupButton.textContent = "ساخت حساب جدید";
+            loginButton.textContent = "ورود";
+            return showMessage("");
+        }
+        login();
+    });
+    signupButton.addEventListener("click", function() {
+        if (!signupMode) {
+            signupMode = true;
+            signupFields.style.display = "block";
+            signupButton.textContent = "تأیید و ساخت حساب";
+            loginButton.textContent = "بازگشت به ورود";
+            return showMessage("اطلاعات ثبت‌نام را کامل کن و رمز قوی انتخاب کن.");
+        }
+        signup();
+    });
+    sendOtpButton.addEventListener("click", sendPhoneOtp);
+    verifyOtpButton.addEventListener("click", verifyPhoneOtp);
 
     passwordInput.addEventListener("keydown", function (event) {
         if (event.key === "Enter") login();
@@ -2578,6 +2774,7 @@ async function loadUserActivities(user) {
             activities = [];
             overlay.style.display = "flex";
             logoutButton.style.display = "none";
+            showPage("home");
             renderAll();
         }
     });
