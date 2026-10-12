@@ -1,0 +1,94 @@
+name: Validate Masir category changes
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "index.html"
+      - ".github/workflows/validate-categories.yml"
+  push:
+    branches: [feature/categories]
+    paths:
+      - "index.html"
+      - ".github/workflows/validate-categories.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out branch
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Check inline JavaScript syntax
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from html.parser import HTMLParser
+          from pathlib import Path
+
+          class ScriptExtractor(HTMLParser):
+              def __init__(self):
+                  super().__init__()
+                  self.scripts = []
+                  self.current = None
+                  self.external = False
+                  self.script_type = ""
+
+              def handle_starttag(self, tag, attrs):
+                  if tag.lower() != "script":
+                      return
+                  attrs = dict(attrs)
+                  self.external = "src" in attrs
+                  self.script_type = attrs.get("type", "").lower()
+                  self.current = [] if not self.external and self.script_type not in ("application/json", "application/ld+json") else None
+
+              def handle_data(self, data):
+                  if self.current is not None:
+                      self.current.append(data)
+
+              def handle_endtag(self, tag):
+                  if tag.lower() == "script" and self.current is not None:
+                      self.scripts.append("".join(self.current))
+                      self.current = None
+
+          parser = ScriptExtractor()
+          parser.feed(Path("index.html").read_text(encoding="utf-8"))
+          scripts = [s for s in parser.scripts if s.strip()]
+          if not scripts:
+              raise SystemExit("No inline JavaScript found to validate.")
+          out = Path("/tmp/masir-inline-scripts")
+          out.mkdir(exist_ok=True)
+          for i, script in enumerate(scripts, 1):
+              (out / f"script-{i}.js").write_text(script, encoding="utf-8")
+          print(f"Extracted {len(scripts)} inline JavaScript block(s).")
+          PY
+          for file in /tmp/masir-inline-scripts/*.js; do
+            echo "Checking $file"
+            node --check "$file"
+          done
+
+      - name: Check category UI and compatibility safeguards
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          s = Path("index.html").read_text(encoding="utf-8")
+          required = {
+              "category definitions": "ACTIVITY_CATEGORIES",
+              "new activity category field": 'id="activityCategory"',
+              "legacy category fallback": 'category = "general"',
+              "category save on new activity": "category: category",
+              "save after category change": "saveActivities()",
+          }
+          missing = [name for name, token in required.items() if token not in s]
+          if missing:
+              raise SystemExit("Missing expected category safeguards: " + ", ".join(missing))
+          print("Category UI and compatibility markers found.")
+          PY
