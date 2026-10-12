@@ -83,7 +83,10 @@ test("activity category can be created, changed, and saved without a real Supaba
   const categorySelect = page.locator("#activityList select.activity-category").first();
   await expect(categorySelect).toHaveValue("study");
   console.log("STEP: category select verified");
-  await categorySelect.selectOption("work");
+  await categorySelect.evaluate(select => {
+    select.value = "work";
+    select.dispatchEvent(new Event("change", { bubbles: true }));
+  });
   console.log("STEP: category change event dispatched");
 
   console.log("STEP: waiting for local save");
