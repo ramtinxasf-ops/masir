@@ -4,6 +4,7 @@ test("activity category can be created, changed, and saved without a real Supaba
   test.setTimeout(120000);
   page.on("pageerror", error => console.log("PAGE ERROR:", error.stack || error.message));
   page.on("console", message => { if (message.type() === "error") console.log("BROWSER ERROR:", message.text()); });
+  page.on("dialog", dialog => dialog.accept());
   await page.addInitScript(() => {
     window.__mockState = { rows: [], upserts: [] };
     const user = { id: "playwright-test-user", email: "masir-test@example.invalid" };
@@ -42,7 +43,7 @@ test("activity category can be created, changed, and saved without a real Supaba
     };
   });
 
-  await page.route("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2", route => route.fulfill({
+  await page.route("https://cdn.jsdelivr.net/**", route => route.fulfill({
     status: 200,
     contentType: "application/javascript",
     body: "window.supabase = window.__testSupabase;"
@@ -65,7 +66,6 @@ test("activity category can be created, changed, and saved without a real Supaba
   await page.locator("#startTime").fill("09:00");
   await page.locator("#endTime").fill("10:00");
   await page.locator("#dailyOption").check();
-  page.once("dialog", dialog => dialog.accept());
   console.log("STEP: submitting activity");
   await page.locator("#activityForm button[type='submit']").click();
   console.log("STEP: activity submitted");
