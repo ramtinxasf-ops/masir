@@ -8,7 +8,7 @@ test("activity category can be created, changed, and saved without a real Supaba
     window.__mockState = { rows: [], upserts: [] };
     const user = { id: "playwright-test-user", email: "masir-test@example.invalid" };
     const session = { user };
-    window.supabase = {
+    window.__testSupabase = {
       createClient: () => ({
         auth: {
           getSession: async () => ({ data: { session: null }, error: null }),
@@ -42,7 +42,11 @@ test("activity category can be created, changed, and saved without a real Supaba
     };
   });
 
-  await page.route("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2", route => route.abort());
+  await page.route("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2", route => route.fulfill({
+    status: 200,
+    contentType: "application/javascript",
+    body: "window.supabase = window.__testSupabase;"
+  }));
   await page.goto("http://127.0.0.1:4173/index.html");
   await page.locator("#masir-email").fill("masir-test@example.invalid");
   await page.locator("#masir-password").fill("safe-test-password");
