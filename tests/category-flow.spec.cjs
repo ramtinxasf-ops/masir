@@ -80,7 +80,8 @@ test("activity category can be created, changed, and saved without a real Supaba
   await page.locator("#profilePhoneInput").fill("+989123456789");
   await page.locator("#profileBirthDate").fill("1998-04-23");
   console.log("STEP: profile fields filled");
-  await page.locator("#profileForm button[type='submit']").click();
+  await page.locator("#saveProfileButton").click();
+  console.log("STEP: profile save clicked");
   await expect(page.locator("#profileSaveMessage")).toContainText("ذخیره شد");
   await expect(page.locator("#profileEmail")).toContainText("masir-test@example.invalid");
   await expect(page.locator("#profileLogoutArea button")).toContainText("خروج از حساب");
