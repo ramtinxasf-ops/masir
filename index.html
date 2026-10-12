@@ -2346,7 +2346,7 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
             <input id="masir-password" type="password" autocomplete="current-password" placeholder="حداقل ۸ کاراکتر، حرف بزرگ انگلیسی و عدد" style="width:100%;box-sizing:border-box;padding:12px;margin:8px 0 6px;border-radius:8px;border:1px solid #39445f;background:#0b1020;color:white;">
             <div id="masir-password-rules" style="font-size:12px;line-height:1.9;margin-bottom:12px;color:#aab3ca;">
                 <div data-rule="length">○ حداقل ۸ کاراکتر</div><div data-rule="upper">○ حداقل یک حرف بزرگ انگلیسی (A-Z)</div>
-                <div data-rule="number">○ حداقل یک عدد (0-9)</div><div data-rule="english">○ دارای حروف انگلیسی</div>
+                <div data-rule="lower">○ حداقل یک حرف کوچک انگلیسی (a-z)</div><div data-rule="number">○ حداقل یک عدد (0-9)</div>
             </div>
             <button id="masir-login" type="button" style="width:100%;padding:12px;border:0;border-radius:8px;background:#a78bfa;color:#0b1020;font-weight:bold;cursor:pointer;">ورود</button>
             <button id="masir-signup" type="button" style="width:100%;padding:12px;margin-top:10px;border:1px solid #a78bfa;border-radius:8px;background:transparent;color:white;cursor:pointer;">ساخت حساب جدید</button>
@@ -2359,11 +2359,16 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
             <input id="masir-new-password" type="password" autocomplete="new-password" placeholder="رمز عبور جدید" style="width:100%;box-sizing:border-box;padding:12px;margin:8px 0 6px;border-radius:8px;border:1px solid #39445f;background:#0b1020;color:white;">
             <div id="masir-new-password-rules" style="font-size:12px;line-height:1.9;margin-bottom:12px;color:#aab3ca;">
                 <div data-rule="length">○ حداقل ۸ کاراکتر</div><div data-rule="upper">○ حداقل یک حرف بزرگ انگلیسی (A-Z)</div>
-                <div data-rule="number">○ حداقل یک عدد (0-9)</div><div data-rule="english">○ دارای حروف انگلیسی</div>
+                <div data-rule="lower">○ حداقل یک حرف کوچک انگلیسی (a-z)</div><div data-rule="number">○ حداقل یک عدد (0-9)</div>
             </div>
             <button id="masir-update-password" type="button" style="width:100%;padding:12px;background:#a78bfa;color:#0b1020;font-weight:bold;">ذخیره رمز جدید</button>
         </div>
         <div id="masir-phone-auth" style="display:none;">
+            <p style="color:#aab3ca;font-size:13px;line-height:1.8;">برای ورود یا ساخت حساب با پیامک، نام و نام خانوادگی را وارد کن.</p>
+            <label for="masir-phone-first-name">نام</label>
+            <input id="masir-phone-first-name" type="text" autocomplete="given-name" maxlength="60" placeholder="نام" required style="width:100%;box-sizing:border-box;padding:12px;margin:8px 0 16px;border-radius:8px;border:1px solid #39445f;background:#0b1020;color:white;">
+            <label for="masir-phone-last-name">نام خانوادگی</label>
+            <input id="masir-phone-last-name" type="text" autocomplete="family-name" maxlength="80" placeholder="نام خانوادگی" required style="width:100%;box-sizing:border-box;padding:12px;margin:8px 0 16px;border-radius:8px;border:1px solid #39445f;background:#0b1020;color:white;">
             <label for="masir-phone-login">شماره تلفن با کد کشور</label>
             <input id="masir-phone-login" type="tel" autocomplete="tel" placeholder="+989123456789" style="width:100%;box-sizing:border-box;padding:12px;margin:8px 0 16px;border-radius:8px;border:1px solid #39445f;background:#0b1020;color:white;">
             <button id="masir-send-otp" type="button" style="width:100%;padding:12px;background:#a78bfa;color:#0b1020;font-weight:bold;">ارسال کد پیامکی</button>
@@ -2394,6 +2399,8 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
     const signupPhoneInput = document.getElementById("masir-phone");
     const birthDateInput = document.getElementById("masir-birth-date");
     const phoneLoginInput = document.getElementById("masir-phone-login");
+    const phoneFirstNameInput = document.getElementById("masir-phone-first-name");
+    const phoneLastNameInput = document.getElementById("masir-phone-last-name");
     const otpInput = document.getElementById("masir-otp");
     const otpArea = document.getElementById("masir-otp-area");
     const sendOtpButton = document.getElementById("masir-send-otp");
@@ -2444,8 +2451,8 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
         return {
             length: password.length >= 8,
             upper: /[A-Z]/.test(password),
-            number: /[0-9]/.test(password),
-            english: /[A-Za-z]/.test(password)
+            lower: /[a-z]/.test(password),
+            number: /[0-9]/.test(password)
         };
     }
     function updatePasswordRules() {
@@ -2457,8 +2464,8 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
             item.textContent = (rules[rule] ? "✓ " : "○ ") + ({
                 length: "حداقل ۸ کاراکتر",
                 upper: "حداقل یک حرف بزرگ انگلیسی (A-Z)",
-                number: "حداقل یک عدد (0-9)",
-                english: "دارای حروف انگلیسی"
+                lower: "حداقل یک حرف کوچک انگلیسی (a-z)",
+                number: "حداقل یک عدد (0-9)"
             }[rule]);
         });
         return Object.values(rules).every(Boolean);
@@ -2475,8 +2482,8 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
             item.textContent = (rules[rule] ? "✓ " : "○ ") + ({
                 length: "حداقل ۸ کاراکتر",
                 upper: "حداقل یک حرف بزرگ انگلیسی (A-Z)",
-                number: "حداقل یک عدد (0-9)",
-                english: "دارای حروف انگلیسی"
+                lower: "حداقل یک حرف کوچک انگلیسی (a-z)",
+                number: "حداقل یک عدد (0-9)"
             }[rule]);
         });
         return Object.values(rules).every(Boolean);
@@ -2779,6 +2786,14 @@ async function loadUserActivities(user) {
             showMessage("ایمیل و رمز عبور را وارد کن.", true);
             return;
         }
+        if (!emailInput.checkValidity()) {
+            showMessage("یک نشانی ایمیل معتبر وارد کن.", true);
+            return;
+        }
+        if (!updatePasswordRules()) {
+            showMessage("این رمز با شرایط فعلی سایت مطابقت ندارد. از بخش «رمز عبورم را فراموش کرده‌ام» برای تنظیم رمز جدید استفاده کن.", true);
+            return;
+        }
 
         setBusy(true);
         showMessage("در حال ورود...");
@@ -2808,7 +2823,9 @@ async function loadUserActivities(user) {
         const phone = signupPhoneInput.value.trim();
         const birthDate = birthDateInput.value;
         if (!email || !password) return showMessage("ایمیل و رمز عبور را وارد کن.", true);
+        if (!emailInput.checkValidity()) return showMessage("یک نشانی ایمیل معتبر وارد کن.", true);
         if (!firstName || !lastName) return showMessage("نام و نام خانوادگی را وارد کن.", true);
+        if (firstName.length > 60 || lastName.length > 80) return showMessage("طول نام یا نام خانوادگی بیش از حد مجاز است.", true);
         if (!updatePasswordRules()) return showMessage("رمز عبور باید هر چهار شرط نمایش‌داده‌شده را داشته باشد.", true);
         setBusy(true);
         showMessage("در حال ساخت حساب...");
@@ -2830,11 +2847,21 @@ async function loadUserActivities(user) {
 
     async function sendPhoneOtp() {
         const phone = phoneLoginInput.value.trim();
+        const firstName = phoneFirstNameInput.value.trim();
+        const lastName = phoneLastNameInput.value.trim();
+        if (!firstName || !lastName) return showMessage("برای ورود یا ساخت حساب با پیامک، نام و نام خانوادگی را وارد کن.", true);
+        if (firstName.length > 60 || lastName.length > 80) return showMessage("طول نام یا نام خانوادگی بیش از حد مجاز است.", true);
         if (!/^\+[1-9]\d{7,14}$/.test(phone)) return showMessage("شماره را با کد کشور وارد کن؛ نمونه: +989123456789", true);
         sendOtpButton.disabled = true;
         showMessage("در حال ارسال کد پیامکی...");
         try {
-            const { error } = await supabaseClient.auth.signInWithOtp({ phone, options: { shouldCreateUser: true } });
+            const { error } = await supabaseClient.auth.signInWithOtp({
+                phone,
+                options: {
+                    shouldCreateUser: true,
+                    data: { first_name: firstName, last_name: lastName }
+                }
+            });
             if (error) throw error;
             otpArea.style.display = "block";
             showMessage("کد تأیید ارسال شد. کد پیامک‌شده را وارد کن.");
@@ -2846,14 +2873,32 @@ async function loadUserActivities(user) {
     async function verifyPhoneOtp() {
         const phone = phoneLoginInput.value.trim();
         const token = otpInput.value.trim();
+        const firstName = phoneFirstNameInput.value.trim();
+        const lastName = phoneLastNameInput.value.trim();
+        if (!firstName || !lastName) return showMessage("نام و نام خانوادگی را وارد کن.", true);
         if (!token) return showMessage("کد پیامک‌شده را وارد کن.", true);
         verifyOtpButton.disabled = true;
         showMessage("در حال بررسی کد...");
         try {
             const { data, error } = await supabaseClient.auth.verifyOtp({ phone, token, type: "sms" });
             if (error) throw error;
-            if (data && data.user) await loadUserActivities(data.user);
-            else showMessage("کد تأیید شد، اما حساب برنگشت. دوباره تلاش کن.", true);
+            if (data && data.user) {
+                let verifiedUser = data.user;
+                const metadata = verifiedUser.user_metadata || {};
+                const savedFirstName = String(metadata.first_name || metadata.firstName || "").trim();
+                const savedLastName = String(metadata.last_name || metadata.lastName || "").trim();
+                if (!savedFirstName || !savedLastName) {
+                    const { data: updatedData, error: updateError } = await supabaseClient.auth.updateUser({
+                        data: {
+                            first_name: savedFirstName || firstName,
+                            last_name: savedLastName || lastName
+                        }
+                    });
+                    if (updateError) throw updateError;
+                    if (updatedData && updatedData.user) verifiedUser = updatedData.user;
+                }
+                await loadUserActivities(verifiedUser);
+            } else showMessage("کد تأیید شد، اما حساب برنگشت. دوباره تلاش کن.", true);
         } catch (error) {
             showMessage("کد تأیید نشد: " + (error.message || "کد را بررسی کن."), true);
         } finally { verifyOtpButton.disabled = false; }
