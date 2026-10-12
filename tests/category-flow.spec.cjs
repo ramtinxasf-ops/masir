@@ -148,7 +148,7 @@ test("activity category can be created, changed, and saved without a real Supaba
 
   await page.locator("#nextWeekButton").click();
   expect(await page.evaluate(() => getDateKey(selectedDate))).toBe("2026-10-21");
-  await expect(dateJump).toHaveValue("2026-10-21");
+  await expect(dateJump).toHaveValue("۱۴۰۵/۰۷/۲۹");
 
   await page.locator("#todayButton").click();
   const todayKey = await page.evaluate(() => getDateKey(new Date()));
