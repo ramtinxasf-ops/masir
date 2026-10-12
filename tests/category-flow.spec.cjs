@@ -66,7 +66,7 @@ test("activity category can be created, changed, and saved without a real Supaba
   // Category flow test only: bypass the login UI and set a synthetic test user.
   // All Supabase calls remain mocked; no real account or production data is used.
   await page.evaluate(() => {
-    window.masirCurrentUser = { id: "playwright-test-user", email: "masir-test@example.invalid" };
+    window.masirCurrentUser = { id: "playwright-test-user", email: "masir-test@example.invalid", app_metadata: { role: "admin" } };
     document.getElementById("masir-auth-overlay").style.display = "none";
   });
 
