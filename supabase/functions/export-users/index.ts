@@ -78,10 +78,13 @@ Deno.serve(async (request: Request) => {
       ["نام", "نام خانوادگی", "تلفن", "ایمیل", "تاریخ ثبت‌نام"],
       ...users.map((user) => {
         const metadata = user.user_metadata || {};
+        // Auth phone may be an empty string; prefer the first non-empty phone value.
+        const phone = [user.phone, metadata.phone, metadata.phone_number, metadata.phoneNumber]
+          .find((value) => typeof value === "string" && value.trim().length > 0) ?? "";
         return [
           metadata.first_name ?? metadata.firstName ?? "",
           metadata.last_name ?? metadata.lastName ?? "",
-          user.phone ?? metadata.phone ?? "",
+          phone,
           user.email ?? "",
           user.created_at ?? "",
         ];
