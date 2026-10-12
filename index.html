@@ -558,6 +558,15 @@ button:hover {
     margin: 25px 0 10px;
 }
 
+.profile-panel { margin-top:16px; padding:16px; background:#10182b; border:1px solid var(--border); border-radius:14px; }
+.profile-panel h3 { margin-bottom:12px; color:#c4b5fd; }
+.profile-account-line { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; margin:8px 0; padding:10px 0; border-bottom:1px solid var(--border); font-size:13px; }
+.profile-account-line strong { max-width:68%; text-align:left; direction:ltr; overflow-wrap:anywhere; }
+input[type="email"], input[type="password"], input[type="tel"] {
+    width:100%; min-width:0; padding:12px; background:#0d1426; color:var(--text);
+    border:1px solid var(--border); border-radius:10px; font-family:inherit; font-size:15px;
+}
+
 @media (max-width: 600px) {
     body {
         padding: 12px;
@@ -1012,63 +1021,42 @@ body {
     
 <section class="card" id="profileSection" style="display:none;">
     <h2>👤 پروفایل من</h2>
-
-    <div class="help-text">
-        اطلاعات حساب کاربری و تنظیمات برنامه
+    <p class="help-text">اطلاعات شخصی، امنیت حساب و پشتیبان‌گیری را از این بخش مدیریت کن.</p>
+    <div class="profile-panel">
+        <h3>اطلاعات حساب</h3>
+        <div class="profile-account-line"><span>ایمیل حساب</span><strong id="profileEmail">—</strong></div>
+        <div class="profile-account-line"><span>تلفن حساب</span><strong id="profilePhone">—</strong></div>
+        <form id="profileForm">
+            <div class="form-grid">
+                <div class="form-field"><label for="profileFirstName">نام</label><input type="text" id="profileFirstName" maxlength="60" autocomplete="given-name" required></div>
+                <div class="form-field"><label for="profileLastName">نام خانوادگی</label><input type="text" id="profileLastName" maxlength="80" autocomplete="family-name" required></div>
+                <div class="form-field"><label for="profilePhoneInput">شماره تلفن</label><input type="tel" id="profilePhoneInput" maxlength="20" autocomplete="tel" placeholder="+989123456789"></div>
+                <div class="form-field"><label for="profileBirthDate">تاریخ تولد</label><input type="date" id="profileBirthDate" autocomplete="bday"></div>
+            </div>
+            <p id="profileSaveMessage" class="help-text" role="status" aria-live="polite"></p>
+            <button type="submit" class="primary-button" id="saveProfileButton" style="width:100%;margin-top:12px;">ذخیره اطلاعات پروفایل</button>
+        </form>
     </div>
-
-    <div class="report-stat" style="margin-top:16px;">
-        <span>ایمیل حساب</span>
-        <strong id="profileEmail" style="font-size:14px;overflow-wrap:anywhere;">—</strong>
+    <div class="profile-panel">
+        <h3>امنیت حساب</h3>
+        <p class="help-text">برای تغییر رمز، لینک بازیابی به ایمیل حسابت ارسال می‌شود.</p>
+        <button type="button" class="secondary-button" id="profileResetPasswordButton" style="width:100%;text-align:right;">🔐 بازیابی رمز عبور</button>
+        <p id="profileSecurityMessage" class="help-text" role="status" aria-live="polite"></p>
     </div>
-
-   
-<button
-    type="button"
-    class="secondary-button"
-    id="exportBackupButton"
-    style="width:100%;margin-top:16px;text-align:right;"
->
-    💾 دریافت نسخه پشتیبان
-    <span style="float:left;">↓</span>
-</button>
-
-<div
-    id="backupStatus"
-    style="margin-top:10px;padding:12px;background:#211b38;border-radius:10px;font-size:13px;line-height:1.8;"
->
-    وضعیت پشتیبان‌گیری هنوز بررسی نشده است.
-</div>
-
-<button
-    type="button"
-    class="secondary-button"
-    id="importBackupButton"
-    style="width:100%;margin-top:12px;text-align:right;"
->
-    📂 بازیابی از فایل پشتیبان
-    <span style="float:left;">↑</span>
-</button>
-
-<input
-    type="file"
-    id="backupFileInput"
-    accept=".json,application/json"
-    style="display:none;"
->
-
-<button type="button" class="secondary-button" id="appInfoButton"
-    style="width:100%;margin-top:24px;text-align:right;">
-    ℹ️ اطلاعات برنامه
-    <span style="float:left;">←</span>
-</button>
-
-<div id="appInfoDetails" style="display:none;margin-top:16px;">
-    <h3>مسیر</h3>
-    <p>برنامه‌ریز شخصی برای مدیریت فعالیت‌ها، پیگیری پیشرفت و بررسی گزارش‌ها.</p>
-    <p>هدف برنامه: کمک به مدیریت بهتر زمان و پیگیری عادت‌های روزانه.</p>
-</div>
-
+    <div class="profile-panel">
+        <h3>پشتیبان‌گیری و بازیابی</h3>
+        <button type="button" class="secondary-button" id="exportBackupButton" style="width:100%;text-align:right;">💾 دریافت نسخه پشتیبان <span style="float:left;">↓</span></button>
+        <div id="backupStatus" style="margin-top:10px;padding:12px;background:#211b38;border-radius:10px;font-size:13px;line-height:1.8;">وضعیت پشتیبان‌گیری هنوز بررسی نشده است.</div>
+        <button type="button" class="secondary-button" id="importBackupButton" style="width:100%;margin-top:12px;text-align:right;">📂 بازیابی از فایل پشتیبان <span style="float:left;">↑</span></button>
+        <input type="file" id="backupFileInput" accept=".json,application/json" style="display:none;">
+    </div>
+    <div class="profile-panel">
+        <button type="button" class="secondary-button" id="appInfoButton" style="width:100%;text-align:right;">ℹ️ اطلاعات برنامه <span style="float:left;">←</span></button>
+        <div id="appInfoDetails" style="display:none;margin-top:16px;">
+            <h3>مسیر</h3><p>برنامه‌ریز شخصی برای مدیریت فعالیت‌ها، پیگیری پیشرفت و بررسی گزارش‌ها.</p>
+            <p>هدف برنامه: کمک به مدیریت بهتر زمان و پیگیری عادت‌های روزانه.</p>
+        </div>
+    </div>
     <div id="profileLogoutArea" style="margin-top:24px;"></div>
 </section>
 
@@ -1298,12 +1286,7 @@ function showPage(page) {
     }
 
     if (page === "profile" && window.masirCurrentUser) {
-        const emailElement = document.getElementById("profileEmail");
-
-        if (emailElement) {
-            emailElement.textContent =
-                window.masirCurrentUser.email || "بدون ایمیل";
-        }
+        if (window.masirPopulateProfile) window.masirPopulateProfile(window.masirCurrentUser);
     }
 }
 
@@ -2336,124 +2319,57 @@ renderAll();
 const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIAHtnJki0xPxuFv_-52ZO8FChV8muEnUNAzjFyy4SZ9zlDejBG4oxCQ/exec';
 </script>
     <!-- فرم ورود و ثبت‌نام مسیر -->
-<div id="masir-auth-overlay" style="
-    position: fixed;
-    inset: 0;
-    z-index: 99999;
-    background: #0b1020;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    font-family: sans-serif;
-    direction: rtl;
-">
-    <div style="
-        width: 100%;
-        max-width: 380px;
-        background: #151c30;
-        padding: 28px;
-        border-radius: 18px;
-        box-sizing: border-box;
-        color: white;
-    ">
-        <h2 style="text-align:center; margin-top:0;">
-            مسیر
-        </h2>
-
-        <p style="text-align:center; color:#aab3ca;">
-            برای دسترسی به برنامه وارد حساب خود شوید.
-        </p>
-
-        <label for="masir-email">ایمیل</label>
-
-        <input
-            id="masir-email"
-            type="email"
-            autocomplete="email"
-            placeholder="ایمیل شما"
-            required
-            style="
-                width:100%;
-                box-sizing:border-box;
-                padding:12px;
-                margin:8px 0 16px;
-                border-radius:8px;
-                border:1px solid #39445f;
-                background:#0b1020;
-                color:white;
-            "
-        >
-
-        <label for="masir-password">رمز عبور</label>
-
-        <input
-            id="masir-password"
-            type="password"
-            autocomplete="current-password"
-            placeholder="حداقل ۶ کاراکتر"
-            minlength="6"
-            required
-            style="
-                width:100%;
-                box-sizing:border-box;
-                padding:12px;
-                margin:8px 0 16px;
-                border-radius:8px;
-                border:1px solid #39445f;
-                background:#0b1020;
-                color:white;
-            "
-        >
-
-        <button
-            id="masir-login"
-            type="button"
-            style="
-                width:100%;
-                padding:12px;
-                border:0;
-                border-radius:8px;
-                background:#a78bfa;
-                color:#0b1020;
-                font-weight:bold;
-                cursor:pointer;
-            "
-        >
-            ورود
-        </button>
-
-        <button
-            id="masir-signup"
-            type="button"
-            style="
-                width:100%;
-                padding:12px;
-                margin-top:10px;
-                border:1px solid #a78bfa;
-                border-radius:8px;
-                background:transparent;
-                color:white;
-                cursor:pointer;
-            "
-        >
-            ساخت حساب جدید
-        </button>
-
-        <p
-            id="masir-auth-message"
-            role="status"
-            aria-live="polite"
-            style="
-                margin-bottom:0;
-                text-align:center;
-                line-height:1.8;
-                overflow-wrap:anywhere;
-            "
-        ></p>
+<div id="masir-auth-overlay" style="position:fixed;inset:0;z-index:99999;background:#0b1020;display:flex;align-items:center;justify-content:center;padding:20px;font-family:Tahoma,Arial,sans-serif;direction:rtl;overflow-y:auto;">
+    <div style="width:100%;max-width:420px;max-height:95vh;overflow-y:auto;background:#151c30;padding:24px;border-radius:18px;box-sizing:border-box;color:white;">
+        <h2 style="text-align:center;margin-top:0;">مسیر</h2>
+        <p style="text-align:center;color:#aab3ca;">برای دسترسی به برنامه وارد حساب شو یا حساب تازه بساز.</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:16px 0;">
+            <button type="button" id="masir-email-tab" style="padding:10px;background:#352653;color:white;border:1px solid #a78bfa;">ایمیل و رمز</button>
+            <button type="button" id="masir-phone-tab" style="padding:10px;background:transparent;color:white;border:1px solid #39445f;">ورود با پیامک</button>
+        </div>
+        <div id="masir-email-auth">
+            <label for="masir-email">ایمیل</label>
+            <input id="masir-email" type="email" autocomplete="email" placeholder="ایمیل شما" required style="width:100%;box-sizing:border-box;padding:12px;margin:8px 0 16px;border-radius:8px;border:1px solid #39445f;background:#0b1020;color:white;">
+            <div id="masir-signup-fields" style="display:none;">
+                <label for="masir-first-name">نام</label><input id="masir-first-name" type="text" autocomplete="given-name" maxlength="60" placeholder="نام" style="width:100%;box-sizing:border-box;padding:12px;margin:8px 0 16px;border-radius:8px;border:1px solid #39445f;background:#0b1020;color:white;">
+                <label for="masir-last-name">نام خانوادگی</label><input id="masir-last-name" type="text" autocomplete="family-name" maxlength="80" placeholder="نام خانوادگی" style="width:100%;box-sizing:border-box;padding:12px;margin:8px 0 16px;border-radius:8px;border:1px solid #39445f;background:#0b1020;color:white;">
+                <label for="masir-phone">شماره تلفن با کد کشور</label><input id="masir-phone" type="tel" autocomplete="tel" maxlength="20" placeholder="+989123456789" style="width:100%;box-sizing:border-box;padding:12px;margin:8px 0 16px;border-radius:8px;border:1px solid #39445f;background:#0b1020;color:white;">
+                <label for="masir-birth-date">تاریخ تولد</label><input id="masir-birth-date" type="date" autocomplete="bday" style="width:100%;box-sizing:border-box;padding:12px;margin:8px 0 16px;border-radius:8px;border:1px solid #39445f;background:#0b1020;color:white;">
+            </div>
+            <label for="masir-password">رمز عبور</label>
+            <input id="masir-password" type="password" autocomplete="current-password" placeholder="حداقل ۸ کاراکتر، حرف بزرگ انگلیسی و عدد" style="width:100%;box-sizing:border-box;padding:12px;margin:8px 0 6px;border-radius:8px;border:1px solid #39445f;background:#0b1020;color:white;">
+            <div id="masir-password-rules" style="font-size:12px;line-height:1.9;margin-bottom:12px;color:#aab3ca;">
+                <div data-rule="length">○ حداقل ۸ کاراکتر</div><div data-rule="upper">○ حداقل یک حرف بزرگ انگلیسی (A-Z)</div>
+                <div data-rule="number">○ حداقل یک عدد (0-9)</div><div data-rule="english">○ دارای حروف انگلیسی</div>
+            </div>
+            <button id="masir-login" type="button" style="width:100%;padding:12px;border:0;border-radius:8px;background:#a78bfa;color:#0b1020;font-weight:bold;cursor:pointer;">ورود</button>
+            <button id="masir-signup" type="button" style="width:100%;padding:12px;margin-top:10px;border:1px solid #a78bfa;border-radius:8px;background:transparent;color:white;cursor:pointer;">ساخت حساب جدید</button>
+            <button id="masir-forgot-password" type="button" style="width:100%;padding:10px;margin-top:8px;background:transparent;color:#c4b5fd;text-decoration:underline;">رمز عبورم را فراموش کرده‌ام</button>
+        </div>
+        <div id="masir-recovery-auth" style="display:none;">
+            <h3>تنظیم رمز عبور جدید</h3>
+            <p style="color:#aab3ca;font-size:13px;">یک رمز جدید مطابق چهار شرط زیر انتخاب کن.</p>
+            <label for="masir-new-password">رمز عبور جدید</label>
+            <input id="masir-new-password" type="password" autocomplete="new-password" placeholder="رمز عبور جدید" style="width:100%;box-sizing:border-box;padding:12px;margin:8px 0 6px;border-radius:8px;border:1px solid #39445f;background:#0b1020;color:white;">
+            <div id="masir-new-password-rules" style="font-size:12px;line-height:1.9;margin-bottom:12px;color:#aab3ca;">
+                <div data-rule="length">○ حداقل ۸ کاراکتر</div><div data-rule="upper">○ حداقل یک حرف بزرگ انگلیسی (A-Z)</div>
+                <div data-rule="number">○ حداقل یک عدد (0-9)</div><div data-rule="english">○ دارای حروف انگلیسی</div>
+            </div>
+            <button id="masir-update-password" type="button" style="width:100%;padding:12px;background:#a78bfa;color:#0b1020;font-weight:bold;">ذخیره رمز جدید</button>
+        </div>
+        <div id="masir-phone-auth" style="display:none;">
+            <label for="masir-phone-login">شماره تلفن با کد کشور</label>
+            <input id="masir-phone-login" type="tel" autocomplete="tel" placeholder="+989123456789" style="width:100%;box-sizing:border-box;padding:12px;margin:8px 0 16px;border-radius:8px;border:1px solid #39445f;background:#0b1020;color:white;">
+            <button id="masir-send-otp" type="button" style="width:100%;padding:12px;background:#a78bfa;color:#0b1020;font-weight:bold;">ارسال کد پیامکی</button>
+            <div id="masir-otp-area" style="display:none;margin-top:14px;">
+                <label for="masir-otp">کد تأیید پیامک‌شده</label>
+                <input id="masir-otp" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="8" placeholder="کد یک‌بارمصرف" style="width:100%;box-sizing:border-box;padding:12px;margin:8px 0 12px;border-radius:8px;border:1px solid #39445f;background:#0b1020;color:white;">
+                <button id="masir-verify-otp" type="button" style="width:100%;padding:12px;background:#a78bfa;color:#0b1020;font-weight:bold;">تأیید کد و ورود</button>
+            </div>
+        </div>
+        <p id="masir-auth-message" role="status" aria-live="polite" style="margin-bottom:0;text-align:center;line-height:1.8;overflow-wrap:anywhere;"></p>
     </div>
 </div>
-    
 <script>
 (function () {
     const overlay = document.getElementById("masir-auth-overlay");
@@ -2462,18 +2378,237 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
     const loginButton = document.getElementById("masir-login");
     const signupButton = document.getElementById("masir-signup");
     const message = document.getElementById("masir-auth-message");
+    const emailTab = document.getElementById("masir-email-tab");
+    const phoneTab = document.getElementById("masir-phone-tab");
+    const emailAuthPanel = document.getElementById("masir-email-auth");
+    const phoneAuthPanel = document.getElementById("masir-phone-auth");
+    const signupFields = document.getElementById("masir-signup-fields");
+    const firstNameInput = document.getElementById("masir-first-name");
+    const lastNameInput = document.getElementById("masir-last-name");
+    const signupPhoneInput = document.getElementById("masir-phone");
+    const birthDateInput = document.getElementById("masir-birth-date");
+    const phoneLoginInput = document.getElementById("masir-phone-login");
+    const otpInput = document.getElementById("masir-otp");
+    const otpArea = document.getElementById("masir-otp-area");
+    const sendOtpButton = document.getElementById("masir-send-otp");
+    const verifyOtpButton = document.getElementById("masir-verify-otp");
+    const forgotPasswordButton = document.getElementById("masir-forgot-password");
+    const passwordRules = document.getElementById("masir-password-rules");
+    const recoveryPanel = document.getElementById("masir-recovery-auth");
+    const newPasswordInput = document.getElementById("masir-new-password");
+    const newPasswordRules = document.getElementById("masir-new-password-rules");
+    const updatePasswordButton = document.getElementById("masir-update-password");
+    const profileLogoutArea = document.getElementById("profileLogoutArea");
+    let authMode = "email";
+    let signupMode = false;
+
     const logoutButton = document.createElement("button");
-logoutButton.textContent = "خروج از حساب";
-logoutButton.style.cssText = "position:fixed;top:15px;left:15px;z-index:10000;padding:10px 16px;background:#a78bfa;color:#0b1020;border:none;border-radius:10px;cursor:pointer;display:none;";
-document.body.appendChild(logoutButton);
+    logoutButton.type = "button";
+    logoutButton.textContent = "خروج از حساب";
+    logoutButton.className = "secondary-button";
+    logoutButton.style.cssText = "width:100%;padding:12px;background:#3b1c2b;color:#fb7185;border:1px solid #7f1d1d;";
+    logoutButton.addEventListener("click", async function () {
+        logoutButton.disabled = true;
+        try {
+            const { error } = await supabaseClient.auth.signOut();
+            if (error) throw error;
+        } catch (error) {
+            alert("خروج انجام نشد: " + (error.message || "خطای نامشخص"));
+        } finally {
+            logoutButton.disabled = false;
+        }
+    });
+    if (profileLogoutArea) profileLogoutArea.appendChild(logoutButton);
 
-logoutButton.addEventListener("click", async function () {
-    const { error } = await supabaseClient.auth.signOut();
-
-    if (error) {
-        alert("خروج انجام نشد: " + error.message);
+    function setAuthMode(mode) {
+        authMode = mode;
+        const usePhone = mode === "phone";
+        emailAuthPanel.style.display = usePhone ? "none" : "block";
+        phoneAuthPanel.style.display = usePhone ? "block" : "none";
+        emailTab.style.background = usePhone ? "transparent" : "#352653";
+        emailTab.style.borderColor = usePhone ? "#39445f" : "#a78bfa";
+        phoneTab.style.background = usePhone ? "#352653" : "transparent";
+        phoneTab.style.borderColor = usePhone ? "#a78bfa" : "#39445f";
+        showMessage("");
     }
-});
+    emailTab.addEventListener("click", () => setAuthMode("email"));
+    phoneTab.addEventListener("click", () => setAuthMode("phone"));
+
+    function validatePassword(password) {
+        return {
+            length: password.length >= 8,
+            upper: /[A-Z]/.test(password),
+            number: /[0-9]/.test(password),
+            english: /[A-Za-z]/.test(password)
+        };
+    }
+    function updatePasswordRules() {
+        const rules = validatePassword(passwordInput.value);
+        Object.keys(rules).forEach(rule => {
+            const item = passwordRules.querySelector('[data-rule="' + rule + '"]');
+            if (!item) return;
+            item.style.color = rules[rule] ? "#34d399" : "#fca5a5";
+            item.textContent = (rules[rule] ? "✓ " : "○ ") + ({
+                length: "حداقل ۸ کاراکتر",
+                upper: "حداقل یک حرف بزرگ انگلیسی (A-Z)",
+                number: "حداقل یک عدد (0-9)",
+                english: "دارای حروف انگلیسی"
+            }[rule]);
+        });
+        return Object.values(rules).every(Boolean);
+    }
+    passwordInput.addEventListener("input", updatePasswordRules);
+    updatePasswordRules();
+
+    function updateRuleList(input, list) {
+        const rules = validatePassword(input.value);
+        Object.keys(rules).forEach(rule => {
+            const item = list.querySelector('[data-rule="' + rule + '"]');
+            if (!item) return;
+            item.style.color = rules[rule] ? "#34d399" : "#fca5a5";
+            item.textContent = (rules[rule] ? "✓ " : "○ ") + ({
+                length: "حداقل ۸ کاراکتر",
+                upper: "حداقل یک حرف بزرگ انگلیسی (A-Z)",
+                number: "حداقل یک عدد (0-9)",
+                english: "دارای حروف انگلیسی"
+            }[rule]);
+        });
+        return Object.values(rules).every(Boolean);
+    }
+    function showRecoveryForm() {
+        overlay.style.display = "flex";
+        emailAuthPanel.style.display = "none";
+        phoneAuthPanel.style.display = "none";
+        recoveryPanel.style.display = "block";
+        emailTab.style.display = "none";
+        phoneTab.style.display = "none";
+        message.textContent = "لطفاً رمز جدیدت را ثبت کن.";
+    }
+    newPasswordInput.addEventListener("input", () => updateRuleList(newPasswordInput, newPasswordRules));
+    updatePasswordButton.addEventListener("click", async function() {
+        const password = newPasswordInput.value;
+        if (!updateRuleList(newPasswordInput, newPasswordRules)) {
+            message.textContent = "رمز جدید باید هر چهار شرط را داشته باشد.";
+            message.style.color = "#ff8b8b";
+            return;
+        }
+        updatePasswordButton.disabled = true;
+        message.textContent = "در حال ذخیره رمز جدید...";
+        try {
+            const { data, error } = await supabaseClient.auth.updateUser({ password });
+            if (error) throw error;
+            message.textContent = "رمز عبور با موفقیت تغییر کرد.";
+            message.style.color = "#a7f3d0";
+            recoveryPanel.style.display = "none";
+            emailTab.style.display = "";
+            phoneTab.style.display = "";
+            setAuthMode("email");
+            overlay.style.display = "none";
+            if (data && data.user) {
+                window.masirCurrentUser = data.user;
+                populateProfile(data.user);
+            }
+        } catch (error) {
+            message.textContent = "تغییر رمز انجام نشد: " + (error.message || "لینک بازیابی ممکن است منقضی شده باشد.");
+            message.style.color = "#ff8b8b";
+        } finally {
+            updatePasswordButton.disabled = false;
+        }
+    });
+
+    function showProfileMessage(text, isError = false) {
+        const target = document.getElementById("profileSaveMessage");
+        if (target) {
+            target.textContent = text;
+            target.style.color = isError ? "#fb7185" : "#34d399";
+        }
+    }
+    function populateProfile(user) {
+        const metadata = user && user.user_metadata ? user.user_metadata : {};
+        const setValue = (id, value) => {
+            const element = document.getElementById(id);
+            if (element) element.value = value || "";
+        };
+        const emailElement = document.getElementById("profileEmail");
+        const phoneElement = document.getElementById("profilePhone");
+        if (emailElement) emailElement.textContent = user.email || "بدون ایمیل";
+        if (phoneElement) phoneElement.textContent = user.phone || metadata.phone || "ثبت نشده";
+        setValue("profileFirstName", metadata.first_name || metadata.firstName);
+        setValue("profileLastName", metadata.last_name || metadata.lastName);
+        setValue("profilePhoneInput", user.phone || metadata.phone);
+        setValue("profileBirthDate", metadata.birth_date || metadata.birthDate);
+    }
+    window.masirPopulateProfile = populateProfile;
+
+    const profileForm = document.getElementById("profileForm");
+    if (profileForm) profileForm.addEventListener("submit", async function(event) {
+        event.preventDefault();
+        const user = window.masirCurrentUser;
+        if (!user) return showProfileMessage("ابتدا وارد حساب شو.", true);
+        const firstName = document.getElementById("profileFirstName").value.trim();
+        const lastName = document.getElementById("profileLastName").value.trim();
+        const phone = document.getElementById("profilePhoneInput").value.trim();
+        const birthDate = document.getElementById("profileBirthDate").value;
+        if (!firstName || !lastName) return showProfileMessage("نام و نام خانوادگی را وارد کن.", true);
+        const button = document.getElementById("saveProfileButton");
+        button.disabled = true;
+        showProfileMessage("در حال ذخیره اطلاعات...");
+        try {
+            const { data, error } = await supabaseClient.auth.updateUser({
+                data: { ...(user.user_metadata || {}), first_name: firstName, last_name: lastName, phone, birth_date: birthDate }
+            });
+            if (error) throw error;
+            window.masirCurrentUser = data && data.user ? data.user : {
+                ...user, user_metadata: { ...(user.user_metadata || {}), first_name: firstName, last_name: lastName, phone, birth_date: birthDate }
+            };
+            populateProfile(window.masirCurrentUser);
+            showProfileMessage("اطلاعات پروفایل ذخیره شد.");
+        } catch (error) {
+            console.error("ذخیره پروفایل ناموفق بود:", error);
+            showProfileMessage("ذخیره اطلاعات انجام نشد. اتصال حساب را بررسی کن.", true);
+        } finally {
+            button.disabled = false;
+        }
+    });
+
+    const resetPasswordButton = document.getElementById("profileResetPasswordButton");
+    if (resetPasswordButton) resetPasswordButton.addEventListener("click", async function() {
+        const user = window.masirCurrentUser;
+        const target = document.getElementById("profileSecurityMessage");
+        if (!user || !user.email) {
+            target.textContent = "برای بازیابی رمز عبور، حساب باید ایمیل داشته باشد.";
+            target.style.color = "#fb7185";
+            return;
+        }
+        resetPasswordButton.disabled = true;
+        target.textContent = "در حال ارسال لینک بازیابی...";
+        try {
+            const { error } = await supabaseClient.auth.resetPasswordForEmail(user.email, { redirectTo: window.location.href.split("#")[0] });
+            if (error) throw error;
+            target.textContent = "اگر تنظیمات سرویس اجازه دهد، لینک بازیابی به ایمیل حساب ارسال می‌شود.";
+            target.style.color = "#34d399";
+        } catch (error) {
+            target.textContent = "ارسال لینک بازیابی انجام نشد: " + (error.message || "اتصال را بررسی کن.");
+            target.style.color = "#fb7185";
+        } finally {
+            resetPasswordButton.disabled = false;
+        }
+    });
+    if (forgotPasswordButton) forgotPasswordButton.addEventListener("click", async function() {
+        const email = emailInput.value.trim();
+        if (!email) return showMessage("ابتدا ایمیل حسابت را وارد کن.", true);
+        forgotPasswordButton.disabled = true;
+        showMessage("در حال ارسال لینک بازیابی...");
+        try {
+            const { error } = await supabaseClient.auth.resetPasswordForEmail(email, { redirectTo: window.location.href.split("#")[0] });
+            if (error) throw error;
+            showMessage("اگر ایمیل در حساب ثبت شده باشد، لینک بازیابی برای آن ارسال می‌شود.");
+        } catch (error) {
+            showMessage("ارسال لینک بازیابی انجام نشد: " + (error.message || "اتصال را بررسی کن."), true);
+        } finally {
+            forgotPasswordButton.disabled = false;
+        }
+    });
 
     function showMessage(text, isError = false) {
         message.textContent = text;
@@ -2564,6 +2699,7 @@ async function loadUserActivities(user) {
 
     overlay.style.display = "none";
     logoutButton.style.display = "block";
+    populateProfile(user);
     showMessage("");
 
     // اگر سرور خالی بود و پشتیبان داشتیم، آن را به سرور می‌فرستیم.
@@ -2604,46 +2740,90 @@ async function loadUserActivities(user) {
     async function signup() {
         const email = emailInput.value.trim();
         const password = passwordInput.value;
-
-        if (!email || !password) {
-            showMessage("ایمیل و رمز عبور را وارد کن.", true);
-            return;
-        }
-
-        if (password.length < 6) {
-            showMessage("رمز عبور باید حداقل ۶ کاراکتر باشد.", true);
-            return;
-        }
-
+        const firstName = firstNameInput.value.trim();
+        const lastName = lastNameInput.value.trim();
+        const phone = signupPhoneInput.value.trim();
+        const birthDate = birthDateInput.value;
+        if (!email || !password) return showMessage("ایمیل و رمز عبور را وارد کن.", true);
+        if (!firstName || !lastName) return showMessage("نام و نام خانوادگی را وارد کن.", true);
+        if (!updatePasswordRules()) return showMessage("رمز عبور باید هر چهار شرط نمایش‌داده‌شده را داشته باشد.", true);
         setBusy(true);
         showMessage("در حال ساخت حساب...");
-
         try {
             const { data, error } = await supabaseClient.auth.signUp({
-                email,
-                password
+                email, password,
+                options: { data: { first_name: firstName, last_name: lastName, phone, birth_date: birthDate } }
             });
-
             if (error) throw error;
-
-            if (data.session && data.user) {
-                await loadUserActivities(data.user);
-            } else {
-                showMessage("حساب ساخته شد. اگر ایمیل تأیید دریافت کردی، آن را تأیید کن؛ سپس وارد حساب شو.");
-            }
+            if (data.session && data.user) await loadUserActivities(data.user);
+            else showMessage("حساب ساخته شد. اگر ایمیل تأیید دریافت کردی، آن را تأیید کن؛ سپس وارد حساب شو.");
         } catch (error) {
             console.error(error);
-            showMessage("ساخت حساب انجام نشد. ایمیل را بررسی کن یا پیام خطا را ببین.", true);
+            showMessage("ساخت حساب انجام نشد. " + (error.message || "ایمیل یا اتصال را بررسی کن."), true);
         } finally {
             setBusy(false);
         }
     }
 
-    loginButton.addEventListener("click", login);
-    signupButton.addEventListener("click", signup);
+    async function sendPhoneOtp() {
+        const phone = phoneLoginInput.value.trim();
+        if (!/^\+[1-9]\d{7,14}$/.test(phone)) return showMessage("شماره را با کد کشور وارد کن؛ نمونه: +989123456789", true);
+        sendOtpButton.disabled = true;
+        showMessage("در حال ارسال کد پیامکی...");
+        try {
+            const { error } = await supabaseClient.auth.signInWithOtp({ phone, options: { shouldCreateUser: true } });
+            if (error) throw error;
+            otpArea.style.display = "block";
+            showMessage("کد تأیید ارسال شد. کد پیامک‌شده را وارد کن.");
+        } catch (error) {
+            showMessage("ارسال کد انجام نشد: " + (error.message || "تنظیمات ورود پیامکی را بررسی کن."), true);
+        } finally { sendOtpButton.disabled = false; }
+    }
+
+    async function verifyPhoneOtp() {
+        const phone = phoneLoginInput.value.trim();
+        const token = otpInput.value.trim();
+        if (!token) return showMessage("کد پیامک‌شده را وارد کن.", true);
+        verifyOtpButton.disabled = true;
+        showMessage("در حال بررسی کد...");
+        try {
+            const { data, error } = await supabaseClient.auth.verifyOtp({ phone, token, type: "sms" });
+            if (error) throw error;
+            if (data && data.user) await loadUserActivities(data.user);
+            else showMessage("کد تأیید شد، اما حساب برنگشت. دوباره تلاش کن.", true);
+        } catch (error) {
+            showMessage("کد تأیید نشد: " + (error.message || "کد را بررسی کن."), true);
+        } finally { verifyOtpButton.disabled = false; }
+    }
+
+    loginButton.addEventListener("click", function() {
+        if (signupMode) {
+            signupMode = false;
+            signupFields.style.display = "none";
+            signupButton.textContent = "ساخت حساب جدید";
+            loginButton.textContent = "ورود";
+            return showMessage("");
+        }
+        login();
+    });
+    signupButton.addEventListener("click", function() {
+        if (!signupMode) {
+            signupMode = true;
+            signupFields.style.display = "block";
+            signupButton.textContent = "تأیید و ساخت حساب";
+            loginButton.textContent = "بازگشت به ورود";
+            return showMessage("اطلاعات ثبت‌نام را کامل کن و رمز قوی انتخاب کن.");
+        }
+        signup();
+    });
+    sendOtpButton.addEventListener("click", sendPhoneOtp);
+    verifyOtpButton.addEventListener("click", verifyPhoneOtp);
 
     passwordInput.addEventListener("keydown", function (event) {
-        if (event.key === "Enter") login();
+        if (event.key === "Enter") {
+            if (signupMode) signup();
+            else login();
+        }
     });
 
     // اگر کاربر از قبل وارد شده باشد، اطلاعات همان حساب را بارگذاری کن.
@@ -2663,11 +2843,16 @@ async function loadUserActivities(user) {
 
     // اگر ورود یا خروج از جای دیگری انجام شد، وضعیت حساب را هماهنگ کن.
     supabaseClient.auth.onAuthStateChange(async function (event, session) {
+        if (event === "PASSWORD_RECOVERY") {
+            showRecoveryForm();
+            return;
+        }
         if (event === "SIGNED_OUT" || !session) {
             window.masirCurrentUser = null;
             activities = [];
             overlay.style.display = "flex";
             logoutButton.style.display = "none";
+            showPage("home");
             renderAll();
         }
     });

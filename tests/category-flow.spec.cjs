@@ -16,7 +16,11 @@ test("activity category can be created, changed, and saved without a real Supaba
           onAuthStateChange: () => ({ data: { subscription: { unsubscribe() {} } } }),
           signInWithPassword: async () => ({ data: { user, session }, error: null }),
           signUp: async () => ({ data: { user, session }, error: null }),
-          signOut: async () => ({ error: null })
+          signOut: async () => ({ error: null }),
+          updateUser: async ({ data }) => ({ data: { user: { ...user, user_metadata: data } }, error: null }),
+          resetPasswordForEmail: async () => ({ error: null }),
+          signInWithOtp: async () => ({ error: null }),
+          verifyOtp: async () => ({ data: { user, session }, error: null })
         },
         from: (table) => ({
           select: function () { return this; },
@@ -66,6 +70,34 @@ test("activity category can be created, changed, and saved without a real Supaba
   });
 
   console.log("STEP: mock user set");
+
+  // Profile details save to Supabase user metadata and remain editable.
+  await page.evaluate(() => showPage("profile"));
+  console.log("STEP: profile page opened");
+  await page.locator("#profileFirstName").fill("رامتین");
+  console.log("STEP: profile first name filled");
+  await page.locator("#profileLastName").fill("آزمایشی");
+  await page.locator("#profilePhoneInput").fill("+989123456789");
+  await page.locator("#profileBirthDate").fill("1998-04-23");
+  console.log("STEP: profile fields filled");
+  await page.locator("#saveProfileButton").click();
+  console.log("STEP: profile save clicked");
+  await expect(page.locator("#profileSaveMessage")).toContainText("ذخیره شد");
+  await expect(page.locator("#profileEmail")).toContainText("masir-test@example.invalid");
+  await expect(page.locator("#profileLogoutArea button")).toContainText("خروج از حساب");
+
+  // Password requirements update while typing; phone OTP panel can be selected.
+  await page.evaluate(() => { document.getElementById("masir-auth-overlay").style.display = "flex"; });
+  await page.locator("#masir-password").fill("weak");
+  await expect(page.locator('#masir-password-rules [data-rule="length"]')).toContainText("○");
+  await page.locator("#masir-password").fill("StrongPass1");
+  await expect(page.locator('#masir-password-rules [data-rule="length"]')).toContainText("✓");
+  await expect(page.locator('#masir-password-rules [data-rule="upper"]')).toContainText("✓");
+  await expect(page.locator('#masir-password-rules [data-rule="number"]')).toContainText("✓");
+  await page.locator("#masir-phone-tab").click();
+  await expect(page.locator("#masir-phone-auth")).toBeVisible();
+  await page.evaluate(() => { document.getElementById("masir-auth-overlay").style.display = "none"; });
+
   await page.evaluate(() => showPage("planning"));
   console.log("STEP: planning page opened");
   await page.locator("#activityName").fill("فعالیت آزمایشی دسته‌بندی");
