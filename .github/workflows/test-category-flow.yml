@@ -1,0 +1,49 @@
+name: Browser test for activity categories
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "index.html"
+      - "tests/**"
+      - ".github/workflows/test-category-flow.yml"
+  push:
+    branches: [feature/categories]
+    paths:
+      - "index.html"
+      - "tests/**"
+      - ".github/workflows/test-category-flow.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  category-flow:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out branch
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install Playwright
+        run: |
+          npm init -y
+          npm install --save-dev @playwright/test
+          npx playwright install --with-deps chromium
+
+      - name: Start local static server
+        run: |
+          python3 -m http.server 4173 --directory . >/tmp/masir-http.log 2>&1 &
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:4173/index.html >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/masir-http.log
+          exit 1
+
+      - name: Run browser test with isolated mocked Supabase
+        run: npx playwright test tests/category-flow.spec.cjs --reporter=list
