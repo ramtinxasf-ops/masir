@@ -1037,6 +1037,12 @@ body {
             <button type="submit" class="primary-button" id="saveProfileButton" style="width:100%;margin-top:12px;">ذخیره اطلاعات پروفایل</button>
         </form>
     </div>
+    <div class="profile-panel" id="adminUserExportPanel" style="display:none;">
+        <h3>مدیریت کاربران</h3>
+        <p class="help-text">فهرست حساب‌های ثبت‌نام‌شده را فقط با دسترسی مدیر دریافت کن. رمز عبور هیچ‌گاه در این فایل قرار نمی‌گیرد.</p>
+        <button type="button" class="secondary-button" id="exportUsersCsvButton" style="width:100%;text-align:right;">📊 دریافت فهرست کاربران (CSV)</button>
+        <p id="adminUserExportMessage" class="help-text" role="status" aria-live="polite"></p>
+    </div>
     <div class="profile-panel">
         <h3>امنیت حساب</h3>
         <p class="help-text">برای تغییر رمز، لینک بازیابی به ایمیل حسابت ارسال می‌شود.</p>
@@ -2537,7 +2543,64 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
         setValue("profileLastName", metadata.last_name || metadata.lastName);
         setValue("profilePhoneInput", user.phone || metadata.phone);
         setValue("profileBirthDate", metadata.birth_date || metadata.birthDate);
+        configureAdminUserExport(user);
     }
+    function configureAdminUserExport(user) {
+        const panel = document.getElementById("adminUserExportPanel");
+        if (!panel) return;
+        const isAdmin = Boolean(user && user.app_metadata && user.app_metadata.role === "admin");
+        panel.style.display = isAdmin ? "block" : "none";
+    }
+
+    const exportUsersCsvButton = document.getElementById("exportUsersCsvButton");
+    if (exportUsersCsvButton) exportUsersCsvButton.addEventListener("click", async function() {
+        const user = window.masirCurrentUser;
+        const message = document.getElementById("adminUserExportMessage");
+        if (!user) {
+            message.textContent = "ابتدا وارد حساب مدیر شو.";
+            message.style.color = "#fb7185";
+            return;
+        }
+        exportUsersCsvButton.disabled = true;
+        message.textContent = "در حال آماده‌سازی فایل...";
+        message.style.color = "#a5b4cc";
+        try {
+            const { data, error } = await supabaseClient.auth.getSession();
+            if (error) throw error;
+            const accessToken = data && data.session && data.session.access_token;
+            if (!accessToken) throw new Error("نشست ورود پیدا نشد. دوباره وارد حساب شو.");
+            const response = await fetch(SUPABASE_URL + "/functions/v1/export-users", {
+                method: "GET",
+                headers: {
+                    "Authorization": "Bearer " + accessToken,
+                    "apikey": SUPABASE_PUBLISHABLE_KEY
+                }
+            });
+            if (!response.ok) {
+                let detail = "";
+                try { detail = (await response.json()).error || ""; } catch (_) {}
+                throw new Error(detail || "دریافت فایل ناموفق بود. دسترسی مدیر و تنظیمات سرور را بررسی کن.");
+            }
+            const blob = await response.blob();
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = "masir-users-" + new Date().toISOString().slice(0, 10) + ".csv";
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            URL.revokeObjectURL(url);
+            message.textContent = "فایل فهرست کاربران دانلود شد.";
+            message.style.color = "#34d399";
+        } catch (error) {
+            console.error("دریافت فهرست کاربران ناموفق بود:", error);
+            message.textContent = error.message || "دریافت فایل انجام نشد.";
+            message.style.color = "#fb7185";
+        } finally {
+            exportUsersCsvButton.disabled = false;
+        }
+    });
+
     window.masirPopulateProfile = populateProfile;
 
     const profileForm = document.getElementById("profileForm");
