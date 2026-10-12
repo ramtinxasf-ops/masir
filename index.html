@@ -282,7 +282,7 @@ button:hover {
     margin: 0;
 }
 
-.calendar-jump-row input[type="date"] {
+.calendar-jump-row input[type="text"] {
     width: auto;
     min-width: 170px;
     max-width: 100%;
@@ -619,7 +619,7 @@ button:hover {
         font-size: 12px;
     }
 
-    .calendar-jump-row input[type="date"] {
+    .calendar-jump-row input[type="text"] {
         width: 100%;
     }
 
@@ -945,7 +945,7 @@ body {
 
     <div class="calendar-jump-row">
         <label for="calendarDateJump">رفتن مستقیم به تاریخ</label>
-        <input type="date" id="calendarDateJump" aria-label="انتخاب تاریخ برای نمایش در تقویم">
+        <input type="text" id="calendarDateJump" inputmode="numeric" autocomplete="off" placeholder="۱۴۰۵/۰۷/۲۹" aria-label="تاریخ شمسی برای نمایش در تقویم">
     </div>
 
     <div class="week-calendar" id="weekCalendar"></div>
@@ -1689,11 +1689,18 @@ function renderCalendarMonth() {
         first === last ? first : `${first} تا ${last}`;
 }
 
+function getPersianDateInputValue(date) {
+    const parts = getPersianDateParts(date);
+    const month = String(parts.month).padStart(2, "0");
+    const day = String(parts.day).padStart(2, "0");
+    return toPersianNumber(`${parts.year}/${month}/${day}`);
+}
+
 function renderCalendar() {
     const calendar = document.getElementById("weekCalendar");
     calendar.innerHTML = "";
 
-    document.getElementById("calendarDateJump").value = getDateKey(selectedDate);
+    document.getElementById("calendarDateJump").value = getPersianDateInputValue(selectedDate);
 
     const dates = getWeekDates(selectedDate);
     const todayKey = getDateKey(new Date());
@@ -2264,11 +2271,47 @@ document.getElementById("nextWeekButton").addEventListener("click", () => {
     renderAll();
 });
 
-document.getElementById("calendarDateJump").addEventListener("change", event => {
-    if (!event.target.value) return;
+function getPersianDateParts(date) {
+    const parts = new Intl.DateTimeFormat("en-US-u-ca-persian-nu-latn", {
+        year: "numeric",
+        month: "numeric",
+        day: "numeric"
+    }).formatToParts(date);
+    return Object.fromEntries(parts.filter(part => part.type !== "literal").map(part => [part.type, Number(part.value)]));
+}
 
-    const [year, month, day] = event.target.value.split("-").map(Number);
-    selectedDate = new Date(year, month - 1, day, 12, 0, 0, 0);
+function persianDateToGregorian(value) {
+    const normalized = String(value)
+        .replace(/[۰-۹]/g, digit => "۰۱۲۳۴۵۶۷۸۹".indexOf(digit))
+        .replace(/[٠-٩]/g, digit => "٠١٢٣٤٥٦٧٨٩".indexOf(digit))
+        .trim();
+    const match = normalized.match(new RegExp("^(\\d{4})[./-](\\d{1,2})[./-](\\d{1,2})$"));
+    if (!match) return null;
+
+    const year = Number(match[1]);
+    const month = Number(match[2]);
+    const day = Number(match[3]);
+    if (year < 1200 || year > 1600 || month < 1 || month > 12 || day < 1 || day > 31) return null;
+
+    // جست‌وجوی تاریخ میلادی متناظر با تاریخ شمسی؛ محاسبات داخلی برنامه همچنان میلادی می‌مانند.
+    const start = new Date(year + 621, 0, 1, 12, 0, 0, 0);
+    for (let offset = -100; offset <= 450; offset++) {
+        const candidate = new Date(start);
+        candidate.setDate(start.getDate() + offset);
+        const parts = getPersianDateParts(candidate);
+        if (parts.year === year && parts.month === month && parts.day === day) return candidate;
+    }
+    return null;
+}
+
+document.getElementById("calendarDateJump").addEventListener("change", event => {
+    const date = persianDateToGregorian(event.target.value);
+    if (!date) {
+        renderCalendar();
+        return;
+    }
+
+    selectedDate = date;
     renderAll();
 });
 
