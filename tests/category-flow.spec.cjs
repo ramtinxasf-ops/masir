@@ -15,8 +15,14 @@ test("activity category can be created, changed, and saved without a real Supaba
           signOut: async () => ({ error: null })
         },
         from: (table) => ({
-          select: async () => ({ data: window.__mockState.rows.map(row => ({ ...row })), error: null }),
+          select: function () { return this; },
           eq: function () { return this; },
+          then: function (resolve, reject) {
+            return Promise.resolve({
+              data: window.__mockState.rows.map(row => ({ ...row })),
+              error: null
+            }).then(resolve, reject);
+          },
           upsert: async (rows) => {
             window.__mockState.upserts.push(JSON.parse(JSON.stringify(rows)));
             for (const row of rows) {
