@@ -129,6 +129,15 @@ test("activity category can be created, changed, and saved without a real Supaba
   await expect(page.locator("#activityList .activity-item")).toHaveCount(1);
   await expect(page.locator("#activityFilterCount")).toContainText("همه فعالیت‌ها");
 
+  // The calendar's notion of today must follow Baku even when the browser timezone is behind UTC.
+  const bakuBoundaryKey = await page.evaluate(() =>
+    getDateKey(getTodayDate(new Date("2026-10-11T21:30:00.000Z")))
+  );
+  expect(bakuBoundaryKey).toBe("2026-10-12");
+  expect(await page.evaluate(() =>
+    getPersianDateInputValue(getTodayDate(new Date("2026-10-11T21:30:00.000Z")))
+  )).toBe("۱۴۰۵/۰۷/۲۰");
+
   // Calendar navigation: direct date jump updates the selected day and weekly report.
   await page.evaluate(() => showPage("home"));
   const dateJump = page.locator("#calendarDateJump");

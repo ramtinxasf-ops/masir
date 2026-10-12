@@ -1127,8 +1127,23 @@ const ACTIVITY_CATEGORIES = [
     { value: "finance", label: "مالی" }
 ];
 
-let selectedDate = new Date();
-selectedDate.setHours(12, 0, 0, 0);
+function getTodayDate(now = new Date()) {
+    const parts = new Intl.DateTimeFormat("en-US", {
+        timeZone: "Asia/Baku",
+        year: "numeric",
+        month: "numeric",
+        day: "numeric"
+    }).formatToParts(now);
+    const dateParts = Object.fromEntries(
+        parts.filter(part => part.type !== "literal")
+            .map(part => [part.type, Number(part.value)])
+    );
+
+    // Keep the calendar's internal date at local noon to avoid DST/midnight shifts.
+    return new Date(dateParts.year, dateParts.month - 1, dateParts.day, 12, 0, 0, 0);
+}
+
+let selectedDate = getTodayDate();
 let selectedCategoryFilter = "all";
 
 function getDateKey(date) {
@@ -1194,7 +1209,7 @@ function loadActivities() {
                 }
 
                 if (activity.completed === true) {
-                    const todayKey = getDateKey(new Date());
+                    const todayKey = getDateKey(getTodayDate());
 
                     if (!activity.completedDates.includes(todayKey)) {
                         activity.completedDates.push(todayKey);
@@ -1703,7 +1718,7 @@ function renderCalendar() {
     document.getElementById("calendarDateJump").value = getPersianDateInputValue(selectedDate);
 
     const dates = getWeekDates(selectedDate);
-    const todayKey = getDateKey(new Date());
+    const todayKey = getDateKey(getTodayDate());
     const selectedKey = getDateKey(selectedDate);
 
     dates.forEach(date => {
@@ -2239,7 +2254,7 @@ document.getElementById("activityForm").addEventListener("submit", event => {
 
         selectedDate.setDate(selectedDate.getDate() + difference);
     } else {
-        selectedDate = new Date();
+        selectedDate = getTodayDate();
     }
 
     selectedDate.setHours(12, 0, 0, 0);
@@ -2256,7 +2271,7 @@ document.getElementById("activityCategoryFilter").addEventListener("change", eve
 });
 
 document.getElementById("todayButton").addEventListener("click", () => {
-    selectedDate = new Date();
+    selectedDate = getTodayDate();
     selectedDate.setHours(12, 0, 0, 0);
     renderAll();
 });
