@@ -632,6 +632,28 @@ button:hover {
     border-color: #a78bfa;
 }
 
+.activity-category {
+    display: block;
+    padding: 9px 12px;
+    background: #0d1426;
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.activity-category:focus {
+    outline: 2px solid var(--purple-dark);
+    border-color: var(--purple);
+}
+
+.activity-category option {
+    background: #151c30;
+    color: #e2e8f0;
+}
+
 .activity-priority option {
     background: #151c30;
     color: #e2e8f0;
@@ -738,6 +760,18 @@ body {
                     maxlength="100"
                     required
                 >
+            </div>
+
+            <div class="form-field full-width">
+                <label for="activityCategory">دسته‌بندی فعالیت</label>
+                <select id="activityCategory" class="activity-category" style="width:100%;">
+                    <option value="general">بدون دسته‌بندی</option>
+                    <option value="work">کار</option>
+                    <option value="study">آموزش و مطالعه</option>
+                    <option value="health">سلامتی و ورزش</option>
+                    <option value="personal">شخصی</option>
+                    <option value="finance">مالی</option>
+                </select>
             </div>
 
             <div class="form-field">
@@ -990,6 +1024,15 @@ const WEEKDAY_NAMES = [
 
 const WEEK_ORDER = [6, 0, 1, 2, 3, 4, 5];
 
+const ACTIVITY_CATEGORIES = [
+    { value: "general", label: "بدون دسته‌بندی" },
+    { value: "work", label: "کار" },
+    { value: "study", label: "آموزش و مطالعه" },
+    { value: "health", label: "سلامتی و ورزش" },
+    { value: "personal", label: "شخصی" },
+    { value: "finance", label: "مالی" }
+];
+
 let selectedDate = new Date();
 selectedDate.setHours(12, 0, 0, 0);
 
@@ -1066,6 +1109,9 @@ function loadActivities() {
                 delete activity.completed;
 
                 activity.name = String(activity.name || "فعالیت بدون نام");
+                if (!ACTIVITY_CATEGORIES.some(category => category.value === activity.category)) {
+                    activity.category = "general";
+                }
                 activity.start = String(activity.start || "00:00");
                 activity.end = String(activity.end || "00:00");
 
@@ -1693,6 +1739,27 @@ function renderActivities() {
             saveActivities();
         });
 
+        const category = document.createElement("select");
+        category.className = "activity-category";
+        category.setAttribute("aria-label", "دسته‌بندی فعالیت");
+
+        ACTIVITY_CATEGORIES.forEach(categoryData => {
+            const option = document.createElement("option");
+            option.value = categoryData.value;
+            option.textContent = categoryData.label;
+            category.appendChild(option);
+        });
+
+        category.value = ACTIVITY_CATEGORIES.some(item => item.value === activity.category)
+            ? activity.category
+            : "general";
+
+        category.addEventListener("change", () => {
+            activity.category = category.value;
+            saveActivities();
+            renderAll();
+        });
+
         const time = document.createElement("div");
         time.className = "activity-time";
         time.textContent = `⏰ ${activity.start} تا ${activity.end}`;
@@ -1711,7 +1778,7 @@ function renderActivities() {
         }
 
         
-        info.append(name, priority, time, schedule);
+        info.append(name, priority, category, time, schedule);
 
 
         const deleteButton = document.createElement("button");
@@ -2009,6 +2076,7 @@ document.getElementById("activityForm").addEventListener("submit", event => {
     const name = document.getElementById("activityName").value.trim();
     const start = document.getElementById("startTime").value;
     const end = document.getElementById("endTime").value;
+    const category = document.getElementById("activityCategory").value;
 
     const selectedDays = Array.from(
         document.querySelectorAll('input[name="activityDays"]:checked')
@@ -2039,6 +2107,7 @@ document.getElementById("activityForm").addEventListener("submit", event => {
         name,
         start,
         end,
+        category,
         days: selectedDays,
         completedDates: []
     };
