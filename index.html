@@ -2346,7 +2346,7 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
             <input id="masir-password" type="password" autocomplete="current-password" placeholder="حداقل ۸ کاراکتر، حرف بزرگ انگلیسی و عدد" style="width:100%;box-sizing:border-box;padding:12px;margin:8px 0 6px;border-radius:8px;border:1px solid #39445f;background:#0b1020;color:white;">
             <div id="masir-password-rules" style="font-size:12px;line-height:1.9;margin-bottom:12px;color:#aab3ca;">
                 <div data-rule="length">○ حداقل ۸ کاراکتر</div><div data-rule="upper">○ حداقل یک حرف بزرگ انگلیسی (A-Z)</div>
-                <div data-rule="number">○ حداقل یک عدد (0-9)</div><div data-rule="english">○ دارای حروف انگلیسی</div>
+                <div data-rule="lower">○ حداقل یک حرف کوچک انگلیسی (a-z)</div><div data-rule="number">○ حداقل یک عدد (0-9)</div>
             </div>
             <button id="masir-login" type="button" style="width:100%;padding:12px;border:0;border-radius:8px;background:#a78bfa;color:#0b1020;font-weight:bold;cursor:pointer;">ورود</button>
             <button id="masir-signup" type="button" style="width:100%;padding:12px;margin-top:10px;border:1px solid #a78bfa;border-radius:8px;background:transparent;color:white;cursor:pointer;">ساخت حساب جدید</button>
@@ -2359,7 +2359,7 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
             <input id="masir-new-password" type="password" autocomplete="new-password" placeholder="رمز عبور جدید" style="width:100%;box-sizing:border-box;padding:12px;margin:8px 0 6px;border-radius:8px;border:1px solid #39445f;background:#0b1020;color:white;">
             <div id="masir-new-password-rules" style="font-size:12px;line-height:1.9;margin-bottom:12px;color:#aab3ca;">
                 <div data-rule="length">○ حداقل ۸ کاراکتر</div><div data-rule="upper">○ حداقل یک حرف بزرگ انگلیسی (A-Z)</div>
-                <div data-rule="number">○ حداقل یک عدد (0-9)</div><div data-rule="english">○ دارای حروف انگلیسی</div>
+                <div data-rule="lower">○ حداقل یک حرف کوچک انگلیسی (a-z)</div><div data-rule="number">○ حداقل یک عدد (0-9)</div>
             </div>
             <button id="masir-update-password" type="button" style="width:100%;padding:12px;background:#a78bfa;color:#0b1020;font-weight:bold;">ذخیره رمز جدید</button>
         </div>
@@ -2451,8 +2451,8 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
         return {
             length: password.length >= 8,
             upper: /[A-Z]/.test(password),
-            number: /[0-9]/.test(password),
-            english: /[A-Za-z]/.test(password)
+            lower: /[a-z]/.test(password),
+            number: /[0-9]/.test(password)
         };
     }
     function updatePasswordRules() {
@@ -2464,8 +2464,8 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
             item.textContent = (rules[rule] ? "✓ " : "○ ") + ({
                 length: "حداقل ۸ کاراکتر",
                 upper: "حداقل یک حرف بزرگ انگلیسی (A-Z)",
-                number: "حداقل یک عدد (0-9)",
-                english: "دارای حروف انگلیسی"
+                lower: "حداقل یک حرف کوچک انگلیسی (a-z)",
+                number: "حداقل یک عدد (0-9)"
             }[rule]);
         });
         return Object.values(rules).every(Boolean);
@@ -2482,8 +2482,8 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
             item.textContent = (rules[rule] ? "✓ " : "○ ") + ({
                 length: "حداقل ۸ کاراکتر",
                 upper: "حداقل یک حرف بزرگ انگلیسی (A-Z)",
-                number: "حداقل یک عدد (0-9)",
-                english: "دارای حروف انگلیسی"
+                lower: "حداقل یک حرف کوچک انگلیسی (a-z)",
+                number: "حداقل یک عدد (0-9)"
             }[rule]);
         });
         return Object.values(rules).every(Boolean);
