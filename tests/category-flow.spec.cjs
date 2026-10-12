@@ -87,6 +87,7 @@ test("activity category can be created, changed, and saved without a real Supaba
   await expect(page.locator("#profileLogoutArea button")).toContainText("خروج از حساب");
 
   // Password requirements update while typing; phone OTP panel can be selected.
+  await page.evaluate(() => { document.getElementById("masir-auth-overlay").style.display = "flex"; });
   await page.locator("#masir-password").fill("weak");
   await expect(page.locator('[data-rule="length"]')).toContainText("○");
   await page.locator("#masir-password").fill("StrongPass1");
