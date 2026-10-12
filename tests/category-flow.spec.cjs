@@ -128,4 +128,30 @@ test("activity category can be created, changed, and saved without a real Supaba
   });
   await expect(page.locator("#activityList .activity-item")).toHaveCount(1);
   await expect(page.locator("#activityFilterCount")).toContainText("همه فعالیت‌ها");
+
+  // Calendar navigation: direct date jump updates the selected day and weekly report.
+  await page.evaluate(() => showPage("home"));
+  const dateJump = page.locator("#calendarDateJump");
+  await expect(dateJump).toHaveValue(/^\d{4}-\d{2}-\d{2}$/);
+  await dateJump.evaluate(input => {
+    input.value = "2026-10-21";
+    input.dispatchEvent(new Event("change", { bubbles: true }));
+  });
+  await expect(dateJump).toHaveValue("2026-10-21");
+  expect(await page.evaluate(() => getDateKey(selectedDate))).toBe("2026-10-21");
+  await expect(page.locator("#calendarMonth")).not.toBeEmpty();
+  await expect(page.locator("#reportWeekLabel")).not.toBeEmpty();
+
+  await page.locator("#previousWeekButton").click();
+  expect(await page.evaluate(() => getDateKey(selectedDate))).toBe("2026-10-14");
+  await expect(dateJump).toHaveValue("2026-10-14");
+
+  await page.locator("#nextWeekButton").click();
+  expect(await page.evaluate(() => getDateKey(selectedDate))).toBe("2026-10-21");
+  await expect(dateJump).toHaveValue("2026-10-21");
+
+  await page.locator("#todayButton").click();
+  const todayKey = await page.evaluate(() => getDateKey(new Date()));
+  expect(await page.evaluate(() => getDateKey(selectedDate))).toBe(todayKey);
+  await expect(dateJump).toHaveValue(todayKey);
 });
