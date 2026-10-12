@@ -794,6 +794,7 @@ body {
     padding-bottom: 90px;
 }
 
+.masir-password-wrap{position:relative;width:100%}.masir-password-toggle{position:absolute;left:7px;top:50%;transform:translateY(-50%);display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;padding:5px;border:0;border-radius:6px;background:transparent;color:#c4b5fd;cursor:pointer}.masir-password-toggle:hover{background:rgba(196,181,253,.12)}.masir-password-toggle:focus-visible{outline:2px solid #a78bfa;outline-offset:2px}.masir-password-toggle svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.masir-password-toggle.is-visible svg{stroke:#a78bfa}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -2343,7 +2344,7 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
                 <label for="masir-birth-date">تاریخ تولد</label><input id="masir-birth-date" type="date" autocomplete="bday" style="width:100%;box-sizing:border-box;padding:12px;margin:8px 0 16px;border-radius:8px;border:1px solid #39445f;background:#0b1020;color:white;">
             </div>
             <label for="masir-password">رمز عبور</label>
-            <input id="masir-password" type="password" autocomplete="current-password" placeholder="حداقل ۸ کاراکتر، حرف بزرگ انگلیسی و عدد" style="width:100%;box-sizing:border-box;padding:12px;margin:8px 0 6px;border-radius:8px;border:1px solid #39445f;background:#0b1020;color:white;">
+            <div class="masir-password-wrap"><input id="masir-password" type="password" autocomplete="current-password" placeholder="حداقل ۸ کاراکتر، حرف بزرگ انگلیسی و عدد" style="width:100%;box-sizing:border-box;padding:12px 12px 12px 48px;margin:8px 0 6px;border-radius:8px;border:1px solid #39445f;background:#0b1020;color:white;"><button type="button" class="masir-password-toggle" data-password-target="masir-password" aria-label="نمایش رمز عبور" aria-pressed="false" title="نمایش یا مخفی کردن رمز"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"></path><circle cx="12" cy="12" r="3"></circle></svg></button></div>
             <div id="masir-password-rules" style="font-size:12px;line-height:1.9;margin-bottom:12px;color:#aab3ca;">
                 <div data-rule="length">○ حداقل ۸ کاراکتر</div><div data-rule="upper">○ حداقل یک حرف بزرگ انگلیسی (A-Z)</div>
                 <div data-rule="lower">○ حداقل یک حرف کوچک انگلیسی (a-z)</div><div data-rule="number">○ حداقل یک عدد (0-9)</div>
@@ -2356,7 +2357,7 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
             <h3>تنظیم رمز عبور جدید</h3>
             <p style="color:#aab3ca;font-size:13px;">یک رمز جدید مطابق چهار شرط زیر انتخاب کن.</p>
             <label for="masir-new-password">رمز عبور جدید</label>
-            <input id="masir-new-password" type="password" autocomplete="new-password" placeholder="رمز عبور جدید" style="width:100%;box-sizing:border-box;padding:12px;margin:8px 0 6px;border-radius:8px;border:1px solid #39445f;background:#0b1020;color:white;">
+            <div class="masir-password-wrap"><input id="masir-new-password" type="password" autocomplete="new-password" placeholder="رمز عبور جدید" style="width:100%;box-sizing:border-box;padding:12px 12px 12px 48px;margin:8px 0 6px;border-radius:8px;border:1px solid #39445f;background:#0b1020;color:white;"><button type="button" class="masir-password-toggle" data-password-target="masir-new-password" aria-label="نمایش رمز عبور جدید" aria-pressed="false" title="نمایش یا مخفی کردن رمز"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"></path><circle cx="12" cy="12" r="3"></circle></svg></button></div>
             <div id="masir-new-password-rules" style="font-size:12px;line-height:1.9;margin-bottom:12px;color:#aab3ca;">
                 <div data-rule="length">○ حداقل ۸ کاراکتر</div><div data-rule="upper">○ حداقل یک حرف بزرگ انگلیسی (A-Z)</div>
                 <div data-rule="lower">○ حداقل یک حرف کوچک انگلیسی (a-z)</div><div data-rule="number">○ حداقل یک عدد (0-9)</div>
@@ -2411,6 +2412,17 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
     const newPasswordInput = document.getElementById("masir-new-password");
     const newPasswordRules = document.getElementById("masir-new-password-rules");
     const updatePasswordButton = document.getElementById("masir-update-password");
+    document.querySelectorAll(".masir-password-toggle").forEach((toggle) => {
+        toggle.addEventListener("click", () => {
+            const target = document.getElementById(toggle.dataset.passwordTarget);
+            if (!target) return;
+            const showPassword = target.type === "password";
+            target.type = showPassword ? "text" : "password";
+            toggle.classList.toggle("is-visible", showPassword);
+            toggle.setAttribute("aria-pressed", String(showPassword));
+            toggle.setAttribute("aria-label", showPassword ? "مخفی کردن رمز عبور" : "نمایش رمز عبور");
+        });
+    });
     const profileLogoutArea = document.getElementById("profileLogoutArea");
     let authMode = "email";
     let signupMode = false;
