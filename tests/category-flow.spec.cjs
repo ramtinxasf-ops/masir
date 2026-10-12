@@ -130,6 +130,7 @@ test("activity category can be created, changed, and saved without a real Supaba
   await expect(page.locator("#activityFilterCount")).toContainText("همه فعالیت‌ها");
 
   // Calendar navigation: direct date jump updates the selected day and weekly report.
+  await page.evaluate(() => showPage("home"));
   const dateJump = page.locator("#calendarDateJump");
   await expect(dateJump).toHaveValue(/^\\d{4}-\\d{2}-\\d{2}$/);
   await dateJump.evaluate(input => {
