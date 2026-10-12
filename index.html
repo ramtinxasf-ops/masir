@@ -2414,6 +2414,8 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
     const profileLogoutArea = document.getElementById("profileLogoutArea");
     let authMode = "email";
     let signupMode = false;
+    // هنگام بازیابی رمز، بارگذاری نشست نباید فرم بازیابی را ببندد.
+    let recoveryMode = false;
 
     const logoutButton = document.createElement("button");
     logoutButton.type = "button";
@@ -2489,6 +2491,7 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
         return Object.values(rules).every(Boolean);
     }
     function showRecoveryForm() {
+        recoveryMode = true;
         overlay.style.display = "flex";
         emailAuthPanel.style.display = "none";
         phoneAuthPanel.style.display = "none";
@@ -2512,6 +2515,7 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
             if (error) throw error;
             message.textContent = "رمز عبور با موفقیت تغییر کرد.";
             message.style.color = "#a7f3d0";
+            recoveryMode = false;
             recoveryPanel.style.display = "none";
             emailTab.style.display = "";
             phoneTab.style.display = "";
@@ -2767,10 +2771,16 @@ async function loadUserActivities(user) {
        window.updateBackupStatus();
    }
 
-    overlay.style.display = "none";
-    logoutButton.style.display = "block";
+    // نشست بازیابی رمز هم معتبر است؛ اما نباید فرم تغییر رمز را ببندد.
+    if (recoveryMode) {
+        overlay.style.display = "flex";
+        logoutButton.style.display = "none";
+    } else {
+        overlay.style.display = "none";
+        logoutButton.style.display = "block";
+        showMessage("");
+    }
     populateProfile(user);
-    showMessage("");
 
     // اگر سرور خالی بود و پشتیبان داشتیم، آن را به سرور می‌فرستیم.
     if (activities.length > 0 && serverActivities.length === 0) {
