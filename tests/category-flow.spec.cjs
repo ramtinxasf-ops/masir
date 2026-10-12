@@ -77,6 +77,9 @@ test("activity category can be created, changed, and saved without a real Supaba
   await page.locator("#activityForm button[type='submit']").click();
   console.log("STEP: activity submitted");
 
+  await expect(page.locator("#activityCategoryFilter")).toHaveValue("all");
+  await expect(page.locator("#activityList .activity-item")).toHaveCount(1);
+
   const categorySelect = page.locator("#activityList select.activity-category").first();
   await expect(categorySelect).toHaveValue("study");
   console.log("STEP: category select verified");
@@ -86,12 +89,43 @@ test("activity category can be created, changed, and saved without a real Supaba
   });
   console.log("STEP: category change event dispatched");
 
+  console.log("STEP: waiting for local save");
+  await expect.poll(async () => page.evaluate(() => {
+    const saved = JSON.parse(localStorage.getItem("masir_activities_v1_playwright-test-user") || "[]");
+    return saved.some(activity => activity.name === "فعالیت آزمایشی دسته‌بندی" && activity.category === "work");
+  }), { timeout: 10000 }).toBe(true);
+  console.log("STEP: local save verified");
+  await page.evaluate(async () => { await window.masirSaveQueue; });
+  console.log("STEP: save queue settled");
   await expect.poll(async () => page.evaluate(() =>
     window.__mockState.rows.some(row => row.data?.name === "فعالیت آزمایشی دسته‌بندی" && row.data?.category === "work")
-  )).toBe(true);
+  ), { timeout: 10000 }).toBe(true);
+  console.log("STEP: server mock save verified");
 
   const saved = await page.evaluate(() => JSON.parse(localStorage.getItem("masir_activities_v1_playwright-test-user") || "[]"));
   expect(saved).toHaveLength(1);
   expect(saved[0].category).toBe("work");
   expect(await page.evaluate(() => window.__mockState.upserts.length)).toBeGreaterThan(0);
+
+  await page.locator("#activityCategoryFilter").evaluate(select => {
+    select.value = "study";
+    select.dispatchEvent(new Event("change", { bubbles: true }));
+  });
+  await expect(page.locator("#activityList .activity-item")).toHaveCount(0);
+  await expect(page.locator("#activityList .empty-message")).toContainText("با این دسته‌بندی");
+  await expect(page.locator("#activityFilterCount")).toContainText("۰ از ۱");
+
+  await page.locator("#activityCategoryFilter").evaluate(select => {
+    select.value = "work";
+    select.dispatchEvent(new Event("change", { bubbles: true }));
+  });
+  await expect(page.locator("#activityList .activity-item")).toHaveCount(1);
+  await expect(page.locator("#activityFilterCount")).toContainText("۱ از ۱");
+
+  await page.locator("#activityCategoryFilter").evaluate(select => {
+    select.value = "all";
+    select.dispatchEvent(new Event("change", { bubbles: true }));
+  });
+  await expect(page.locator("#activityList .activity-item")).toHaveCount(1);
+  await expect(page.locator("#activityFilterCount")).toContainText("همه فعالیت‌ها");
 });
