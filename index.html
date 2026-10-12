@@ -2346,6 +2346,17 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
             <button id="masir-signup" type="button" style="width:100%;padding:12px;margin-top:10px;border:1px solid #a78bfa;border-radius:8px;background:transparent;color:white;cursor:pointer;">ساخت حساب جدید</button>
             <button id="masir-forgot-password" type="button" style="width:100%;padding:10px;margin-top:8px;background:transparent;color:#c4b5fd;text-decoration:underline;">رمز عبورم را فراموش کرده‌ام</button>
         </div>
+        <div id="masir-recovery-auth" style="display:none;">
+            <h3>تنظیم رمز عبور جدید</h3>
+            <p style="color:#aab3ca;font-size:13px;">یک رمز جدید مطابق چهار شرط زیر انتخاب کن.</p>
+            <label for="masir-new-password">رمز عبور جدید</label>
+            <input id="masir-new-password" type="password" autocomplete="new-password" placeholder="رمز عبور جدید" style="width:100%;box-sizing:border-box;padding:12px;margin:8px 0 6px;border-radius:8px;border:1px solid #39445f;background:#0b1020;color:white;">
+            <div id="masir-new-password-rules" style="font-size:12px;line-height:1.9;margin-bottom:12px;color:#aab3ca;">
+                <div data-rule="length">○ حداقل ۸ کاراکتر</div><div data-rule="upper">○ حداقل یک حرف بزرگ انگلیسی (A-Z)</div>
+                <div data-rule="number">○ حداقل یک عدد (0-9)</div><div data-rule="english">○ دارای حروف انگلیسی</div>
+            </div>
+            <button id="masir-update-password" type="button" style="width:100%;padding:12px;background:#a78bfa;color:#0b1020;font-weight:bold;">ذخیره رمز جدید</button>
+        </div>
         <div id="masir-phone-auth" style="display:none;">
             <label for="masir-phone-login">شماره تلفن با کد کشور</label>
             <input id="masir-phone-login" type="tel" autocomplete="tel" placeholder="+989123456789" style="width:100%;box-sizing:border-box;padding:12px;margin:8px 0 16px;border-radius:8px;border:1px solid #39445f;background:#0b1020;color:white;">
@@ -2383,6 +2394,10 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
     const verifyOtpButton = document.getElementById("masir-verify-otp");
     const forgotPasswordButton = document.getElementById("masir-forgot-password");
     const passwordRules = document.getElementById("masir-password-rules");
+    const recoveryPanel = document.getElementById("masir-recovery-auth");
+    const newPasswordInput = document.getElementById("masir-new-password");
+    const newPasswordRules = document.getElementById("masir-new-password-rules");
+    const updatePasswordButton = document.getElementById("masir-update-password");
     const profileLogoutArea = document.getElementById("profileLogoutArea");
     let authMode = "email";
     let signupMode = false;
@@ -2444,6 +2459,62 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
     }
     passwordInput.addEventListener("input", updatePasswordRules);
     updatePasswordRules();
+
+    function updateRuleList(input, list) {
+        const rules = validatePassword(input.value);
+        Object.keys(rules).forEach(rule => {
+            const item = list.querySelector('[data-rule="' + rule + '"]');
+            if (!item) return;
+            item.style.color = rules[rule] ? "#34d399" : "#fca5a5";
+            item.textContent = (rules[rule] ? "✓ " : "○ ") + ({
+                length: "حداقل ۸ کاراکتر",
+                upper: "حداقل یک حرف بزرگ انگلیسی (A-Z)",
+                number: "حداقل یک عدد (0-9)",
+                english: "دارای حروف انگلیسی"
+            }[rule]);
+        });
+        return Object.values(rules).every(Boolean);
+    }
+    function showRecoveryForm() {
+        overlay.style.display = "flex";
+        emailAuthPanel.style.display = "none";
+        phoneAuthPanel.style.display = "none";
+        recoveryPanel.style.display = "block";
+        emailTab.style.display = "none";
+        phoneTab.style.display = "none";
+        message.textContent = "لطفاً رمز جدیدت را ثبت کن.";
+    }
+    newPasswordInput.addEventListener("input", () => updateRuleList(newPasswordInput, newPasswordRules));
+    updatePasswordButton.addEventListener("click", async function() {
+        const password = newPasswordInput.value;
+        if (!updateRuleList(newPasswordInput, newPasswordRules)) {
+            message.textContent = "رمز جدید باید هر چهار شرط را داشته باشد.";
+            message.style.color = "#ff8b8b";
+            return;
+        }
+        updatePasswordButton.disabled = true;
+        message.textContent = "در حال ذخیره رمز جدید...";
+        try {
+            const { data, error } = await supabaseClient.auth.updateUser({ password });
+            if (error) throw error;
+            message.textContent = "رمز عبور با موفقیت تغییر کرد.";
+            message.style.color = "#a7f3d0";
+            recoveryPanel.style.display = "none";
+            emailTab.style.display = "";
+            phoneTab.style.display = "";
+            setAuthMode("email");
+            overlay.style.display = "none";
+            if (data && data.user) {
+                window.masirCurrentUser = data.user;
+                populateProfile(data.user);
+            }
+        } catch (error) {
+            message.textContent = "تغییر رمز انجام نشد: " + (error.message || "لینک بازیابی ممکن است منقضی شده باشد.");
+            message.style.color = "#ff8b8b";
+        } finally {
+            updatePasswordButton.disabled = false;
+        }
+    });
 
     function showProfileMessage(text, isError = false) {
         const target = document.getElementById("profileSaveMessage");
@@ -2749,7 +2820,10 @@ async function loadUserActivities(user) {
     verifyOtpButton.addEventListener("click", verifyPhoneOtp);
 
     passwordInput.addEventListener("keydown", function (event) {
-        if (event.key === "Enter") login();
+        if (event.key === "Enter") {
+            if (signupMode) signup();
+            else login();
+        }
     });
 
     // اگر کاربر از قبل وارد شده باشد، اطلاعات همان حساب را بارگذاری کن.
@@ -2769,6 +2843,10 @@ async function loadUserActivities(user) {
 
     // اگر ورود یا خروج از جای دیگری انجام شد، وضعیت حساب را هماهنگ کن.
     supabaseClient.auth.onAuthStateChange(async function (event, session) {
+        if (event === "PASSWORD_RECOVERY") {
+            showRecoveryForm();
+            return;
+        }
         if (event === "SIGNED_OUT" || !session) {
             window.masirCurrentUser = null;
             activities = [];
