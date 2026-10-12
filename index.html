@@ -2696,7 +2696,7 @@ async function loadUserActivities(user) {
 
     async function sendPhoneOtp() {
         const phone = phoneLoginInput.value.trim();
-        if (!/^\\+[1-9]\\d{7,14}$/.test(phone)) return showMessage("شماره را با کد کشور وارد کن؛ نمونه: +989123456789", true);
+        if (!/^\+[1-9]\d{7,14}$/.test(phone)) return showMessage("شماره را با کد کشور وارد کن؛ نمونه: +989123456789", true);
         sendOtpButton.disabled = true;
         showMessage("در حال ارسال کد پیامکی...");
         try {
