@@ -2334,9 +2334,14 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
             <button type="button" id="masir-email-tab" style="padding:10px;background:#352653;color:white;border:1px solid #a78bfa;">ایمیل و رمز</button>
             <button type="button" id="masir-phone-tab" style="padding:10px;background:transparent;color:white;border:1px solid #39445f;">ورود با پیامک</button>
         </div>
-        <div id="masir-email-auth">
+        <form id="masir-email-auth" autocomplete="on" novalidate>
             <label for="masir-email">ایمیل</label>
             <input id="masir-email" type="email" autocomplete="email" placeholder="ایمیل شما" required style="width:100%;box-sizing:border-box;padding:12px;margin:8px 0 16px;border-radius:8px;border:1px solid #39445f;background:#0b1020;color:white;">
+            <label for="masir-remember-email" style="display:flex;align-items:center;gap:8px;margin:-4px 0 12px;font-size:13px;color:#d1d5db;cursor:pointer;">
+                <input id="masir-remember-email" type="checkbox" checked style="width:17px;height:17px;accent-color:#a78bfa;">
+                ایمیلم را در این دستگاه به خاطر بسپار
+            </label>
+            <p style="font-size:12px;line-height:1.7;color:#aab3ca;margin:0 0 12px;">برای ذخیره امن رمز، اگر مرورگر پیشنهاد ذخیره رمز داد، گزینه ذخیره را انتخاب کن. رمز در خود سایت ذخیره نمی‌شود.</p>
             <div id="masir-signup-fields" style="display:none;">
                 <label for="masir-first-name">نام</label><input id="masir-first-name" type="text" autocomplete="given-name" maxlength="60" placeholder="نام" style="width:100%;box-sizing:border-box;padding:12px;margin:8px 0 16px;border-radius:8px;border:1px solid #39445f;background:#0b1020;color:white;">
                 <label for="masir-last-name">نام خانوادگی</label><input id="masir-last-name" type="text" autocomplete="family-name" maxlength="80" placeholder="نام خانوادگی" style="width:100%;box-sizing:border-box;padding:12px;margin:8px 0 16px;border-radius:8px;border:1px solid #39445f;background:#0b1020;color:white;">
@@ -2352,7 +2357,7 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
             <button id="masir-login" type="button" style="width:100%;padding:12px;border:0;border-radius:8px;background:#a78bfa;color:#0b1020;font-weight:bold;cursor:pointer;">ورود</button>
             <button id="masir-signup" type="button" style="width:100%;padding:12px;margin-top:10px;border:1px solid #a78bfa;border-radius:8px;background:transparent;color:white;cursor:pointer;">ساخت حساب جدید</button>
             <button id="masir-forgot-password" type="button" style="width:100%;padding:10px;margin-top:8px;background:transparent;color:#c4b5fd;text-decoration:underline;">رمز عبورم را فراموش کرده‌ام</button>
-        </div>
+        </form>
         <div id="masir-recovery-auth" style="display:none;">
             <h3>تنظیم رمز عبور جدید</h3>
             <p style="color:#aab3ca;font-size:13px;">یک رمز جدید مطابق چهار شرط زیر انتخاب کن.</p>
@@ -2386,6 +2391,8 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
 (function () {
     const overlay = document.getElementById("masir-auth-overlay");
     const emailInput = document.getElementById("masir-email");
+    const rememberEmailCheckbox = document.getElementById("masir-remember-email");
+    const emailLoginForm = document.getElementById("masir-email-auth");
     const passwordInput = document.getElementById("masir-password");
     const loginButton = document.getElementById("masir-login");
     const signupButton = document.getElementById("masir-signup");
@@ -2426,6 +2433,39 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
     const profileLogoutArea = document.getElementById("profileLogoutArea");
     let authMode = "email";
     let signupMode = false;
+
+    // Remember only the email in this browser. Passwords are left to the device password manager.
+    const rememberedEmailKey = "masir_remembered_login_email";
+    try {
+        const savedEmail = localStorage.getItem(rememberedEmailKey);
+        if (savedEmail) emailInput.value = savedEmail;
+        rememberEmailCheckbox.checked = localStorage.getItem("masir_remember_login_email") !== "false";
+    } catch (storageError) {
+        console.warn("ذخیره ایمیل در این مرورگر در دسترس نیست.", storageError);
+    }
+    rememberEmailCheckbox.addEventListener("change", () => {
+        if (!rememberEmailCheckbox.checked) {
+            try {
+                localStorage.removeItem(rememberedEmailKey);
+                localStorage.setItem("masir_remember_login_email", "false");
+            } catch (_) {}
+        } else {
+            try { localStorage.setItem("masir_remember_login_email", "true"); } catch (_) {}
+        }
+    });
+    function saveRememberedEmail() {
+        try {
+            if (rememberEmailCheckbox.checked) {
+                localStorage.setItem(rememberedEmailKey, emailInput.value.trim());
+                localStorage.setItem("masir_remember_login_email", "true");
+            } else {
+                localStorage.removeItem(rememberedEmailKey);
+                localStorage.setItem("masir_remember_login_email", "false");
+            }
+        } catch (storageError) {
+            console.warn("ایمیل ذخیره نشد.", storageError);
+        }
+    }
     // هنگام بازیابی رمز، بارگذاری نشست نباید فرم بازیابی را ببندد.
     let recoveryMode = false;
 
@@ -2826,6 +2866,7 @@ async function loadUserActivities(user) {
 
             if (error) throw error;
 
+            saveRememberedEmail();
             await loadUserActivities(data.user);
         } catch (error) {
             console.error(error);
@@ -2947,8 +2988,15 @@ async function loadUserActivities(user) {
     sendOtpButton.addEventListener("click", sendPhoneOtp);
     verifyOtpButton.addEventListener("click", verifyPhoneOtp);
 
+    emailLoginForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+        if (signupMode) signup();
+        else login();
+    });
+
     passwordInput.addEventListener("keydown", function (event) {
         if (event.key === "Enter") {
+            event.preventDefault();
             if (signupMode) signup();
             else login();
         }
