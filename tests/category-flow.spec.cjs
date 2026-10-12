@@ -48,7 +48,7 @@ test("activity category can be created, changed, and saved without a real Supaba
     body: "window.supabase = window.__testSupabase;"
   }));
   console.log("STEP: opening app");
-  await page.goto("http://127.0.0.1:4173/index.html");
+  await page.goto("http://127.0.0.1:4173/index.html", { waitUntil: "domcontentloaded" });
   console.log("STEP: app loaded");
   // Category flow test only: bypass the login UI and set a synthetic test user.
   // All Supabase calls remain mocked; no real account or production data is used.
