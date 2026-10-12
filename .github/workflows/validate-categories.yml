@@ -84,7 +84,7 @@ jobs:
               "category definitions": "ACTIVITY_CATEGORIES",
               "new activity category field": 'id="activityCategory"',
               "legacy category fallback": 'category = "general"',
-              "category save on new activity": "category: category",
+              "category save on new activity": "        category,",
               "save after category change": "saveActivities()",
           }
           missing = [name for name, token in required.items() if token not in s]
