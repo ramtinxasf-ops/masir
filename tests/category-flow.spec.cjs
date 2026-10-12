@@ -12,7 +12,7 @@ test("activity category can be created, changed, and saved without a real Supaba
     window.__testSupabase = {
       createClient: () => ({
         auth: {
-          getSession: async () => ({ data: { session: null }, error: null }),
+          getSession: async () => ({ data: { session: { user, access_token: "test-access-token" } }, error: null }),
           onAuthStateChange: () => ({ data: { subscription: { unsubscribe() {} } } }),
           signInWithPassword: async () => ({ data: { user, session }, error: null }),
           signUp: async () => ({ data: { user, session }, error: null }),
