@@ -2585,7 +2585,7 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
             const url = URL.createObjectURL(blob);
             const link = document.createElement("a");
             link.href = url;
-            link.download = "masir-users-" + new Date().toISOString().slice(0, 10) + ".csv";
+            link.download = "masir-users-" + new Date().toISOString().slice(0, 10) + ".txt";
             document.body.appendChild(link);
             link.click();
             link.remove();
