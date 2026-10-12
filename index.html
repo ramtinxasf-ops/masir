@@ -135,7 +135,8 @@ label {
 }
 
 input[type="text"],
-input[type="time"] {
+input[type="time"],
+input[type="date"] {
     width: 100%;
     min-width: 0;
     padding: 12px;
@@ -254,6 +255,37 @@ button:hover {
     color: var(--purple);
     font-size: 14px;
     margin-top: 5px;
+}
+
+.calendar-controls {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.calendar-jump-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 0 0 14px;
+    padding: 12px;
+    background: #111a2e;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+}
+
+.calendar-jump-row label {
+    margin: 0;
+}
+
+.calendar-jump-row input[type="date"] {
+    width: auto;
+    min-width: 170px;
+    max-width: 100%;
 }
 
 .week-calendar {
@@ -576,6 +608,21 @@ button:hover {
         gap: 4px;
     }
 
+    .calendar-controls {
+        width: 100%;
+        justify-content: stretch;
+    }
+
+    .calendar-controls button {
+        flex: 1;
+        padding: 9px 7px;
+        font-size: 12px;
+    }
+
+    .calendar-jump-row input[type="date"] {
+        width: 100%;
+    }
+
     .calendar-day {
         padding: 8px 1px;
         border-radius: 8px;
@@ -883,9 +930,22 @@ body {
             <div class="calendar-month" id="calendarMonth"></div>
         </div>
 
-        <button type="button" class="today-button" id="todayButton">
-            رفتن به امروز
-        </button>
+        <div class="calendar-controls" aria-label="کنترل‌های تقویم">
+            <button type="button" class="secondary-button" id="previousWeekButton">
+                هفته قبل ←
+            </button>
+            <button type="button" class="today-button" id="todayButton">
+                امروز
+            </button>
+            <button type="button" class="secondary-button" id="nextWeekButton">
+                → هفته بعد
+            </button>
+        </div>
+    </div>
+
+    <div class="calendar-jump-row">
+        <label for="calendarDateJump">رفتن مستقیم به تاریخ</label>
+        <input type="date" id="calendarDateJump" aria-label="انتخاب تاریخ برای نمایش در تقویم">
     </div>
 
     <div class="week-calendar" id="weekCalendar"></div>
@@ -914,20 +974,6 @@ body {
 <section class="card" id="reportSection">
     <div class="report-header">
         <h2>📈 گزارش عملکرد هفتگی</h2>
-
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
-            <button class="secondary-button" id="previousWeekButton" type="button">
-                هفته قبل ←
-            </button>
-
-            <button class="secondary-button" id="currentWeekButton" type="button">
-                هفته جاری
-            </button>
-
-            <button class="secondary-button" id="nextWeekButton" type="button">
-                → هفته بعد
-            </button>
-        </div>
     </div>
 
     <div class="calendar-month" id="reportWeekLabel"></div>
@@ -1647,6 +1693,8 @@ function renderCalendar() {
     const calendar = document.getElementById("weekCalendar");
     calendar.innerHTML = "";
 
+    document.getElementById("calendarDateJump").value = getDateKey(selectedDate);
+
     const dates = getWeekDates(selectedDate);
     const todayKey = getDateKey(new Date());
     const selectedKey = getDateKey(selectedDate);
@@ -2216,9 +2264,11 @@ document.getElementById("nextWeekButton").addEventListener("click", () => {
     renderAll();
 });
 
-document.getElementById("currentWeekButton").addEventListener("click", () => {
-    selectedDate = new Date();
-    selectedDate.setHours(12, 0, 0, 0);
+document.getElementById("calendarDateJump").addEventListener("change", event => {
+    if (!event.target.value) return;
+
+    const [year, month, day] = event.target.value.split("-").map(Number);
+    selectedDate = new Date(year, month - 1, day, 12, 0, 0, 0);
     renderAll();
 });
 
