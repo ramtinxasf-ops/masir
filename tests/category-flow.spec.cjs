@@ -96,6 +96,7 @@ test("activity category can be created, changed, and saved without a real Supaba
   await expect(page.locator('#masir-password-rules [data-rule="number"]')).toContainText("✓");
   await page.locator("#masir-phone-tab").click();
   await expect(page.locator("#masir-phone-auth")).toBeVisible();
+  await page.evaluate(() => { document.getElementById("masir-auth-overlay").style.display = "none"; });
 
   await page.evaluate(() => showPage("planning"));
   console.log("STEP: planning page opened");
