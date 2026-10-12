@@ -1,7 +1,7 @@
 const { test, expect } = require("@playwright/test");
 
 test("activity category can be created, changed, and saved without a real Supabase account", async ({ page }) => {
-  test.setTimeout(120000);
+  test.setTimeout(45000);
   page.on("pageerror", error => console.log("PAGE ERROR:", error.stack || error.message));
   page.on("console", message => { if (message.type() === "error") console.log("BROWSER ERROR:", message.text()); });
   page.on("dialog", dialog => dialog.accept());
@@ -43,13 +43,20 @@ test("activity category can be created, changed, and saved without a real Supaba
     };
   });
 
-  await page.route("https://cdn.jsdelivr.net/**", route => route.fulfill({
-    status: 200,
-    contentType: "application/javascript",
-    body: "window.supabase = window.__testSupabase;"
-  }));
+  await page.route("**/*", route => {
+    const url = route.request().url();
+    if (url.startsWith("http://127.0.0.1:4173/")) return route.continue();
+    if (url.includes("cdn.jsdelivr.net/npm/@supabase/supabase-js@2")) {
+      return route.fulfill({
+        status: 200,
+        contentType: "application/javascript",
+        body: "window.supabase = window.__testSupabase;"
+      });
+    }
+    return route.abort();
+  });
   console.log("STEP: opening app");
-  await page.goto("http://127.0.0.1:4173/index.html", { waitUntil: "domcontentloaded" });
+  await page.goto("http://127.0.0.1:4173/index.html", { waitUntil: "domcontentloaded", timeout: 15000 });
   console.log("STEP: app loaded");
   // Category flow test only: bypass the login UI and set a synthetic test user.
   // All Supabase calls remain mocked; no real account or production data is used.
