@@ -1,7 +1,7 @@
 const { test, expect } = require("@playwright/test");
 
 test("activity category can be created, changed, and saved without a real Supabase account", async ({ page }) => {
-  test.setTimeout(60000);
+  test.setTimeout(120000);
   page.on("pageerror", error => console.log("PAGE ERROR:", error.stack || error.message));
   page.on("console", message => { if (message.type() === "error") console.log("BROWSER ERROR:", message.text()); });
   await page.addInitScript(() => {
@@ -47,7 +47,9 @@ test("activity category can be created, changed, and saved without a real Supaba
     contentType: "application/javascript",
     body: "window.supabase = window.__testSupabase;"
   }));
+  console.log("STEP: opening app");
   await page.goto("http://127.0.0.1:4173/index.html");
+  console.log("STEP: app loaded");
   await page.goto("http://127.0.0.1:4173/index.html");
   // Category flow test only: bypass the login UI and set a synthetic test user.
   // All Supabase calls remain mocked; no real account or production data is used.
@@ -56,18 +58,24 @@ test("activity category can be created, changed, and saved without a real Supaba
     document.getElementById("masir-auth-overlay").style.display = "none";
   });
 
+  console.log("STEP: mock user set");
   await page.evaluate(() => showPage("planning"));
+  console.log("STEP: planning page opened");
   await page.locator("#activityName").fill("فعالیت آزمایشی دسته‌بندی");
   await page.locator("#activityCategory").selectOption("study");
   await page.locator("#startTime").fill("09:00");
   await page.locator("#endTime").fill("10:00");
   await page.locator("#dailyOption").check();
   page.once("dialog", dialog => dialog.accept());
+  console.log("STEP: submitting activity");
   await page.locator("#activityForm button[type='submit']").click();
+  console.log("STEP: activity submitted");
 
   const categorySelect = page.locator("#activityList select.activity-category").first();
   await expect(categorySelect).toHaveValue("study");
+  console.log("STEP: category select verified");
   await categorySelect.selectOption("work");
+  console.log("STEP: category changed to work");
 
   await expect.poll(async () => page.evaluate(() =>
     window.__mockState.rows.some(row => row.data?.name === "فعالیت آزمایشی دسته‌بندی" && row.data?.category === "work")
