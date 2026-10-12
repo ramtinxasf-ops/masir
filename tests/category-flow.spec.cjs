@@ -73,10 +73,13 @@ test("activity category can be created, changed, and saved without a real Supaba
 
   // Profile details save to Supabase user metadata and remain editable.
   await page.evaluate(() => showPage("profile"));
+  console.log("STEP: profile page opened");
   await page.locator("#profileFirstName").fill("رامتین");
+  console.log("STEP: profile first name filled");
   await page.locator("#profileLastName").fill("آزمایشی");
   await page.locator("#profilePhoneInput").fill("+989123456789");
   await page.locator("#profileBirthDate").fill("1998-04-23");
+  console.log("STEP: profile fields filled");
   await page.locator("#profileForm button[type='submit']").click();
   await expect(page.locator("#profileSaveMessage")).toContainText("ذخیره شد");
   await expect(page.locator("#profileEmail")).toContainText("masir-test@example.invalid");
