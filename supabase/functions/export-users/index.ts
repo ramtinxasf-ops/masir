@@ -7,13 +7,6 @@ const corsHeaders = {
   "Vary": "Origin",
 };
 
-function csvCell(value: unknown): string {
-  let text = value == null ? "" : String(value);
-  // Prevent spreadsheet formula injection while preserving ordinary text.
-  if (/^[\s]*[=+@\-]/.test(text)) text = "'" + text;
-  return '"' + text.replace(/"/g, '""') + '"';
-}
-
 Deno.serve(async (request: Request) => {
   if (request.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
@@ -74,30 +67,35 @@ Deno.serve(async (request: Request) => {
       if (data.users.length < perPage) break;
     }
 
-    const rows = [
-      ["نام", "نام خانوادگی", "تلفن", "ایمیل", "تاریخ ثبت‌نام"],
-      ...users.map((user) => {
-        const metadata = user.user_metadata || {};
-        // Auth phone may be an empty string; prefer the first non-empty phone value.
-        const phone = [user.phone, metadata.phone, metadata.phone_number, metadata.phoneNumber]
-          .find((value) => typeof value === "string" && value.trim().length > 0) ?? "";
-        return [
-          metadata.first_name ?? metadata.firstName ?? "",
-          metadata.last_name ?? metadata.lastName ?? "",
-          phone,
-          user.email ?? "",
-          user.created_at ?? "",
-        ];
-      }),
-    ];
-    const csv = "\uFEFF" + rows.map((row) => row.map(csvCell).join(",")).join("\r\n") + "\r\n";
+    const formattedUsers = users.map((user, index) => {
+      const metadata = user.user_metadata || {};
+      const phone = [user.phone, metadata.phone, metadata.phone_number, metadata.phoneNumber]
+        .find((value) => typeof value === "string" && value.trim().length > 0) ?? "";
+      const firstName = metadata.first_name ?? metadata.firstName ?? "ثبت نشده";
+      const lastName = metadata.last_name ?? metadata.lastName ?? "ثبت نشده";
+      const email = user.email ?? "ثبت نشده";
+      const createdAt = user.created_at
+        ? new Date(user.created_at).toLocaleString("fa-IR", { timeZone: "Asia/Tehran" })
+        : "ثبت نشده";
+      return [
+        `کاربر شماره ${index + 1}`,
+        `نام: ${firstName}`,
+        `نام خانوادگی: ${lastName}`,
+        `تلفن: ${phone || "ثبت نشده"}`,
+        `ایمیل: ${email}`,
+        `تاریخ ثبت‌نام: ${createdAt}`,
+      ].join("\r\n");
+    });
+    const textFile = "\uFEFF" + (formattedUsers.length
+      ? formattedUsers.join("\r\n\r\n------------------------------\r\n\r\n")
+      : "هیچ کاربری برای نمایش وجود ندارد.");
     const date = new Date().toISOString().slice(0, 10);
-    return new Response(csv, {
+    return new Response(textFile, {
       status: 200,
       headers: {
         ...corsHeaders,
-        "Content-Type": "text/csv; charset=utf-8",
-        "Content-Disposition": `attachment; filename="masir-users-${date}.csv"`,
+        "Content-Type": "text/plain; charset=utf-8",
+        "Content-Disposition": `attachment; filename="masir-users-${date}.txt"` ,
         "Cache-Control": "no-store, private",
         "X-Content-Type-Options": "nosniff",
       },
