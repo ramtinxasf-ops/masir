@@ -79,7 +79,7 @@ test("activity category can be created, changed, and saved without a real Supaba
   const csvDownloadPromise = page.waitForEvent("download");
   await page.locator("#exportUsersCsvButton").click();
   const csvDownload = await csvDownloadPromise;
-  expect(csvDownload.suggestedFilename()).toBe("masir-users-test.csv");
+  expect(csvDownload.suggestedFilename()).toMatch(/^masir-users-\\d{4}-\\d{2}-\\d{2}\\.csv$/);
   await expect(page.locator("#adminUserExportMessage")).toContainText("دانلود شد");
   await page.locator("#profileFirstName").fill("رامتین");
   console.log("STEP: profile first name filled");
