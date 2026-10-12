@@ -89,6 +89,11 @@ test("activity category can be created, changed, and saved without a real Supaba
   });
   console.log("STEP: category change event dispatched");
 
+  await expect.poll(async () => page.evaluate(() => {
+    const saved = JSON.parse(localStorage.getItem("masir_activities_v1_playwright-test-user") || "[]");
+    return saved.some(activity => activity.name === "فعالیت آزمایشی دسته‌بندی" && activity.category === "work");
+  })).toBe(true);
+  await page.evaluate(async () => { await window.masirSaveQueue; });
   await expect.poll(async () => page.evaluate(() =>
     window.__mockState.rows.some(row => row.data?.name === "فعالیت آزمایشی دسته‌بندی" && row.data?.category === "work")
   )).toBe(true);
