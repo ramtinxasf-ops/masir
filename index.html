@@ -1689,11 +1689,18 @@ function renderCalendarMonth() {
         first === last ? first : `${first} تا ${last}`;
 }
 
+function getPersianDateInputValue(date) {
+    const parts = getPersianDateParts(date);
+    const month = String(parts.month).padStart(2, "0");
+    const day = String(parts.day).padStart(2, "0");
+    return toPersianNumber(`${parts.year}/${month}/${day}`);
+}
+
 function renderCalendar() {
     const calendar = document.getElementById("weekCalendar");
     calendar.innerHTML = "";
 
-    document.getElementById("calendarDateJump").value = getDateKey(selectedDate);
+    document.getElementById("calendarDateJump").value = getPersianDateInputValue(selectedDate);
 
     const dates = getWeekDates(selectedDate);
     const todayKey = getDateKey(new Date());
