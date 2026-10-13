@@ -1602,16 +1602,15 @@ input:focus, select:focus, .activity-priority:focus, .activity-category:focus {
 }
 
 
-/* فعالیت تیک‌خورده: کارت کوتاه بماند و گزینه‌ها در یک ردیف نمایش داده شوند */
-#activityList .activity-item.done {
+/* همه فعالیت‌ها، چه انجام‌شده چه انجام‌نشده: چیدمان فشرده و ردیفی یکسان */
+#activityList .activity-item {
     min-height: 0 !important;
     padding: 6px 9px !important;
     gap: 7px !important;
     border-radius: 10px !important;
-    box-shadow: none !important;
     align-items: center !important;
 }
-#activityList .activity-item.done .activity-info {
+#activityList .activity-item .activity-info {
     display: flex !important;
     align-items: center !important;
     flex-direction: row !important;
@@ -1619,19 +1618,19 @@ input:focus, select:focus, .activity-priority:focus, .activity-category:focus {
     gap: 4px 7px !important;
     min-width: 0;
 }
-#activityList .activity-item.done .activity-name {
+#activityList .activity-item .activity-name {
     font-size: 13px;
     line-height: 1.3;
     margin: 0;
 }
-#activityList .activity-item.done .activity-time,
-#activityList .activity-item.done .activity-schedule {
+#activityList .activity-item .activity-time,
+#activityList .activity-item .activity-schedule {
     margin: 0 !important;
     font-size: 10px !important;
     line-height: 1.3;
 }
-#activityList .activity-item.done .activity-priority,
-#activityList .activity-item.done .activity-category {
+#activityList .activity-item .activity-priority,
+#activityList .activity-item .activity-category {
     display: inline-block !important;
     width: auto !important;
     max-width: 125px;
@@ -1642,12 +1641,12 @@ input:focus, select:focus, .activity-priority:focus, .activity-category:focus {
     line-height: 1.3 !important;
     border-radius: 6px !important;
 }
-#activityList .activity-item.done .activity-checkbox {
+#activityList .activity-item .activity-checkbox {
     width: 17px;
     height: 17px;
     flex-shrink: 0;
 }
-#activityList .activity-item.done .delete-button {
+#activityList .activity-item .delete-button {
     padding: 4px 7px !important;
     font-size: 10px !important;
     flex-shrink: 0;
