@@ -294,6 +294,10 @@ button:hover {
     gap: 7px;
 }
 
+.home-week-days { margin: 10px 0 18px; }
+.home-week-days .calendar-day { cursor: pointer; min-height: 76px; }
+.home-week-days .day-count { display: block; }
+
 .calendar-day {
     background: #0d1426;
     color: var(--text);
@@ -1845,6 +1849,8 @@ var supabaseClient = window.supabase.createClient(
 
 <section class="card" id="activitiesSection">
     <h2>📋 فعالیت‌های روز</h2>
+    <h3 style="margin:12px 0;">روزهای این هفته</h3>
+    <div class="week-calendar home-week-days" id="homeWeekDays" aria-label="انتخاب روز هفته"></div>
 
     <div class="activity-filter-row">
         <div class="activity-filter-field">
@@ -4468,8 +4474,51 @@ function goDailyOverviewToday() {
     renderDailyOverview();
 }
 
+function renderHomeWeekDays() {
+    const container = document.getElementById("homeWeekDays");
+    if (!container) return;
+    container.innerHTML = "";
+    const dates = getWeekDates(selectedDate);
+    const todayKey = getDateKey(getTodayDate());
+    const selectedKey = getDateKey(selectedDate);
+
+    dates.forEach(date => {
+        const key = getDateKey(date);
+        const count = getActivitiesForDate(date).length;
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "calendar-day home-week-day";
+        if (key === selectedKey) button.classList.add("selected");
+        if (key === todayKey) button.classList.add("today");
+        button.setAttribute("aria-pressed", key === selectedKey ? "true" : "false");
+        button.setAttribute("aria-label", `${localizedWeekday(date)}, ${localizedDate(date)}`);
+
+        const name = document.createElement("div");
+        name.className = "day-name";
+        name.textContent = localizedWeekday(date);
+        const number = document.createElement("div");
+        number.className = "day-number";
+        number.textContent = new Intl.DateTimeFormat(localizedCalendarLocale(), { day: "numeric" }).format(date);
+        const countLabel = document.createElement("span");
+        countLabel.className = "day-count";
+        const lang = masirCurrentLanguage();
+        countLabel.textContent = lang === "fa" ? `${count} فعالیت`
+            : lang === "ar" ? `${count} أنشطة`
+            : lang === "tr" ? `${count} etkinlik`
+            : lang === "ja" ? `${count}件`
+            : `${count} activities`;
+        button.append(name, number, countLabel);
+        button.addEventListener("click", () => {
+            selectedDate = new Date(date);
+            renderAll();
+        });
+        container.appendChild(button);
+    });
+}
+
 function renderAll() {
     renderCalendar();
+    renderHomeWeekDays();
     renderActivities();
     updateStats();
     renderWeeklyReport();
