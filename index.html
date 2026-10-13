@@ -4913,10 +4913,43 @@ if($("profileSupportNewButton"))$("profileSupportNewButton").onclick=()=>{localS
 if($("userAdminChatContact"))$("userAdminChatContact").onclick=()=>{const start=$("profileSupportStart"),conv=$("profileSupportConversation");if(start&&conv){const email=$("profileSupportEmail").value.trim();if(email){userRead(email,$("profileSupportMessages")).then(ok=>{start.style.display=ok?"none":"block";conv.style.display=ok?"flex":"none";}).catch(()=>{});}}};
 const pe=$("profileEmail");if(pe&&$("profileSupportEmail")){const sync=()=>{const v=(pe.textContent||"").trim();if(v&&v!=="—")$("profileSupportEmail").value=v;};sync();new MutationObserver(sync).observe(pe,{childList:true,subtree:true,characterData:true});$("profileSupportEmail").addEventListener("change",async()=>{try{const ok=await userRead($("profileSupportEmail").value.trim(),$("profileSupportMessages"));$("profileSupportStart").style.display=ok?"none":"block";$("profileSupportConversation").style.display=ok?"block":"none";}catch(e){$("profileSupportStatus").textContent="گفتگو بارگذاری نشد؛ اگر دستگاه عوض شده، گفتگوی تازه بساز.";}});}
 async function adminApi(body){return api(body,true);}
-async function refresh(){const list=$("adminSupportThreads");if(!list)return;list.innerHTML="<p>در حال بارگذاری...</p>";try{const d=await adminApi({action:"admin_list"});list.innerHTML=d.threads.map(t=>'<button type="button" data-id="'+esc(t.id)+'" data-email="'+esc(t.email)+'" style="text-align:right;width:100%;padding:12px">'+ '<strong>👤 '+esc(t.email)+'</strong><div style="font-size:11px;color:#a5b4cc;margin-top:4px">آخرین فعالیت · '+esc(new Date(t.updated_at).toLocaleString("fa-IR"))+'</div></button>').join("")||"<p class='help-text'>هنوز گفتگویی وجود ندارد.</p>";list.querySelectorAll("[data-id]").forEach(b=>b.onclick=()=>openThread(b.dataset.id,b.dataset.email));}catch(e){list.innerHTML='<p style="color:#fb7185">'+esc(e.message)+'</p>';}}
-async function openThread(id,email){chosen=id;$("adminSupportConversation").style.display="flex";$("adminSupportConversation").style.flexDirection="column";$("adminSupportEmpty").style.display="none";$("adminSupportSelectedEmail").textContent=email;await readThread();}
+async function refresh() {
+  const list = $("adminSupportThreads");
+  if (!list) return;
+  list.innerHTML = "<p>در حال بارگذاری گفتگوها...</p>";
+  try {
+    const d = await adminApi({action:"admin_list"});
+    const unreadTotal = (d.threads || []).reduce((sum, t) => sum + (Number(t.unread_count) || 0), 0);
+    updateChatBadge(unreadTotal);
+    list.innerHTML = (d.threads || []).map(t => {
+      const name = String(t.display_name || "").trim();
+      const unread = Number(t.unread_count) || 0;
+      return '<button type="button" data-id="' + esc(t.id) + '" data-email="' + esc(t.email) + '" style="text-align:right;width:100%;padding:12px;border:1px solid #35324b;border-radius:10px;margin:4px 0;background:' + (unread ? 'rgba(239,68,68,.10)' : 'transparent') + '">'
+        + '<span style="display:flex;align-items:center;gap:8px;justify-content:space-between"><strong>👤 ' + esc(name || "کاربر") + '</strong>' + (unread ? '<span style="display:inline-flex;background:#ef4444;color:white;border-radius:999px;min-width:20px;height:20px;padding:0 6px;align-items:center;justify-content:center;font-size:11px;font-weight:800">' + (unread > 99 ? "99+" : unread) + '</span>' : '') + '</span>'
+        + '<div style="font-size:12px;color:#c4b5fd;margin-top:4px;overflow-wrap:anywhere">' + esc(t.email) + '</div>'
+        + '<div style="font-size:11px;color:#a5b4cc;margin-top:4px">آخرین فعالیت · ' + esc(new Date(t.updated_at).toLocaleString("fa-IR")) + '</div></button>';
+    }).join("") || "<p class='help-text'>هنوز گفتگویی وجود ندارد.</p>";
+    list.querySelectorAll("[data-id]").forEach(b => b.onclick = () => openThread(b.dataset.id, b.dataset.email));
+  } catch (e) {
+    list.innerHTML = '<p style="color:#fb7185">' + esc(e.message) + '</p>';
+  }
+}
+async function openThread(id,email) {
+  chosen = id;
+  $("adminSupportConversation").style.display = "flex";
+  $("adminSupportConversation").style.flexDirection = "column";
+  $("adminSupportEmpty").style.display = "none";
+  const selected = Array.from(document.querySelectorAll("#adminSupportThreads [data-id]")).find(b => b.dataset.id === id);
+  const displayName = selected?.querySelector("strong")?.textContent || "کاربر";
+  $("adminSupportSelectedEmail").textContent = displayName + " · " + email;
+  await readThread();
+  await refresh();
+}
 async function readThread(){const d=await adminApi({action:"admin_read",thread_id:chosen});draw($("adminSupportMessages"),d.messages);}
 if($("adminSupportRefreshButton"))$("adminSupportRefreshButton").onclick=refresh;
+if($("profileSupportEmail"))$("profileSupportEmail").addEventListener("change",refreshUserUnreadBadge);
+refreshUserUnreadBadge();
+setInterval(refreshUserUnreadBadge,20000);
 if($("adminSupportReplyButton"))$("adminSupportReplyButton").onclick=async()=>{const st=$("adminSupportStatus"),b=$("adminSupportReplyButton"),msg=$("adminSupportReply").value.trim();if(!chosen){st.textContent="ابتدا گفتگو را انتخاب کن.";return;}if(!msg){st.textContent="پاسخ را بنویس.";return;}b.disabled=true;try{await adminApi({action:"admin_reply",thread_id:chosen,message:msg});$("adminSupportReply").value="";await readThread();st.textContent="پاسخ ارسال شد.";await refresh();}catch(e){st.style.color="#fb7185";st.textContent=e.message;}finally{b.disabled=false;}};
 })();
 </script>
