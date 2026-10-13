@@ -70,7 +70,7 @@
   Object.assign(dict.ja, {appName:"Masir", developerName:"ラームティン・ヘンマタイ"});
 
   Object.assign(dict.fa, {openMenu:"باز کردن منوی مسیر",saveFailed:"ذخیره در این دستگاه ممکن نشد."});
-  Object.assign(dict.en, {openMenu:"Open Masir menu",saveFailed:t("saveFailed")});
+  Object.assign(dict.en, {openMenu:"Open Masir menu",saveFailed:"Could not save on this device."});
   Object.assign(dict.ar, {openMenu:"فتح قائمة مسير",saveFailed:"تعذر الحفظ على هذا الجهاز."});
   Object.assign(dict.tr, {openMenu:"Masir menüsünü aç",saveFailed:"Bu cihaza kaydedilemedi."});
   Object.assign(dict.ja, {openMenu:"Masir メニューを開く",saveFailed:"この端末に保存できませんでした。"});
@@ -502,8 +502,8 @@
       content.innerHTML = '<div class="ms-card"><label for="msNote"></label><textarea id="msNote" maxlength="20000"></textarea><div class="ms-actions"><button class="ms-primary" id="msSaveNote" type="button"></button></div><div class="ms-status" id="msStatus" role="status"></div></div>';
       content.querySelector("label").textContent = t("notes"); content.querySelector("#msNote").placeholder = t("notePlaceholder"); content.querySelector("#msNote").value = typeof saved === "string" ? saved : "";
       content.querySelector("#msSaveNote").textContent = t("save");
-      let noteTimer; content.querySelector("#msNote").addEventListener("input", () => { clearTimeout(noteTimer); content.querySelector("#msStatus").textContent = ""; noteTimer=setTimeout(() => { const ok=safeWrite(NOTES_KEY,content.querySelector("#msNote").value); content.querySelector("#msStatus").textContent=ok?t("saved"):"Could not save on this device."; },350); });
-      content.querySelector("#msSaveNote").onclick = () => { clearTimeout(noteTimer); const ok = safeWrite(NOTES_KEY, content.querySelector("#msNote").value); content.querySelector("#msStatus").textContent = ok ? t("saved") : "Could not save on this device."; };
+      let noteTimer; content.querySelector("#msNote").addEventListener("input", () => { clearTimeout(noteTimer); content.querySelector("#msStatus").textContent = ""; noteTimer=setTimeout(() => { const ok=safeWrite(NOTES_KEY,content.querySelector("#msNote").value); content.querySelector("#msStatus").textContent=ok?t("saved"):t("saveFailed"); },350); });
+      content.querySelector("#msSaveNote").onclick = () => { clearTimeout(noteTimer); const ok = safeWrite(NOTES_KEY, content.querySelector("#msNote").value); content.querySelector("#msStatus").textContent = ok ? t("saved") : t("saveFailed"); };
     } else if (name === "calendar") {
       const prefs = safeRead(CALENDAR_KEY, {type:"jalali",country:"iran"});
       content.innerHTML = '<div class="ms-card"><label for="msCalendarType"></label><select id="msCalendarType"><option value="gregorian"></option><option value="jalali"></option><option value="hijri"></option><option value="japanese"></option></select><label for="msCountry"></label><select id="msCountry"><option value="iran"></option><option value="azerbaijan"></option><option value="turkey"></option><option value="japan"></option><option value="other"></option></select><div class="ms-calendar-head"><button type="button" id="msCalendarPrev" aria-label="Previous month">‹</button><div class="ms-calendar-title" id="msCalendarTitle"></div><button type="button" id="msCalendarNext" aria-label="Next month">›</button></div><div class="ms-calendar-weekdays" id="msCalendarWeekdays"></div><div class="ms-calendar-grid" id="msCalendarGrid"></div><div class="ms-actions"><button type="button" id="msCalendarToday"></button></div><p class="ms-muted" id="msCalendarSelected"></p><p class="ms-muted" data-hint></p><div class="ms-status" id="msStatus" role="status" aria-live="polite"></div></div>';
