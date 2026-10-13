@@ -4885,6 +4885,44 @@ function updateChatBadge(count) {
   badge.textContent = n > 99 ? "99+" : String(n);
   badge.style.display = n ? "inline-flex" : "none";
 }
+let adminMessagePopupOpen = false;
+let lastPopupMessageIds = "";
+function ensureAdminMessagePopup() {
+  if ($("adminMessagePopup")) return $("adminMessagePopup");
+  const style = document.createElement("style");
+  style.textContent = "#adminMessagePopup{position:fixed;inset:0;z-index:100000;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(3,6,18,.78);backdrop-filter:blur(5px)}#adminMessagePopup .amp-card{position:relative;width:min(100%,480px);max-height:min(78vh,650px);overflow:auto;padding:24px 20px 20px;border:1px solid rgba(196,167,255,.42);border-radius:20px;background:linear-gradient(145deg,#211a32,#101827);box-shadow:0 22px 70px rgba(0,0,0,.5);color:#f3f4f6}#adminMessagePopup .amp-close{position:absolute;top:8px;left:10px;width:38px;height:38px;padding:0;border-radius:50%;background:#3b1c2b;color:#fff;font-size:27px;line-height:1}#adminMessagePopup .amp-title{margin:0 44px 14px 0;color:#c4a7ff;font-size:20px}#adminMessagePopup .amp-message{white-space:pre-wrap;overflow-wrap:anywhere;padding:14px;border-radius:12px;background:rgba(167,139,250,.12);border:1px solid rgba(167,139,250,.2);margin:10px 0;line-height:1.9}";
+  document.head.appendChild(style);
+  const modal = document.createElement("div");
+  modal.id = "adminMessagePopup";
+  modal.setAttribute("role","dialog");
+  modal.setAttribute("aria-modal","true");
+  modal.setAttribute("aria-labelledby","adminMessagePopupTitle");
+  modal.innerHTML = '<div class="amp-card"><button type="button" class="amp-close" id="adminMessagePopupClose" aria-label="بستن پیام">×</button><h2 class="amp-title" id="adminMessagePopupTitle">پیام مدیر:</h2><div id="adminMessagePopupBody"></div></div>';
+  document.body.appendChild(modal);
+  $("adminMessagePopupClose").onclick = async () => {
+    modal.style.display = "none";
+    adminMessagePopupOpen = false;
+    const email = ($("profileSupportEmail")?.value || $("profileEmail")?.textContent || "").trim().toLowerCase();
+    const ticket = JSON.parse(localStorage.getItem(key(email)) || "null");
+    if (ticket) {
+      try { await api({action:"user_read", ...ticket}); } catch (_) {}
+    }
+    updateChatBadge(0);
+    lastPopupMessageIds = "";
+  };
+  modal.addEventListener("click", event => { if (event.target === modal) $("adminMessagePopupClose").click(); });
+  return modal;
+}
+function showAdminMessagePopup(messages) {
+  if (!messages || !messages.length || adminMessagePopupOpen) return;
+  const ids = messages.map(m => m.id).join(",");
+  if (ids && ids === lastPopupMessageIds) return;
+  lastPopupMessageIds = ids;
+  const modal = ensureAdminMessagePopup();
+  $("adminMessagePopupBody").innerHTML = messages.map(m => '<div class="amp-message">' + esc(m.message) + '</div>').join("");
+  modal.style.display = "flex";
+  adminMessagePopupOpen = true;
+}
 async function refreshUserUnreadBadge() {
   const email = ($("profileSupportEmail")?.value || $("masir-support-email")?.value || $("profileEmail")?.textContent || "").trim().toLowerCase();
   if (!email) return;
@@ -4893,6 +4931,7 @@ async function refreshUserUnreadBadge() {
   try {
     const d = await api({action:"user_status", ...ticket});
     updateChatBadge(d.unread_count || 0);
+    if ((d.unread_messages || []).length) showAdminMessagePopup(d.unread_messages);
   } catch (_) {}
 }
 async function create(email,msg) {
