@@ -5132,7 +5132,7 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
         const choice = document.getElementById("profileInterestChoice");
         const interestsField = document.getElementById("profileInterests");
         if (!choice || !interestsField || !choice.value) return;
-        const current = interestsField.value.split(/[,،;؛\\n]+/).map(item => item.trim()).filter(Boolean);
+        const current = interestsField.value.split(/[,،;؛\n]+/).map(item => item.trim()).filter(Boolean);
         if (!current.some(item => item.toLocaleLowerCase() === choice.value.toLocaleLowerCase())) current.push(choice.value);
         interestsField.value = current.join("، ");
         choice.value = "";
@@ -5148,10 +5148,10 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
         const lastName = document.getElementById("profileLastName").value.trim();
         const phone = document.getElementById("profilePhoneInput").value.trim();
         const birthYear = document.getElementById("profileBirthYear").value.trim();
-        const interests = document.getElementById("profileInterests").value.split(/[,،;؛\\n]+/).map(item => item.trim()).filter(Boolean).filter((item, index, array) => array.indexOf(item) === index);
+        const interests = document.getElementById("profileInterests").value.split(/[,،;؛\n]+/).map(item => item.trim()).filter(Boolean).filter((item, index, array) => array.indexOf(item) === index);
         const goals = document.getElementById("profileGoals").value.trim();
         if (!firstName || !lastName) return showProfileMessage("نام و نام خانوادگی را وارد کن.", true);
-        if (birthYear && (!/^\\d{4}$/.test(birthYear) || Number(birthYear) < 1900 || Number(birthYear) > new Date().getFullYear())) return showProfileMessage("سال تولد باید یک سال معتبر باشد.", true);
+        if (birthYear && (!/^\d{4}$/.test(birthYear) || Number(birthYear) < 1900 || Number(birthYear) > new Date().getFullYear())) return showProfileMessage("سال تولد باید یک سال معتبر باشد.", true);
         const button = document.getElementById("saveProfileButton");
         button.disabled = true;
         showProfileMessage("در حال ذخیره اطلاعات...");
