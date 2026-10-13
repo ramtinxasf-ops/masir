@@ -5392,6 +5392,6 @@ setInterval(refreshUserUnreadBadge,20000);
 if($("adminSupportReplyButton"))$("adminSupportReplyButton").onclick=async()=>{const st=$("adminSupportStatus"),b=$("adminSupportReplyButton"),msg=$("adminSupportReply").value.trim(),broadcast=$("adminSupportBroadcastAll")?.checked;if(!msg){st.textContent="پیام را بنویس.";return;}if(broadcast&&!confirm("این پیام برای همه کاربران دارای گفتگو ارسال شود؟"))return;if(!broadcast&&!chosen){st.textContent="ابتدا گفتگو را انتخاب کن یا گزینه ارسال به همه را فعال کن.";return;}b.disabled=true;try{if(broadcast){const result=await adminApi({action:"admin_broadcast",message:msg});$("adminSupportReply").value="";$("adminSupportBroadcastAll").checked=false;st.style.color="#a7f3d0";st.textContent="پیام همگانی برای "+result.sent_count+" گفتگو ارسال شد.";}else{await adminApi({action:"admin_reply",thread_id:chosen,message:msg});$("adminSupportReply").value="";await readThread();st.style.color="#a7f3d0";st.textContent="پاسخ ارسال شد.";}await refresh();}catch(e){st.style.color="#fb7185";st.textContent=e.message;}finally{b.disabled=false;}};
 })();
 </script>
-
+<script src="./masir-sheets.js" defer></script>
 </body>
 </html>
