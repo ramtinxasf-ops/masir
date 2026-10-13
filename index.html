@@ -2875,6 +2875,26 @@ function formatCountLabel(label, count) {
     const labels = { en: {"مجموع فعالیت‌ها":"Total activities","انجام‌شده":"Completed","باقی‌مانده":"Remaining"}, ar: {"مجموع فعالیت‌ها":"إجمالي الأنشطة","انجام‌شده":"مكتمل","باقی‌مانده":"متبقٍ"}, tr: {"مجموع فعالیت‌ها":"Toplam etkinlik","انجام‌شده":"Tamamlandı","باقی‌مانده":"Kalan"}, ja: {"مجموع فعالیت‌ها":"活動の合計","انجام‌شده":"完了","باقی‌مانده":"残り"} };
     return lang === "fa" ? `${label}: ${formatNumber(count)}` : `${labels[lang]?.[label] || label}: ${formatNumber(count)}`;
 }
+function localizedDate(date) {
+    const lang = masirCurrentLanguage();
+    const locale = lang === "fa" ? "fa-IR-u-ca-persian" : lang === "ar" ? "ar" : lang === "ja" ? "ja-JP" : lang === "tr" ? "tr-TR" : "en-US";
+    return new Intl.DateTimeFormat(locale, { year: "numeric", month: "long", day: "numeric" }).format(date);
+}
+function localizedWeekday(date) {
+    const lang = masirCurrentLanguage();
+    const locale = lang === "fa" ? "fa-IR" : lang === "ar" ? "ar" : lang === "ja" ? "ja-JP" : lang === "tr" ? "tr-TR" : "en-US";
+    return new Intl.DateTimeFormat(locale, { weekday: "long" }).format(date);
+}
+function formatActivityFilterCount(count, all, total) {
+    const lang = masirCurrentLanguage();
+    const n = formatNumber(count);
+    const t = formatNumber(total ?? count);
+    if (lang === "en") return all ? `Show all activities: ${n} items` : `Showing ${n} of ${t} activities`;
+    if (lang === "ar") return all ? `عرض جميع الأنشطة: ${n} عناصر` : `عرض ${n} من أصل ${t} أنشطة`;
+    if (lang === "tr") return all ? `Tüm etkinlikleri göster: ${n} öğe` : `${t} etkinlikten ${n} tanesi gösteriliyor`;
+    if (lang === "ja") return all ? `すべてのアクティビティを表示：${n}件` : `${t}件中${n}件のアクティビティを表示`;
+    return all ? `نمایش همه فعالیت‌ها: ${toPersianNumber(count)} مورد` : `نمایش ${toPersianNumber(count)} از ${toPersianNumber(total)} فعالیت`;
+}
 function formatWeekLabel(start, end, remaining) {
     const lang = masirCurrentLanguage();
     if (lang === "en") return `${start} to ${end} | ${formatNumber(remaining)} activities remaining`;
@@ -3612,7 +3632,7 @@ function renderCalendar() {
 
         const name = document.createElement("div");
         name.className = "day-name";
-        name.textContent = getPersianWeekday(date);
+        name.textContent = localizedWeekday(date);
 
         const number = document.createElement("div");
         number.className = "day-number";
@@ -3652,8 +3672,8 @@ function renderActivities() {
 
     const filterCount = document.getElementById("activityFilterCount");
     filterCount.textContent = selectedCategoryFilter === "all"
-        ? `نمایش همه فعالیت‌ها: ${toPersianNumber(allDayActivities.length)} مورد`
-        : `نمایش ${toPersianNumber(dayActivities.length)} از ${toPersianNumber(allDayActivities.length)} فعالیت`;
+        ? formatActivityFilterCount(allDayActivities.length, true)
+        : formatActivityFilterCount(dayActivities.length, false, allDayActivities.length);
 
     if (dayActivities.length === 0) {
         const empty = document.createElement("div");
@@ -3899,8 +3919,8 @@ function renderWeeklyReport() {
     document.getElementById("weeklyPercent").textContent =
         `${toPersianNumber(percentage)}٪`;
 
-    const startLabel = getPersianDate(dates[0]);
-    const endLabel = getPersianDate(dates[6]);
+    const startLabel = localizedDate(dates[0]);
+    const endLabel = localizedDate(dates[6]);
 
     document.getElementById("reportWeekLabel").textContent =
         formatWeekLabel(startLabel, endLabel, remaining);
@@ -4021,7 +4041,7 @@ function renderBestDay(reports) {
     );
 
     const bestNames = bestDays.map(report =>
-        getPersianWeekday(report.date)
+        masirTranslate(getPersianWeekday(report.date))
     );
 
     box.innerHTML = "";
@@ -4046,7 +4066,7 @@ function renderDailyOverview() {
 
     const dayActivities = getActivitiesForDate(selectedDate);
     const completedCount = dayActivities.filter(activity => isActivityCompleted(activity, selectedDate)).length;
-    dateLabel.textContent = `${getPersianWeekday(selectedDate)}، ${getPersianDate(selectedDate)}`;
+    dateLabel.textContent = `${localizedWeekday(selectedDate)}, ${localizedDate(selectedDate)}`;
     summary.replaceChildren();
 
     [
