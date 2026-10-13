@@ -232,7 +232,7 @@
     if (langSelect) langSelect.addEventListener("change", render);
     window.addEventListener("masir:profile-changed", render);
   }
-  mountProfileInterests();
+  // Use the existing profile form and Supabase metadata for interests/goals; do not create a duplicate local-only card.
 
   function isMasirAdmin() {
     const email = String(window.masirCurrentUser?.email || "").trim().toLowerCase();
@@ -244,7 +244,19 @@
     // The dashboard Profile page is reserved for the editable interests and goals list.
     const form = document.getElementById("profileForm");
     const accountPanel = form && form.closest(".profile-panel");
-    if (accountPanel) accountPanel.hidden = true;
+    if (accountPanel) {
+      // Keep the dashboard Profile page focused on editable interests and goals.
+      // Registered account details are read-only in the right-hand Profile sheet.
+      const heading = accountPanel.querySelector("h3");
+      if (heading) heading.hidden = true;
+      accountPanel.querySelectorAll(".profile-account-line").forEach(el => { el.hidden = true; });
+      const personalFields = form.querySelector(".form-grid");
+      if (personalFields) personalFields.hidden = true;
+      ["profileFirstName","profileEmailInput","profileLastName","profilePhoneInput","profileBirthDate"].forEach(id => {
+        const field = document.getElementById(id);
+        if (field) { field.readOnly = true; field.required = false; }
+      });
+    }
 
     // Keep app information and account actions out of the bottom Dashboard/Profile page.
     const info = document.getElementById("appInfoButton");
