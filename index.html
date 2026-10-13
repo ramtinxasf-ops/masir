@@ -1654,7 +1654,8 @@ input:focus, select:focus, .activity-priority:focus, .activity-category:focus {
 
 
 .language-picker {
-    display: flex;
+    display: none !important;
+    flex-direction: row;
     align-items: center;
     justify-content: flex-end;
     gap: 8px;
@@ -1750,9 +1751,9 @@ header{position:relative;padding-top:48px}
 .masir-menu-chevron{font-size:23px;color:#c4b5fd}
 .masir-custom-page{max-width:1000px;margin:0 auto 24px;position:relative;z-index:2}
 .masir-custom-page[hidden],.masir-drawer-shade[hidden],[data-custom-page][hidden]{display:none!important}
-.masir-custom-heading{display:flex;align-items:center;gap:12px;margin:8px 0 16px}
-.masir-custom-heading h2{margin:0;color:#c4b5fd}
-.masir-custom-heading button{white-space:nowrap}
+.masir-custom-heading{display:flex;align-items:center;justify-content:center;position:relative;min-height:44px;margin:8px 0 16px}
+.masir-custom-heading h2{margin:0;color:#c4b5fd;text-align:center;padding:0 112px}
+.masir-custom-heading button{white-space:nowrap;position:absolute;left:0;top:0;z-index:2}
 .masir-panel{padding:18px;margin:12px 0;background:linear-gradient(145deg,#171d31,#211a32);border:1px solid #393452;border-radius:16px}
 .masir-panel h3{color:#d8b4fe;margin:0 0 14px}
 .masir-panel label{margin-top:12px}
@@ -3726,7 +3727,7 @@ function parseLocalizedDateInput(value) {
         .replace(/[۰-۹]/g, digit => "۰۱۲۳۴۵۶۷۸۹".indexOf(digit))
         .replace(/[٠-٩]/g, digit => "٠١٢٣٤٥٦٧٨٩".indexOf(digit))
         .trim();
-    const match = normalized.match(new RegExp("^(\\\\d{1,4})[./-](\\\\d{1,2})[./-](\\\\d{1,2})$"));
+    const match = normalized.match(/^(\\d{1,4})[./-](\\d{1,2})[./-](\\d{1,2})$/);
     if (!match) return null;
     const year = Number(match[1]), month = Number(match[2]), day = Number(match[3]);
     const lang = masirCurrentLanguage();
@@ -3751,7 +3752,7 @@ function parseLocalizedDateInput(value) {
 function updateDateJumpLanguage() {
     const input = document.getElementById("calendarDateJump");
     const lang = masirCurrentLanguage();
-    const examples = {fa: "۱۴۰۵/۰۷/۲۹", en: "2026/10/13", ar: "١٤٤٨/٠٤/٠١", tr: "2026/10/13", ja: "令和8/10/13"};
+    const examples = {fa: "۱۴۰۵/۰۷/۲۹", en: "2026/10/13", ar: "١٤٤٨/٠٤/٠١", tr: "2026/10/13", ja: "8/10/13"};
     const labels = {
         fa: "تاریخ شمسی برای نمایش در تقویم",
         en: "Date to show in calendar (YYYY/MM/DD)",
@@ -5631,7 +5632,72 @@ AE:{"12-2":"اليوم الوطني الإماراتي"},
 IN:{"1-26":"Republic Day","8-15":"Independence Day","10-2":"Gandhi Jayanti"},
 FR:{"1-1":"Jour de l’An","7-14":"Fête nationale","12-25":"Noël"}
 };
-function eventsFor(d){const c=$("muiCalendarCountry").value,mm=d.getMonth()+1,dd=d.getDate(),events=[];const fixed=(holidays[c]||{})[mm+"-"+dd];if(fixed)events.push(fixed);if($("muiCalendarType").value==="islamic-umalqura"){const lunar=calFormat(d,{month:"numeric",day:"numeric"});const parts=lunar.match(/(\d+)[/.-](\d+)/);if(parts){const month=Number(parts[1]),day=Number(parts[2]);if(month===1&&day===1)events.push("Islamic New Year");if(month===9&&day===1)events.push("Ramadan begins (estimated)");if(month===10&&day===1)events.push("Eid al-Fitr (estimated)");if(month===12&&day===10)events.push("Eid al-Adha (estimated)");}}return events;}
+function eventsFor(d){
+ const c=$("muiCalendarCountry").value,mm=d.getMonth()+1,dd=d.getDate(),events=[];
+ const fixed=(holidays[c]||{})[mm+"-"+dd];if(fixed)events.push(localizeHoliday(fixed));
+ // Read Hijri month/day from Intl parts rather than parsing a locale-formatted string.
+ try{
+  const hijri=new Intl.DateTimeFormat("en-US-u-ca-islamic-umalqura",{month:"numeric",day:"numeric"}).formatToParts(d);
+  const hp={};hijri.forEach(p=>{if(p.type==="month"||p.type==="day")hp[p.type]=Number(p.value);});
+  if(hp.month===1&&hp.day===1)events.push(eventText("islamicNewYear"));
+  if(hp.month===9&&hp.day===1)events.push(eventText("ramadan"));
+  if(hp.month===10&&hp.day===1)events.push(eventText("eidFitr"));
+  if(hp.month===12&&hp.day===10)events.push(eventText("eidAdha"));
+ }catch(_){}
+ // Add widely observed country-specific movable dates for the selected Gregorian day.
+ const y=d.getFullYear(),weekday=d.getDay(),date=d.getDate();
+ if(c==="US"&&mm===11&&weekday===4&&date>=22&&date<=28)events.push(eventText("thanksgiving"));
+ if(c==="US"&&mm===5&&weekday===1&&date>=25)events.push(eventText("memorialDay"));
+ if(c==="GB"&&mm===5&&weekday===1&&date<=7)events.push(eventText("earlyMayBankHoliday"));
+ if(c==="JP"&&mm===1&&weekday===1&&date>=8&&date<=14)events.push(eventText("comingOfAge"));
+ if(c==="TR"&&mm===5&&dd===19)events.push(eventText("youthSportsDay"));
+ return [...new Set(events)];
+}
+function eventText(key){
+ const labels={
+  islamicNewYear:{fa:"آغاز سال قمری اسلامی",en:"Islamic New Year",ar:"رأس السنة الهجرية",tr:"Hicri Yılbaşı",ja:"イスラム暦の新年"},
+  ramadan:{fa:"آغاز ماه رمضان (بر پایه تقویم قمری)",en:"Ramadan begins (Islamic calendar)",ar:"بداية شهر رمضان",tr:"Ramazan başlangıcı",ja:"ラマダン開始"},
+  eidFitr:{fa:"عید فطر (بر پایه تقویم قمری)",en:"Eid al-Fitr (Islamic calendar)",ar:"عيد الفطر",tr:"Ramazan Bayramı",ja:"イード・アル＝フィトル"},
+  eidAdha:{fa:"عید قربان (بر پایه تقویم قمری)",en:"Eid al-Adha (Islamic calendar)",ar:"عيد الأضحى",tr:"Kurban Bayramı",ja:"イード・アル＝アドハー"},
+  thanksgiving:{fa:"روز شکرگزاری",en:"Thanksgiving Day",ar:"عيد الشكر",tr:"Şükran Günü",ja:"感謝祭"},
+  memorialDay:{fa:"روز یادبود",en:"Memorial Day",ar:"يوم الذكرى",tr:"Anma Günü",ja:"戦没者追悼記念日"},
+  earlyMayBankHoliday:{fa:"تعطیلات بانکی اوایل مه",en:"Early May bank holiday",ar:"عطلة البنوك في أوائل مايو",tr:"Mayıs başı resmi tatili",ja:"5月初めのバンクホリデー"},
+  comingOfAge:{fa:"روز بزرگسالی ژاپن",en:"Coming of Age Day",ar:"يوم بلوغ سن الرشد",tr:"Reşit Olma Günü",ja:"成人の日"},
+  youthSportsDay:{fa:"روز جوانان و ورزش ترکیه",en:"Youth and Sports Day",ar:"يوم الشباب والرياضة",tr:"Atatürk'ü Anma, Gençlik ve Spor Bayramı",ja:"トルコ青年とスポーツの日"}
+ };
+ return labels[key]?.[window.masirCurrentLanguage?window.masirCurrentLanguage():"fa"]||labels[key]?.en||key;
+}
+function localizeHoliday(value){
+ const translations={
+  "نوروز":{fa:"نوروز",en:"Nowruz",ar:"نوروز",tr:"Nevruz",ja:"ノウルーズ"},
+  "روز جمهوری اسلامی ایران":{fa:"روز جمهوری اسلامی ایران",en:"Islamic Republic Day of Iran",ar:"يوم الجمهورية الإسلامية الإيرانية",tr:"İran İslam Cumhuriyeti Günü",ja:"イラン・イスラム共和国記念日"},
+  "روز طبیعت":{fa:"روز طبیعت",en:"Nature Day",ar:"يوم الطبيعة",tr:"Doğa Günü",ja:"自然の日"},
+  "روز ملی شدن صنعت نفت":{fa:"روز ملی شدن صنعت نفت",en:"Oil Nationalization Day",ar:"ذكرى تأميم النفط",tr:"Petrolün Millileştirilmesi Günü",ja:"石油国有化記念日"},
+  "New Year's Day":{fa:"روز سال نو",en:"New Year's Day",ar:"رأس السنة الميلادية",tr:"Yılbaşı",ja:"元日"},
+  "Independence Day":{fa:"روز استقلال",en:"Independence Day",ar:"عيد الاستقلال",tr:"Bağımsızlık Günü",ja:"独立記念日"},
+  "Veterans Day":{fa:"روز کهنه‌سربازان",en:"Veterans Day",ar:"يوم المحاربين القدامى",tr:"Gaziler Günü",ja:"退役軍人の日"},
+  "Christmas Day":{fa:"روز کریسمس",en:"Christmas Day",ar:"عيد الميلاد",tr:"Noel",ja:"クリスマス"},
+  "Boxing Day":{fa:"روز باکسینگ",en:"Boxing Day",ar:"يوم الصناديق",tr:"Boxing Day",ja:"ボクシング・デー"},
+  "Yılbaşı":{fa:"روز سال نو",en:"New Year's Day",ar:"رأس السنة الميلادية",tr:"Yılbaşı",ja:"元日"},
+  "Ulusal Egemenlik ve Çocuk Bayramı":{fa:"روز حاکمیت ملی و کودک",en:"National Sovereignty and Children's Day",ar:"يوم السيادة الوطنية والطفل",tr:"Ulusal Egemenlik ve Çocuk Bayramı",ja:"国民主権と子どもの日"},
+  "Atatürk'ü Anma, Gençlik ve Spor Bayramı":{fa:"روز بزرگداشت آتاتورک، جوانان و ورزش",en:"Commemoration of Atatürk, Youth and Sports Day",ar:"يوم إحياء ذكرى أتاتورك والشباب والرياضة",tr:"Atatürk'ü Anma, Gençlik ve Spor Bayramı",ja:"アタテュルク記念・青年とスポーツの日"},
+  "Cumhuriyet Bayramı":{fa:"روز جمهوری ترکیه",en:"Republic Day",ar:"عيد الجمهورية",tr:"Cumhuriyet Bayramı",ja:"共和国記念日"},
+  "元日":{fa:"روز سال نو",en:"New Year's Day",ar:"رأس السنة الميلادية",tr:"Yılbaşı",ja:"元日"},
+  "建国記念の日":{fa:"روز بنیان‌گذاری ملی ژاپن",en:"National Foundation Day",ar:"يوم التأسيس الوطني",tr:"Kuruluş Günü",ja:"建国記念の日"},
+  "天皇誕生日":{fa:"زادروز امپراتور",en:"Emperor's Birthday",ar:"عيد ميلاد الإمبراطور",tr:"İmparatorun Doğum Günü",ja:"天皇誕生日"},
+  "昭和の日":{fa:"روز شووا",en:"Shōwa Day",ar:"يوم شووا",tr:"Shōwa Günü",ja:"昭和の日"},
+  "憲法記念日":{fa:"روز قانون اساسی",en:"Constitution Memorial Day",ar:"يوم الدستور",tr:"Anayasa Günü",ja:"憲法記念日"},
+  "みどりの日":{fa:"روز سبز",en:"Greenery Day",ar:"يوم الخضرة",tr:"Yeşillik Günü",ja:"みどりの日"},
+  "こどもの日":{fa:"روز کودک",en:"Children's Day",ar:"يوم الطفل",tr:"Çocuk Bayramı",ja:"こどもの日"},
+  "文化の日":{fa:"روز فرهنگ",en:"Culture Day",ar:"يوم الثقافة",tr:"Kültür Günü",ja:"文化の日"},
+  "勤労感謝の日":{fa:"روز شکرگزاری از کار",en:"Labor Thanksgiving Day",ar:"يوم الشكر للعمال",tr:"İşçi Şükran Günü",ja:"勤労感謝の日"},
+  "Jour de l’An":{fa:"روز سال نو",en:"New Year's Day",ar:"رأس السنة الميلادية",tr:"Yılbaşı",ja:"元日"},
+  "Fête nationale":{fa:"روز ملی فرانسه",en:"French National Day",ar:"العيد الوطني الفرنسي",tr:"Fransa Ulusal Günü",ja:"フランス革命記念日"},
+  "Noël":{fa:"کریسمس",en:"Christmas Day",ar:"عيد الميلاد",tr:"Noel",ja:"クリスマス"}
+ };
+ const lang=window.masirCurrentLanguage?window.masirCurrentLanguage():"fa";
+ return translations[value]?.[lang]||value;
+}
 function calendarParts(d){const parts=new Intl.DateTimeFormat(calendarLocale(),{year:"numeric",month:"numeric",day:"numeric"}).formatToParts(d);const out={};parts.forEach(p=>{if(p.type==="year"||p.type==="month"||p.type==="day")out[p.type]=p.value;});return out;}function calendarMonthKey(d){const p=calendarParts(d);return p.year+"-"+p.month;}function findCalendarMonthDates(){const target=calendarMonthKey(calDate);let start=new Date(calDate);start.setDate(start.getDate()-40);const dates=[];for(let i=0;i<100;i++){const d=new Date(start);d.setDate(start.getDate()+i);if(calendarMonthKey(d)===target)dates.push(d);}return dates;}function renderCalendar(){const grid=$("muiCalendarGrid");if(!grid)return;const locale=calendarLocale();const monthFmt=new Intl.DateTimeFormat(locale,{month:"long",year:"numeric"});$("muiCalendarMonth").textContent=monthFmt.format(calDate);grid.innerHTML="";const weekNames=lang().calendarDays;weekNames.forEach(w=>{const d=document.createElement("div");d.className="masir-calendar-cell weekday";d.textContent=w;grid.appendChild(d);});const dates=findCalendarMonthDates();if(!dates.length)return;const offset=dates[0].getDay();for(let i=0;i<offset;i++){const blank=document.createElement("div");grid.appendChild(blank);}dates.forEach(date=>{const b=document.createElement("button");b.type="button";b.className="masir-calendar-cell";if(date.toDateString()===calSelected.toDateString())b.classList.add("selected");if(date.toDateString()===new Date().toDateString())b.classList.add("today");if(eventsFor(date).length)b.classList.add("has-event");b.textContent=calFormat(date,{day:"numeric"});b.setAttribute("aria-label",calFormat(date,{dateStyle:"full"}));b.onclick=()=>{calSelected=new Date(date);renderCalendar();};grid.appendChild(b);});$("muiCalendarSelectedDate").textContent=calFormat(calSelected,{dateStyle:"full"});const ev=$("muiCalendarEvents");const events=eventsFor(calSelected);ev.innerHTML=events.length?events.map(x=>"<li>"+escapeHtml(x)+"</li>").join(""):"<li>"+escapeHtml(t("noEvents"))+"</li>";}["muiCalendarType","muiCalendarCountry"].forEach(id=>$(id).addEventListener("change",renderCalendar));function shiftCalendarMonth(delta){const dates=findCalendarMonthDates();if(!dates.length)return;const edge=new Date(delta>0?dates[dates.length-1]:dates[0]);for(let i=0;i<40;i++){edge.setDate(edge.getDate()+(delta>0?1:-1));if(calendarMonthKey(edge)!==calendarMonthKey(calDate)){calDate=new Date(edge);renderCalendar();return;}}}$("muiCalendarPrev").onclick=()=>shiftCalendarMonth(-1);$("muiCalendarNext").onclick=()=>shiftCalendarMonth(1);$("muiCalendarToday").onclick=()=>{calDate=new Date();calSelected=new Date();renderCalendar();};function hookOriginalLogout(){const area=$("profileLogoutArea");if(!area)return;const process=()=>{const buttons=area.querySelectorAll("button");buttons.forEach(b=>{if(/حذف|delete/i.test(b.textContent)){b.style.display="none";$("muiDeleteAccount").dataset.originalDelete="ready";}else{b.style.display="none";$("muiLogout").dataset.originalLogout="ready";}});};process();const observer=new MutationObserver(process);observer.observe(area,{childList:true,subtree:true});}
 function watchUser(){const u=currentUser();if(u){renderReadOnlyProfile();loadEditProfile();loadNotes();}else{const box=$("masirReadOnlyProfile");if(box)box.innerHTML='<p class="masir-muted">'+escapeHtml(t("needLogin"))+'</p>';}}
 const langPicker=$("appLanguage");if(langPicker)langPicker.addEventListener("change",()=>{setTimeout(()=>{translateCustom();const l=$("muiLanguage");if(l)l.value=langPicker.value;},0);});
