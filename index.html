@@ -2168,7 +2168,6 @@ var supabaseClient = window.supabase.createClient(
         <label for="muiLastName" data-mui="lastName">نام خانوادگی</label><input id="muiLastName" type="text" maxlength="80" autocomplete="family-name" required>
         <label for="muiPhone" data-mui="phone">شماره تلفن</label><input id="muiPhone" type="tel" maxlength="24" autocomplete="tel">
         <label for="muiBirth" data-mui="birthDate">تاریخ تولد</label><input id="muiBirth" type="date" autocomplete="bday">
-        <label for="muiLanguage" data-mui="language">زبان برنامه</label><select id="muiLanguage" aria-label="زبان برنامه"><option value="fa">فارسی</option><option value="en">English</option><option value="ar">العربية</option><option value="tr">Türkçe</option><option value="ja">日本語</option></select>
         <label for="muiInterests" data-mui="interests">علایق (چند مورد را انتخاب کن)</label>
         <select id="muiInterests" multiple size="8" aria-describedby="muiInterestHelp"></select>
         <p class="masir-muted" id="muiInterestHelp" data-mui="interestHelp">برای انتخاب چند مورد، در رایانه Ctrl یا در گوشی روی چند گزینه بزن.</p>
@@ -5613,9 +5612,9 @@ function renderReadOnlyProfile(){const m=metadata();const box=$("masirReadOnlyPr
 function escapeHtml(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
 function loadNotes(){const m=metadata();$("muiNotesText").value=m.masir_notes||"";setStatus("muiNotesMessage","");}
 $("muiNotesSave").addEventListener("click",async()=>{if(!currentUser()){setStatus("muiNotesMessage",t("needLogin"),true);return;}const b=$("muiNotesSave");b.disabled=true;setStatus("muiNotesMessage",t("saving"));try{const u=currentUser();const {data,error}=await supabaseClient.auth.updateUser({data:{...(u.user_metadata||{}),masir_notes:$("muiNotesText").value}});if(error)throw error;window.masirCurrentUser=data.user;setStatus("muiNotesMessage",t("noteSaved"));}catch(e){setStatus("muiNotesMessage",t("failed")+(e.message||""),true);}finally{b.disabled=false;}});
-function syncLanguagePickers(value){["muiLanguage","muiSettingsLanguage"].forEach(id=>{const el=$(id);if(el)el.value=value;});}
+function syncLanguagePickers(value){const el=$("muiSettingsLanguage");if(el)el.value=value;}
 const initialLanguage=window.masirCurrentLanguage?window.masirCurrentLanguage():"fa";syncLanguagePickers(initialLanguage);translateCustom();const appLanguagePicker=$("appLanguage");if(appLanguagePicker)appLanguagePicker.addEventListener("change",()=>{translateCustom();showRules();});
-["muiLanguage","muiSettingsLanguage"].forEach(id=>{const el=$(id);if(el)el.addEventListener("change",e=>{const picker=$("appLanguage");if(picker){picker.value=e.target.value;picker.dispatchEvent(new Event("change",{bubbles:true}));}else if(window.applyMasirLanguage)window.applyMasirLanguage(e.target.value);syncLanguagePickers(e.target.value);translateCustom();});});
+["muiSettingsLanguage"].forEach(id=>{const el=$(id);if(el)el.addEventListener("change",e=>{const picker=$("appLanguage");if(picker){picker.value=e.target.value;picker.dispatchEvent(new Event("change",{bubbles:true}));}else if(window.applyMasirLanguage)window.applyMasirLanguage(e.target.value);syncLanguagePickers(e.target.value);translateCustom();});});
 const pwRules=p=>({length:p.length>=8,upper:/[A-Z]/.test(p),lower:/[a-z]/.test(p),number:/[0-9]/.test(p)});
 function showRules(){const p=$("muiNewPassword").value;const ruleLabels={length:t("ruleLength"),upper:t("ruleUpper"),lower:t("ruleLower"),number:t("ruleNumber")};Object.entries(pwRules(p)).forEach(([k,ok])=>{const e=document.querySelector('[data-pw-rule="'+k+'"]');if(e){e.style.color=ok?"#34d399":"#fb7185";e.textContent=(ok?"✓ ":"○ ")+ruleLabels[k];}});}
 ["muiNewPassword","muiConfirmPassword"].forEach(id=>$(id).addEventListener("input",showRules));
