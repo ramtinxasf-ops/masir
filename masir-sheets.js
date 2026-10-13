@@ -235,12 +235,38 @@
   }
 
   function hideLegacyProfileActions() {
+    // Registered account details are shown read-only in the right-hand Profile sheet.
+    const form = document.getElementById("profileForm");
+    const accountPanel = form && form.closest(".profile-panel");
+    if (accountPanel) accountPanel.hidden = true;
+
+    // Keep app information and account actions out of the bottom Dashboard/Profile page.
     const info = document.getElementById("appInfoButton");
     const infoPanel = info && info.closest(".profile-panel");
     if (infoPanel) infoPanel.hidden = true;
     const logoutArea = document.getElementById("profileLogoutArea");
     if (logoutArea) logoutArea.hidden = true;
+
+    // The administrator does not need the public "contact admin" action.
+    const privateChatPanel = document.getElementById("profilePrivateChatLinkPanel");
+    if (privateChatPanel && isMasirAdmin()) privateChatPanel.hidden = true;
+
+    // On the sign-in screen, hide the private-admin-chat action when the admin email is entered.
+    const loginEmail = document.getElementById("masir-email");
+    const contactButton = document.getElementById("masir-contact-admin");
+    if (loginEmail && contactButton && !loginEmail.dataset.masirAdminContactBound) {
+      const syncAdminContact = () => {
+        const isAdminEmail = String(loginEmail.value || "").trim().toLowerCase() === "ramtinxasf@gmail.com";
+        contactButton.hidden = isAdminEmail;
+      };
+      loginEmail.addEventListener("input", syncAdminContact);
+      loginEmail.addEventListener("change", syncAdminContact);
+      loginEmail.dataset.masirAdminContactBound = "1";
+      syncAdminContact();
+    }
   }
+
+  hideLegacyProfileActions();
 
   function moveAccountActionsToSettings(slotId) {
     const slot = document.getElementById(slotId);
