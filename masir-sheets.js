@@ -254,15 +254,32 @@
     // On the sign-in screen, hide the private-admin-chat action when the admin email is entered.
     const loginEmail = document.getElementById("masir-email");
     const contactButton = document.getElementById("masir-contact-admin");
-    if (loginEmail && contactButton && !loginEmail.dataset.masirAdminContactBound) {
+    if (loginEmail && contactButton) {
       const syncAdminContact = () => {
-        const isAdminEmail = String(loginEmail.value || "").trim().toLowerCase() === "ramtinxasf@gmail.com";
-        contactButton.hidden = isAdminEmail;
+        const typedEmail = String(loginEmail.value || "").trim().toLowerCase();
+        const signedInAdmin = isMasirAdmin();
+        const isAdminLogin = typedEmail === "ramtinxasf@gmail.com" || signedInAdmin;
+        contactButton.hidden = isAdminLogin;
+        contactButton.style.display = isAdminLogin ? "none" : "";
+        contactButton.setAttribute("aria-hidden", isAdminLogin ? "true" : "false");
       };
-      loginEmail.addEventListener("input", syncAdminContact);
-      loginEmail.addEventListener("change", syncAdminContact);
-      loginEmail.dataset.masirAdminContactBound = "1";
+      if (!loginEmail.dataset.masirAdminContactBound) {
+        ["input","change","blur","keyup"].forEach(eventName => loginEmail.addEventListener(eventName, syncAdminContact));
+        window.addEventListener("pageshow", syncAdminContact);
+        loginEmail.dataset.masirAdminContactBound = "1";
+      }
       syncAdminContact();
+      // Recheck briefly to catch browsers that autofill the remembered email without firing input/change.
+      if (!contactButton.dataset.masirAdminContactPolling) {
+        let attempts = 0;
+        const timer = window.setInterval(() => {
+          syncAdminContact();
+          attempts += 1;
+          const authForm = document.getElementById("masir-email-auth");
+          if (attempts >= 20 || (authForm && getComputedStyle(authForm).display === "none")) window.clearInterval(timer);
+        }, 500);
+        contactButton.dataset.masirAdminContactPolling = "1";
+      }
     }
   }
 
