@@ -2062,18 +2062,19 @@ function applyMasirLanguage(language) {
         const original = node.__masirOriginal || node.nodeValue;
         if (!node.__masirOriginal) node.__masirOriginal = original;
         const trimmed = original.trim();
-        if (dict[trimmed]) node.nodeValue = original.replace(trimmed, dict[trimmed]);
-        else if (language === "fa") node.nodeValue = original;
+        const translated = dict[trimmed] ? original.replace(trimmed, dict[trimmed]) : original;
+        if (node.nodeValue !== translated) node.nodeValue = translated;
     });
     document.querySelectorAll("input[placeholder],textarea[placeholder]").forEach(el => {
         if (!el.dataset.masirOriginalPlaceholder) el.dataset.masirOriginalPlaceholder = el.placeholder;
         const original = el.dataset.masirOriginalPlaceholder;
         el.placeholder = dict[original] || original;
     });
-    document.querySelectorAll("label").forEach(el => {
-        if (!el.dataset.masirOriginal) el.dataset.masirOriginal = el.textContent.trim();
-        const original = el.dataset.masirOriginal;
-        if (dict[original]) el.textContent = dict[original];
+    document.querySelectorAll("select:not(#appLanguage) option").forEach(el => {
+        if (!el.dataset.masirOriginalOption) el.dataset.masirOriginalOption = el.textContent;
+        const original = el.dataset.masirOriginalOption.trim();
+        const translated = dict[original] || original;
+        if (el.textContent !== translated) el.textContent = translated;
     });
     const picker = document.getElementById("appLanguage");
     if (picker && picker.value !== language) picker.value = language;
