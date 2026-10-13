@@ -1929,9 +1929,15 @@ html[dir="ltr"] .language-picker { justify-content: flex-end; }
     </div>
     <div class="profile-panel" id="adminUserExportPanel" style="display:none;">
         <h3>مدیریت کاربران</h3>
-        <p class="help-text">فهرست حساب‌های ثبت‌نام‌شده را فقط با دسترسی مدیر دریافت کن. رمز عبور هیچ‌گاه در این فایل قرار نمی‌گیرد.</p>
+        <p class="help-text">این بخش فقط برای حساب مدیریتی مجاز فعال است. رمز قبلی کاربران نمایش داده نمی‌شود؛ می‌توانی رمز جدید تنظیم کنی.</p>
         <button type="button" class="secondary-button" id="exportUsersCsvButton" style="width:100%;text-align:right;">📄 دریافت فهرست کاربران (متن مرتب)</button>
         <p id="adminUserExportMessage" class="help-text" role="status" aria-live="polite"></p>
+        <form id="adminResetPasswordForm" style="margin-top:16px;">
+            <div class="form-field"><label for="adminTargetEmail">ایمیل کاربر</label><input type="email" id="adminTargetEmail" autocomplete="off" required placeholder="user@example.com"></div>
+            <div class="form-field"><label for="adminNewPassword">رمز عبور جدید (حداقل ۸ کاراکتر)</label><input type="password" id="adminNewPassword" minlength="8" autocomplete="new-password" required></div>
+            <button type="submit" class="primary-button" id="adminResetPasswordButton" style="width:100%;margin-top:10px;">🔐 تنظیم رمز جدید کاربر</button>
+            <p id="adminResetPasswordMessage" class="help-text" role="status" aria-live="polite"></p>
+        </form>
     </div>
     <div class="profile-panel">
         <h3>امنیت حساب</h3>
@@ -4198,7 +4204,7 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
     function configureAdminUserExport(user) {
         const panel = document.getElementById("adminUserExportPanel");
         if (!panel) return;
-        const isAdmin = Boolean(user && user.app_metadata && user.app_metadata.role === "admin");
+        const isAdmin = Boolean(user && typeof user.email === "string" && user.email.trim().toLowerCase() === "ramtinxasf@gmail.com");
         panel.style.display = isAdmin ? "block" : "none";
     }
 
@@ -4248,6 +4254,55 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
             message.style.color = "#fb7185";
         } finally {
             exportUsersCsvButton.disabled = false;
+        }
+    });
+
+    const adminResetPasswordForm = document.getElementById("adminResetPasswordForm");
+    if (adminResetPasswordForm) adminResetPasswordForm.addEventListener("submit", async function(event) {
+        event.preventDefault();
+        const user = window.masirCurrentUser;
+        const message = document.getElementById("adminResetPasswordMessage");
+        const button = document.getElementById("adminResetPasswordButton");
+        const targetEmail = document.getElementById("adminTargetEmail").value.trim();
+        const newPassword = document.getElementById("adminNewPassword").value;
+        const isAdmin = Boolean(user && typeof user.email === "string" && user.email.trim().toLowerCase() === "ramtinxasf@gmail.com");
+        if (!isAdmin) {
+            message.textContent = "این حساب اجازه مدیریت ندارد.";
+            message.style.color = "#fb7185";
+            return;
+        }
+        if (newPassword.length < 8) {
+            message.textContent = "رمز جدید باید حداقل ۸ کاراکتر داشته باشد.";
+            message.style.color = "#fb7185";
+            return;
+        }
+        button.disabled = true;
+        message.textContent = "در حال تنظیم رمز جدید...";
+        message.style.color = "#a5b4cc";
+        try {
+            const { data: sessionData, error: sessionError } = await supabaseClient.auth.getSession();
+            if (sessionError) throw sessionError;
+            const accessToken = sessionData && sessionData.session && sessionData.session.access_token;
+            if (!accessToken) throw new Error("نشست ورود پیدا نشد؛ دوباره وارد حساب مدیر شو.");
+            const response = await fetch(SUPABASE_URL + "/functions/v1/reset-user-password", {
+                method: "POST",
+                headers: {
+                    "Authorization": "Bearer " + accessToken,
+                    "apikey": SUPABASE_PUBLISHABLE_KEY,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ email: targetEmail, password: newPassword })
+            });
+            const result = await response.json().catch(() => ({}));
+            if (!response.ok || result.success !== true) throw new Error(result.error || "تنظیم رمز جدید انجام نشد.");
+            message.textContent = "رمز جدید با موفقیت تنظیم شد. آن را به‌صورت امن به کاربر برسان.";
+            message.style.color = "#34d399";
+            document.getElementById("adminNewPassword").value = "";
+        } catch (error) {
+            message.textContent = error.message || "خطا هنگام تنظیم رمز جدید.";
+            message.style.color = "#fb7185";
+        } finally {
+            button.disabled = false;
         }
     });
 
