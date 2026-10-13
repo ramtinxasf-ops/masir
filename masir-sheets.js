@@ -28,6 +28,23 @@
     tr:{accountInfo:"Hesabını aşağıdaki seçeneklerle yönet.",manageProfile:"Ana profili aç",managePassword:"Hesap güvenliğini aç",openSecurity:"Hesap güvenliğini aç",openBackup:"Yedekleme araçlarını aç",signOut:"Çıkış yap",deleteAccount:"Hesabı sil",deleteHint:"Hesap silme işlemi geri alınamaz ve onay gerektirir."},
     ja:{accountInfo:"以下の操作からアカウントを管理できます。",manageProfile:"メインプロフィールを開く",managePassword:"アカウントのセキュリティを開く",openSecurity:"アカウントのセキュリティを開く",openBackup:"バックアップを開く",signOut:"ログアウト",deleteAccount:"アカウントを削除",deleteHint:"アカウントの削除は取り消せず、確認が必要です。"}
   };
+
+  Object.assign(dict.fa, {
+    interestsTitle:"علایق عمومی", interestPlaceholder:"یک علاقه وارد کن؛ مثلاً هنر، ورزش یا فناوری", addInterest:"افزودن علاقه", removeInterest:"حذف علاقه", goalsTitle:"اهداف من", goalsPlaceholder:"اهداف شخصی یا کاری‌ات را بنویس…", saveGoals:"ذخیره اهداف", profileDataSaved:"اطلاعات ذخیره شد.", interestEmpty:"اول یک علاقه بنویس.", interestDuplicate:"این علاقه قبلاً در فهرست است.", interestLimit:"حداکثر ۱۰۰ علاقه می‌توانی ثبت کنی.", interestsEmpty:"هنوز علاقه‌ای اضافه نکرده‌ای.", profileLocalHint:"علایق و اهداف روی همین دستگاه و برای همین حساب ذخیره می‌شوند.", adminManagementTitle:"مدیریت کاربران", backupTitle:"پشتیبان‌گیری و بازیابی", adminOnlyHint:"این بخش فقط برای مدیر فعال است."
+  });
+  Object.assign(dict.en, {
+    interestsTitle:"General interests", interestPlaceholder:"Add an interest, e.g. art, sports, or technology", addInterest:"Add interest", removeInterest:"Remove interest", goalsTitle:"My goals", goalsPlaceholder:"Write your personal or work goals…", saveGoals:"Save goals", profileDataSaved:"Information saved.", interestEmpty:"Enter an interest first.", interestDuplicate:"This interest is already in the list.", interestLimit:"You can add up to 100 interests.", interestsEmpty:"No interests added yet.", profileLocalHint:"Interests and goals are saved on this device for this account.", adminManagementTitle:"User management", backupTitle:"Backup and restore", adminOnlyHint:"This section is available to the administrator only."
+  });
+  Object.assign(dict.ar, {
+    interestsTitle:"الاهتمامات العامة", interestPlaceholder:"أضف اهتمامًا، مثل الفن أو الرياضة أو التقنية", addInterest:"إضافة اهتمام", removeInterest:"حذف الاهتمام", goalsTitle:"أهدافي", goalsPlaceholder:"اكتب أهدافك الشخصية أو المهنية…", saveGoals:"حفظ الأهداف", profileDataSaved:"تم حفظ المعلومات.", interestEmpty:"أدخل اهتمامًا أولًا.", interestDuplicate:"هذا الاهتمام موجود بالفعل في القائمة.", interestLimit:"يمكنك إضافة 100 اهتمام كحد أقصى.", interestsEmpty:"لم تتم إضافة اهتمامات بعد.", profileLocalHint:"تُحفظ الاهتمامات والأهداف على هذا الجهاز لهذا الحساب.", adminManagementTitle:"إدارة المستخدمين", backupTitle:"النسخ الاحتياطي والاستعادة", adminOnlyHint:"هذا القسم متاح للمدير فقط."
+  });
+  Object.assign(dict.tr, {
+    interestsTitle:"Genel ilgi alanları", interestPlaceholder:"Sanat, spor veya teknoloji gibi bir ilgi alanı ekle", addInterest:"İlgi alanı ekle", removeInterest:"İlgi alanını sil", goalsTitle:"Hedeflerim", goalsPlaceholder:"Kişisel veya iş hedeflerini yaz…", saveGoals:"Hedefleri kaydet", profileDataSaved:"Bilgiler kaydedildi.", interestEmpty:"Önce bir ilgi alanı yaz.", interestDuplicate:"Bu ilgi alanı listede zaten var.", interestLimit:"En fazla 100 ilgi alanı ekleyebilirsin.", interestsEmpty:"Henüz ilgi alanı eklenmedi.", profileLocalHint:"İlgi alanları ve hedefler bu cihazda bu hesap için saklanır.", adminManagementTitle:"Kullanıcı yönetimi", backupTitle:"Yedekleme ve geri yükleme", adminOnlyHint:"Bu bölüm yalnızca yöneticiye açıktır."
+  });
+  Object.assign(dict.ja, {
+    interestsTitle:"一般的な興味", interestPlaceholder:"芸術、スポーツ、テクノロジーなどを入力", addInterest:"興味を追加", removeInterest:"興味を削除", goalsTitle:"目標", goalsPlaceholder:"個人または仕事の目標を入力…", saveGoals:"目標を保存", profileDataSaved:"保存しました。", interestEmpty:"先に興味を入力してください。", interestDuplicate:"この興味はすでに一覧にあります。", interestLimit:"興味は最大100件まで追加できます。", interestsEmpty:"興味はまだ追加されていません。", profileLocalHint:"興味と目標はこの端末のこのアカウント用に保存されます。", adminManagementTitle:"ユーザー管理", backupTitle:"バックアップと復元", adminOnlyHint:"この項目は管理者のみ利用できます。"
+  });
+
   const getLang = () => {
     try { const el = document.getElementById("appLanguage"); const v = el && el.value; if (dict[v]) return v; const saved = localStorage.getItem(LANG_KEY); return dict[saved] ? saved : "fa"; }
     catch (_) { return "fa"; }
@@ -60,7 +77,130 @@
     #masirSheetsPanel .ms-primary{background:#6d28d9;border-color:#8b5cf6;color:white}
     @media(max-width:520px){#masirSheetsOpen{top:8px;right:8px;width:40px;height:40px}#masirSheetsPanel{width:88vw;padding:13px}}
   `;
+
+  style.textContent += `
+    #masirProfileGoalsCard .ms-interest-form{display:flex;gap:8px;align-items:stretch}
+    #masirProfileGoalsCard .ms-interest-form input{min-width:0;flex:1;padding:11px;border-radius:10px;border:1px solid #514477;background:#0d1426;color:#f8fafc;font:inherit}
+    #masirProfileGoalsCard .ms-interest-list{list-style:none;padding:0;margin:12px 0 0;display:grid;gap:8px}
+    #masirProfileGoalsCard .ms-interest-list li{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 11px;border:1px solid #393452;border-radius:10px;background:#0f172a;overflow-wrap:anywhere}
+    #masirProfileGoalsCard .ms-interest-list li span{min-width:0;flex:1}
+    #masirProfileGoalsCard .ms-interest-list li button{padding:5px 8px;color:#fecaca;border-color:#7f1d1d}
+    #masirProfileGoalsCard textarea{min-height:110px}
+    #masirSheetsPanel #adminUserExportPanel,#masirSheetsPanel #profileSecurityPanel,#masirSheetsPanel #profileBackupPanel{margin:12px 0}
+  `;
+
   document.head.appendChild(style);
+
+
+  // Keep privileged account controls out of the profile page; render them only in their assigned menu sheets.
+  const legacyPanelParking = document.createElement("div");
+  legacyPanelParking.id = "masirLegacyPanelParking";
+  legacyPanelParking.hidden = true;
+  document.body.appendChild(legacyPanelParking);
+  ["adminUserExportPanel","profileSecurityPanel","profileBackupPanel"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) legacyPanelParking.appendChild(el);
+  });
+
+  function mountProfileInterests() {
+    const profile = document.getElementById("profileSection");
+    if (!profile || document.getElementById("masirProfileGoalsCard")) return;
+    const card = document.createElement("div");
+    card.id = "masirProfileGoalsCard";
+    card.className = "profile-panel";
+    card.innerHTML = `
+      <h3 id="msInterestsTitle"></h3>
+      <p class="ms-muted" id="msProfileLocalHint"></p>
+      <form class="ms-interest-form" id="msInterestForm">
+        <input id="msInterestInput" type="text" maxlength="100" autocomplete="off">
+        <button class="ms-primary" id="msAddInterest" type="submit"></button>
+      </form>
+      <p class="ms-muted" id="msInterestStatus" role="status" aria-live="polite"></p>
+      <ul class="ms-interest-list" id="msInterestList"></ul>
+      <hr style="border-color:rgba(196,167,255,.15);margin:18px 0">
+      <label for="msGoalsInput" id="msGoalsTitle"></label>
+      <textarea id="msGoalsInput" maxlength="10000"></textarea>
+      <div class="ms-actions"><button class="ms-primary" type="button" id="msSaveGoals"></button></div>
+      <p class="ms-status" id="msGoalsStatus" role="status" aria-live="polite"></p>`;
+    const form = document.getElementById("profileForm");
+    const accountPanel = form?.closest(".profile-panel");
+    if (accountPanel) accountPanel.insertAdjacentElement("afterend", card);
+    else profile.insertBefore(card, profile.firstChild);
+    const key = () => "masir_profile_interests_goals_v1_" + String(window.masirCurrentUser?.id || "guest");
+    const read = () => {
+      try { const value = JSON.parse(localStorage.getItem(key()) || "{}"); return { interests:Array.isArray(value.interests) ? value.interests.filter(x => typeof x === "string").slice(0,100) : [], goals:typeof value.goals === "string" ? value.goals : "" }; }
+      catch (_) { return {interests:[],goals:""}; }
+    };
+    const write = value => { try { localStorage.setItem(key(), JSON.stringify(value)); return true; } catch (_) { return false; } };
+    function render() {
+      card.querySelector("#msInterestsTitle").textContent = t("interestsTitle");
+      card.querySelector("#msProfileLocalHint").textContent = t("profileLocalHint");
+      card.querySelector("#msInterestInput").placeholder = t("interestPlaceholder");
+      card.querySelector("#msAddInterest").textContent = t("addInterest");
+      card.querySelector("#msGoalsTitle").textContent = t("goalsTitle");
+      card.querySelector("#msGoalsInput").placeholder = t("goalsPlaceholder");
+      card.querySelector("#msSaveGoals").textContent = t("saveGoals");
+      const data = read();
+      const list = card.querySelector("#msInterestList");
+      list.replaceChildren();
+      if (!data.interests.length) {
+        const empty = document.createElement("li");
+        empty.textContent = t("interestsEmpty");
+        list.appendChild(empty);
+      } else {
+        data.interests.forEach((interest, index) => {
+          const li = document.createElement("li");
+          const label = document.createElement("span"); label.textContent = interest;
+          const remove = document.createElement("button"); remove.type = "button"; remove.textContent = "×";
+          remove.setAttribute("aria-label", t("removeInterest") + ": " + interest); remove.title = t("removeInterest");
+          remove.addEventListener("click", () => {
+            const current = read(); current.interests.splice(index,1);
+            const ok = write(current); render();
+            card.querySelector("#msInterestStatus").textContent = ok ? t("profileDataSaved") : t("downloadFailed");
+          });
+          li.append(label,remove); list.appendChild(li);
+        });
+      }
+      card.querySelector("#msGoalsInput").value = data.goals;
+    }
+    card.querySelector("#msInterestForm").addEventListener("submit", event => {
+      event.preventDefault();
+      const input = card.querySelector("#msInterestInput");
+      const value = input.value.trim();
+      const status = card.querySelector("#msInterestStatus");
+      if (!value) { status.textContent = t("interestEmpty"); return; }
+      const data = read();
+      if (data.interests.length >= 100) { status.textContent = t("interestLimit"); return; }
+      if (data.interests.some(x => x.toLocaleLowerCase() === value.toLocaleLowerCase())) { status.textContent = t("interestDuplicate"); return; }
+      data.interests.push(value);
+      const ok = write(data);
+      if (ok) { input.value = ""; status.textContent = t("profileDataSaved"); render(); }
+      else status.textContent = t("downloadFailed");
+    });
+    card.querySelector("#msSaveGoals").addEventListener("click", () => {
+      const data = read(); data.goals = card.querySelector("#msGoalsInput").value.trim();
+      const ok = write(data); card.querySelector("#msGoalsStatus").textContent = ok ? t("profileDataSaved") : t("downloadFailed");
+    });
+    render();
+    document.addEventListener("click", event => {
+      if (event.target.closest("#nav-profile")) setTimeout(render, 80);
+    });
+    const langSelect = document.getElementById("appLanguage");
+    if (langSelect) langSelect.addEventListener("change", render);
+    window.addEventListener("masir:profile-changed", render);
+  }
+  mountProfileInterests();
+
+  function movePrivilegedPanel(id, slotId, headingKey) {
+    const panelEl = document.getElementById(id);
+    const slot = document.getElementById(slotId);
+    if (!panelEl || !slot) return;
+    slot.replaceChildren();
+    panelEl.style.display = panelEl.style.display || "block";
+    const heading = panelEl.querySelector("h3");
+    if (heading && headingKey) heading.textContent = t(headingKey);
+    slot.appendChild(panelEl);
+  }
 
   const button = document.createElement("button");
   button.type = "button"; button.id = "masirSheetsOpen"; button.textContent = "☰";
@@ -127,6 +267,8 @@
     } else if (name === "settings") {
       content.innerHTML = '<div class="ms-card"><label for="msLanguage"></label><select id="msLanguage"><option value="fa">فارسی</option><option value="en">English</option><option value="ar">العربية</option><option value="tr">Türkçe</option><option value="ja">日本語</option></select><p class="ms-muted" data-hint></p><div class="ms-status" id="msStatus" role="status"></div></div>';
       content.querySelector("label").textContent = t("language"); content.querySelector("[data-hint]").textContent = t("languageHint");
+      const backupSlot = document.createElement("div"); backupSlot.id = "msBackupSlot"; content.appendChild(backupSlot);
+      movePrivilegedPanel("profileBackupPanel","msBackupSlot","backupTitle");
       const select = content.querySelector("#msLanguage"); select.value = getLang();
       select.onchange = () => {
         try { localStorage.setItem(LANG_KEY, select.value); } catch (_) {}
@@ -136,8 +278,10 @@
         showSheet("settings"); const status = panel.querySelector("#msStatus"); if (status) status.textContent = t("saved");
       };
     } else if (name === "password") {
-      content.innerHTML = '<div class="ms-card"><p data-password-info></p><label for="msNewPassword" data-new-password-label></label><input id="msNewPassword" type="password" autocomplete="new-password" minlength="8" style="display:block;width:100%;padding:12px;border-radius:10px;border:1px solid #514477;background:#0d1426;color:#f8fafc"><label for="msConfirmPassword" data-confirm-password-label></label><input id="msConfirmPassword" type="password" autocomplete="new-password" minlength="8" style="display:block;width:100%;padding:12px;border-radius:10px;border:1px solid #514477;background:#0d1426;color:#f8fafc"><label style="display:flex;align-items:center;gap:8px"><input id="msShowPassword" type="checkbox" style="width:auto"> <span data-show-password-label></span></label><p class="ms-muted" id="msPasswordRules"></p><div class="ms-actions"><button class="ms-primary" id="msUpdatePassword" type="button"></button></div><div class="ms-status" id="msPasswordStatus" role="status" aria-live="polite"></div></div>';
+      content.innerHTML = '<div class="ms-card"><p data-password-info></p><label for="msNewPassword" data-new-password-label></label><input id="msNewPassword" type="password" autocomplete="new-password" minlength="8" style="display:block;width:100%;padding:12px;border-radius:10px;border:1px solid #514477;background:#0d1426;color:#f8fafc"><label for="msConfirmPassword" data-confirm-password-label></label><input id="msConfirmPassword" type="password" autocomplete="new-password" minlength="8" style="display:block;width:100%;padding:12px;border-radius:10px;border:1px solid #514477;background:#0d1426;color:#f8fafc"><label style="display:flex;align-items:center;gap:8px"><input id="msShowPassword" type="checkbox" style="width:auto"> <span data-show-password-label></span></label><p class="ms-muted" id="msPasswordRules"></p><div class="ms-actions"><button class="ms-primary" id="msUpdatePassword" type="button"></button></div><div class="ms-status" id="msPasswordStatus" role="status" aria-live="polite"></div><hr style="border-color:#393452;margin:18px 0"><div id="msAdminManagementSlot"></div><div id="msRecoverySlot"></div></div>';
       content.querySelector("[data-password-info]").textContent = t("passwordInfo");
+      movePrivilegedPanel("adminUserExportPanel","msAdminManagementSlot","adminManagementTitle");
+      movePrivilegedPanel("profileSecurityPanel","msRecoverySlot","security");
       content.querySelector("[data-new-password-label]").textContent = t("newPassword");
       content.querySelector("[data-confirm-password-label]").textContent = t("confirmPassword");
       content.querySelector("[data-show-password-label]").textContent = t("showPassword");
