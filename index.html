@@ -5684,9 +5684,10 @@ if($("adminSupportReplyButton"))$("adminSupportReplyButton").onclick=async()=>{c
     langSettings.addEventListener("change",()=>{
       langTop.value=langSettings.value;
       applyMasirLanguage(langSettings.value);
+      window.dispatchEvent(new Event("masir-language-changed"));
       if(typeof renderAll==="function")renderAll();
     });
-    langTop.addEventListener("change",()=>{langSettings.value=langTop.value;});
+    langTop.addEventListener("change",()=>{langSettings.value=langTop.value;window.dispatchEvent(new Event("masir-language-changed"));});
   }
   const noteKey="masir_notes_v1";
   const form=document.getElementById("masirNoteForm");
@@ -5741,6 +5742,7 @@ if($("adminSupportReplyButton"))$("adminSupportReplyButton").onclick=async()=>{c
     const button=document.getElementById("profileResetPasswordButton");
     if(button)setTimeout(()=>button.focus({preventScroll:true}),150);
   });
+  window.addEventListener("masir-language-changed",renderNotes);
   renderNotes();
 })();
 </script>
