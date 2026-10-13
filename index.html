@@ -2004,6 +2004,20 @@ var supabaseClient = window.supabase.createClient(
                 <div class="form-field"><label for="profilePhoneInput">شماره تلفن</label><input type="tel" id="profilePhoneInput" maxlength="20" autocomplete="tel" placeholder="+989123456789"></div>
                 <div class="form-field"><label for="profileBirthDate">تاریخ تولد</label><input type="date" id="profileBirthDate" autocomplete="bday"></div>
             </div>
+            <div class="form-field full-width" style="margin-top:16px;">
+                <label for="profileInterestInput" data-masir-original="علایق عمومی">علایق عمومی</label>
+                <div style="display:flex;gap:8px;align-items:stretch;flex-wrap:wrap;">
+                    <input type="text" id="profileInterestInput" maxlength="100" data-masir-original="یک علاقه وارد کن؛ مثلاً هنر، فناوری یا ورزش" placeholder="یک علاقه وارد کن؛ مثلاً هنر، فناوری یا ورزش" style="flex:1 1 220px;min-width:0;">
+                    <button type="button" class="secondary-button" id="addProfileInterestButton" data-masir-original="افزودن علاقه">افزودن علاقه</button>
+                </div>
+                <ul id="profileInterestsList" aria-label="علایق عمومی" style="list-style:none;padding:0;margin:12px 0;display:flex;gap:8px;flex-wrap:wrap;"></ul>
+                <p id="profileInterestsMessage" class="help-text" role="status" aria-live="polite"></p>
+                <p class="help-text" data-masir-original="پس از ویرایش علایق یا اهداف، ذخیره اطلاعات پروفایل را بزن.">پس از ویرایش علایق یا اهداف، ذخیره اطلاعات پروفایل را بزن.</p>
+            </div>
+            <div class="form-field full-width" style="margin-top:12px;">
+                <label for="profileGoalsInput" data-masir-original="اهداف">اهداف</label>
+                <textarea id="profileGoalsInput" rows="5" maxlength="10000" data-masir-original="اهداف شخصی یا کاری خود را اینجا بنویس…" placeholder="اهداف شخصی یا کاری خود را اینجا بنویس…" style="display:block;width:100%;min-width:0;padding:12px;background:#0d1426;color:var(--text);border:1px solid var(--border);border-radius:10px;font:inherit;resize:vertical;"></textarea>
+            </div>
             <p id="profileSaveMessage" class="help-text" role="status" aria-live="polite"></p>
             <button type="submit" class="primary-button" id="saveProfileButton" style="width:100%;margin-top:12px;">ذخیره اطلاعات پروفایل</button>
         </form>
@@ -2915,6 +2929,74 @@ const MASIR_MORE_UI_TRANSLATIONS = {
 for (const [language, entries] of Object.entries(MASIR_MORE_UI_TRANSLATIONS)) {
   if (MASIR_LANGUAGES[language] && MASIR_LANGUAGES[language].text) Object.assign(MASIR_LANGUAGES[language].text, entries);
 }
+
+
+/* Profile interests/goals translations: include placeholders explicitly because text-node translation does not cover input values. */
+Object.assign(MASIR_LANGUAGES.fa.text, {
+  "علایق عمومی":"علایق عمومی",
+  "یک علاقه وارد کن؛ مثلاً هنر، فناوری یا ورزش":"یک علاقه وارد کن؛ مثلاً هنر، فناوری یا ورزش",
+  "افزودن علاقه":"افزودن علاقه",
+  "هنوز علاقه‌ای اضافه نکرده‌ای.":"هنوز علاقه‌ای اضافه نکرده‌ای.",
+  "حذف":"حذف",
+  "اهداف":"اهداف",
+  "اهداف شخصی یا کاری خود را اینجا بنویس…":"اهداف شخصی یا کاری خود را اینجا بنویس…",
+  "پس از ویرایش علایق یا اهداف، ذخیره اطلاعات پروفایل را بزن.":"پس از ویرایش علایق یا اهداف، ذخیره اطلاعات پروفایل را بزن.",
+  "اول یک علاقه وارد کن.":"اول یک علاقه وارد کن.",
+  "این علاقه قبلاً اضافه شده است.":"این علاقه قبلاً اضافه شده است.",
+  "علاقه اضافه شد. برای ذخیره نهایی، اطلاعات پروفایل را ذخیره کن.":"علاقه اضافه شد. برای ذخیره نهایی، اطلاعات پروفایل را ذخیره کن."
+});
+Object.assign(MASIR_LANGUAGES.en.text, {
+  "علایق عمومی":"General interests",
+  "یک علاقه وارد کن؛ مثلاً هنر، فناوری یا ورزش":"Add an interest, e.g. art, technology, or sports",
+  "افزودن علاقه":"Add interest",
+  "هنوز علاقه‌ای اضافه نکرده‌ای.":"No interests added yet.",
+  "حذف":"Remove",
+  "اهداف":"Goals",
+  "اهداف شخصی یا کاری خود را اینجا بنویس…":"Write your personal or work goals here…",
+  "پس از ویرایش علایق یا اهداف، ذخیره اطلاعات پروفایل را بزن.":"After editing your interests or goals, select Save profile information.",
+  "اول یک علاقه وارد کن.":"Enter an interest first.",
+  "این علاقه قبلاً اضافه شده است.":"This interest has already been added.",
+  "علاقه اضافه شد. برای ذخیره نهایی، اطلاعات پروفایل را ذخیره کن.":"Interest added. Save your profile to keep the changes."
+});
+Object.assign(MASIR_LANGUAGES.ar.text, {
+  "علایق عمومی":"الاهتمامات العامة",
+  "یک علاقه وارد کن؛ مثلاً هنر، فناوری یا ورزش":"أضف اهتمامًا، مثل الفن أو التقنية أو الرياضة",
+  "افزودن علاقه":"إضافة اهتمام",
+  "هنوز علاقه‌ای اضافه نکرده‌ای.":"لم تتم إضافة اهتمامات بعد.",
+  "حذف":"حذف",
+  "اهداف":"الأهداف",
+  "اهداف شخصی یا کاری خود را اینجا بنویس…":"اكتب أهدافك الشخصية أو المهنية هنا…",
+  "پس از ویرایش علایق یا اهداف، ذخیره اطلاعات پروفایل را بزن.":"بعد تعديل الاهتمامات أو الأهداف، اضغط على حفظ معلومات الملف الشخصي.",
+  "اول یک علاقه وارد کن.":"أدخل اهتمامًا أولًا.",
+  "این علاقه قبلاً اضافه شده است.":"تمت إضافة هذا الاهتمام بالفعل.",
+  "علاقه اضافه شد. برای ذخیره نهایی، اطلاعات پروفایل را ذخیره کن.":"تمت إضافة الاهتمام. احفظ الملف الشخصي للاحتفاظ بالتغييرات."
+});
+Object.assign(MASIR_LANGUAGES.tr.text, {
+  "علایق عمومی":"Genel ilgi alanları",
+  "یک علاقه وارد کن؛ مثلاً هنر، فناوری یا ورزش":"Sanat, teknoloji veya spor gibi bir ilgi alanı ekle",
+  "افزودن علاقه":"İlgi alanı ekle",
+  "هنوز علاقه‌ای اضافه نکرده‌ای.":"Henüz ilgi alanı eklemedin.",
+  "حذف":"Sil",
+  "اهداف":"Hedefler",
+  "اهداف شخصی یا کاری خود را اینجا بنویس…":"Kişisel veya iş hedeflerini buraya yaz…",
+  "پس از ویرایش علایق یا اهداف، ذخیره اطلاعات پروفایل را بزن.":"İlgi alanlarını veya hedeflerini düzenledikten sonra Profil bilgilerini kaydet düğmesine bas.",
+  "اول یک علاقه وارد کن.":"Önce bir ilgi alanı yaz.",
+  "این علاقه قبلاً اضافه شده است.":"Bu ilgi alanı zaten eklenmiş.",
+  "علاقه اضافه شد. برای ذخیره نهایی، اطلاعات پروفایل را ذخیره کن.":"İlgi alanı eklendi. Değişiklikleri saklamak için profilini kaydet."
+});
+Object.assign(MASIR_LANGUAGES.ja.text, {
+  "علایق عمومی":"一般的な興味",
+  "یک علاقه وارد کن؛ مثلاً هنر، فناوری یا ورزش":"芸術、テクノロジー、スポーツなどの興味を入力",
+  "افزودن علاقه":"興味を追加",
+  "هنوز علاقه‌ای اضافه نکرده‌ای.":"興味はまだ追加されていません。",
+  "حذف":"削除",
+  "اهداف":"目標",
+  "اهداف شخصی یا کاری خود را اینجا بنویس…":"個人または仕事の目標をここに入力…",
+  "پس از ویرایش علایق یا اهداف، ذخیره اطلاعات پروفایل را بزن.":"興味や目標を編集したら、プロフィール情報を保存してください。",
+  "اول یک علاقه وارد کن.":"先に興味を入力してください。",
+  "این علاقه قبلاً اضافه شده است.":"この興味はすでに追加されています。",
+  "علاقه اضافه شد. برای ذخیره نهایی، اطلاعات پروفایل را ذخیره کن.":"興味を追加しました。変更を保存するにはプロフィールを保存してください。"
+});
 
 function masirCurrentLanguage() {
     const picker = document.getElementById("appLanguage");
@@ -4743,6 +4825,73 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
             target.style.color = isError ? "#fb7185" : "#34d399";
         }
     }
+    let profileInterests = [];
+
+    function renderProfileInterests() {
+        const list = document.getElementById("profileInterestsList");
+        if (!list) return;
+        list.replaceChildren();
+        if (!profileInterests.length) {
+            const empty = document.createElement("li");
+            empty.className = "help-text";
+            empty.textContent = masirTranslate("هنوز علاقه‌ای اضافه نکرده‌ای.");
+            list.appendChild(empty);
+            return;
+        }
+        profileInterests.forEach((interest, index) => {
+            const item = document.createElement("li");
+            item.style.cssText = "display:flex;align-items:center;gap:8px;padding:6px 8px 6px 6px;border:1px solid rgba(196,167,255,.28);border-radius:999px;background:rgba(124,58,237,.12);max-width:100%;";
+            const label = document.createElement("span");
+            label.textContent = interest;
+            label.style.cssText = "overflow-wrap:anywhere;padding-inline-start:6px;";
+            const remove = document.createElement("button");
+            remove.type = "button";
+            remove.className = "secondary-button";
+            remove.textContent = masirTranslate("حذف");
+            remove.setAttribute("aria-label", masirTranslate("حذف") + ": " + interest);
+            remove.style.cssText = "padding:3px 9px;min-height:30px;flex-shrink:0;";
+            remove.addEventListener("click", () => {
+                profileInterests.splice(index, 1);
+                renderProfileInterests();
+                const message = document.getElementById("profileInterestsMessage");
+                if (message) message.textContent = "";
+            });
+            item.append(label, remove);
+            list.appendChild(item);
+        });
+    }
+
+    function addProfileInterest() {
+        const input = document.getElementById("profileInterestInput");
+        const message = document.getElementById("profileInterestsMessage");
+        if (!input) return;
+        const value = input.value.trim();
+        if (!value) {
+            if (message) message.textContent = masirTranslate("اول یک علاقه وارد کن.");
+            input.focus();
+            return;
+        }
+        if (profileInterests.some(item => item.trim().toLocaleLowerCase() === value.toLocaleLowerCase())) {
+            if (message) message.textContent = masirTranslate("این علاقه قبلاً اضافه شده است.");
+            input.focus();
+            return;
+        }
+        profileInterests.push(value);
+        input.value = "";
+        renderProfileInterests();
+        if (message) message.textContent = masirTranslate("علاقه اضافه شد. برای ذخیره نهایی، اطلاعات پروفایل را ذخیره کن.");
+        input.focus();
+    }
+
+    const profileInterestInput = document.getElementById("profileInterestInput");
+    const addProfileInterestButton = document.getElementById("addProfileInterestButton");
+    if (addProfileInterestButton) addProfileInterestButton.addEventListener("click", addProfileInterest);
+    if (profileInterestInput) profileInterestInput.addEventListener("keydown", event => {
+        if (event.key === "Enter") { event.preventDefault(); addProfileInterest(); }
+    });
+    const profileLanguagePicker = document.getElementById("appLanguage");
+    if (profileLanguagePicker) profileLanguagePicker.addEventListener("change", renderProfileInterests);
+
     function populateProfile(user) {
         const metadata = user && user.user_metadata ? user.user_metadata : {};
         const setValue = (id, value) => {
@@ -4758,6 +4907,14 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
         setValue("profileLastName", metadata.last_name || metadata.lastName);
         setValue("profilePhoneInput", user.phone || metadata.phone);
         setValue("profileBirthDate", metadata.birth_date || metadata.birthDate);
+        profileInterests = Array.isArray(metadata.interests)
+            ? metadata.interests.filter(item => typeof item === "string" && item.trim()).map(item => item.trim())
+            : [];
+        const goalsInput = document.getElementById("profileGoalsInput");
+        if (goalsInput) goalsInput.value = typeof metadata.goals === "string" ? metadata.goals : "";
+        const interestMessage = document.getElementById("profileInterestsMessage");
+        if (interestMessage) interestMessage.textContent = "";
+        renderProfileInterests();
         configureAdminUserExport(user);
     }
     function configureAdminUserExport(user) {
@@ -4943,14 +5100,14 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
         showProfileMessage("در حال ذخیره اطلاعات...");
         try {
             const updatePayload = {
-                data: { ...(user.user_metadata || {}), first_name: firstName, last_name: lastName, phone, birth_date: birthDate }
+                data: { ...(user.user_metadata || {}), first_name: firstName, last_name: lastName, phone, birth_date: birthDate, interests: profileInterests.slice(), goals: document.getElementById("profileGoalsInput")?.value || "" }
             };
             const emailChanged = email.toLowerCase() !== String(user.email || "").trim().toLowerCase();
             if (emailChanged) updatePayload.email = email;
             const { data, error } = await supabaseClient.auth.updateUser(updatePayload);
             if (error) throw error;
             window.masirCurrentUser = data && data.user ? data.user : {
-                ...user, user_metadata: { ...(user.user_metadata || {}), first_name: firstName, last_name: lastName, phone, birth_date: birthDate }
+                ...user, user_metadata: { ...(user.user_metadata || {}), first_name: firstName, last_name: lastName, phone, birth_date: birthDate, interests: profileInterests.slice(), goals: document.getElementById("profileGoalsInput")?.value || "" }
             };
             populateProfile(window.masirCurrentUser);
             if (emailChanged) document.getElementById("profileEmailInput").value = email;
