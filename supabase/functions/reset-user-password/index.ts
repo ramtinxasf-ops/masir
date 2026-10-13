@@ -47,8 +47,15 @@ Deno.serve(async (request: Request) => {
   if (!targetEmail || !targetEmail.includes("@")) {
     return Response.json({ error: "ایمیل کاربر را درست وارد کن." }, { status: 400, headers: corsHeaders });
   }
-  if (password.length < 8) {
-    return Response.json({ error: "رمز جدید باید حداقل ۸ کاراکتر داشته باشد." }, { status: 400, headers: corsHeaders });
+  const passwordRules = [
+    { valid: password.length >= 8, message: "رمز جدید باید حداقل ۸ کاراکتر داشته باشد." },
+    { valid: /[A-Z]/.test(password), message: "رمز جدید باید حداقل یک حرف بزرگ انگلیسی (A-Z) داشته باشد." },
+    { valid: /[a-z]/.test(password), message: "رمز جدید باید حداقل یک حرف کوچک انگلیسی (a-z) داشته باشد." },
+    { valid: /[0-9]/.test(password), message: "رمز جدید باید حداقل یک عدد انگلیسی (0-9) داشته باشد." },
+  ];
+  const failedRule = passwordRules.find((rule) => !rule.valid);
+  if (failedRule) {
+    return Response.json({ error: failedRule.message }, { status: 400, headers: corsHeaders });
   }
 
   const adminClient = createClient(supabaseUrl, serviceRoleKey, { auth: { persistSession: false, autoRefreshToken: false } });
