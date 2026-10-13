@@ -1738,6 +1738,24 @@ html[dir="ltr"] .language-picker { justify-content: flex-end; }
 
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+var SUPABASE_URL = "https://pbwoutmlisabyjasagxc.supabase.co";
+var SUPABASE_PUBLISHABLE_KEY = "sb_publishable_yvGvqqX8tw245uhuV4DEsQ_xviAIFUJ";
+var supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_PUBLISHABLE_KEY,
+    {
+        auth: {
+            autoRefreshToken: true,
+            persistSession: true,
+            detectSessionInUrl: true
+        },
+        global: {
+            headers: { "X-Client-Info": "masir-app" }
+        }
+    }
+);
+</script>
 </head>
 
 <body>
@@ -2810,25 +2828,6 @@ function applyMasirLanguage(language) {
     observer.observe(document.body, { childList: true, subtree: true });
 })();
 
-const SUPABASE_URL = "https://pbwoutmlisabyjasagxc.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_yvGvqqX8tw245uhuV4DEsQ_xviAIFUJ";
-
-const supabaseClient = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_PUBLISHABLE_KEY,
-    {
-        auth: {
-            autoRefreshToken: true,
-            persistSession: true,
-            detectSessionInUrl: true
-        },
-        global: {
-            headers: {
-                "X-Client-Info": "masir-app"
-            }
-        }
-    }
-);
 const STORAGE_KEY = "masir_activities_v1";
 
 const WEEKDAY_NAMES = [
