@@ -2877,7 +2877,28 @@ function formatCountLabel(label, count) {
 }
 function localizedCalendarLocale() {
     const lang = masirCurrentLanguage();
-    // تقویم متناسب با زبان انتخاب‌شده: شمسی، میلادی، قمری، میلادی ترکی و ژاپنی.
+    let preferences = null;
+    try {
+        const saved = localStorage.getItem("masir_calendar_preferences_v1");
+        if (saved) preferences = JSON.parse(saved);
+    } catch (_) {}
+    if (preferences && preferences.type) {
+        const type = preferences.type;
+        if (type === "jalali") return "fa-IR-u-ca-persian";
+        if (type === "hijri") return "ar-SA-u-ca-islamic-umalqura";
+        if (type === "japanese") return "ja-JP-u-ca-japanese";
+        if (type === "gregorian") {
+            const locales = {
+                iran: "fa-IR-u-ca-gregory",
+                azerbaijan: "az-AZ-u-ca-gregory",
+                turkey: "tr-TR-u-ca-gregory",
+                japan: "ja-JP-u-ca-gregory",
+                other: lang === "fa" ? "fa-IR-u-ca-gregory" : lang === "ar" ? "ar-SA-u-ca-gregory" : lang === "ja" ? "ja-JP-u-ca-gregory" : lang === "tr" ? "tr-TR-u-ca-gregory" : "en-US-u-ca-gregory"
+            };
+            return locales[preferences.country] || locales.other;
+        }
+    }
+    // Preserve the existing default until a user explicitly chooses a calendar.
     if (lang === "fa") return "fa-IR-u-ca-persian";
     if (lang === "ar") return "ar-SA-u-ca-islamic-umalqura";
     if (lang === "ja") return "ja-JP-u-ca-japanese";
