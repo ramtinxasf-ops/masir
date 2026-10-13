@@ -330,7 +330,7 @@
     const slot = document.getElementById(slotId);
     if (!panelEl || !slot) return;
     slot.replaceChildren();
-    const adminOnly = ["adminUserExportPanel", "profileSecurityPanel", "profileBackupPanel"].includes(id);
+    const adminOnly = ["adminUserExportPanel", "profileSecurityPanel"].includes(id);
     if (id === "profileBackupPanel" && !window.masirCurrentUser) {
       panelEl.style.display = "none";
       if (legacyPanelParking && !legacyPanelParking.contains(panelEl)) legacyPanelParking.appendChild(panelEl);
