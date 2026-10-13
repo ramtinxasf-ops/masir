@@ -383,6 +383,9 @@
   function showSheet(name) {
     activeSheet = name; panel.querySelector("#msMenu").hidden = true; panel.querySelector("#msPage").hidden = false;
     panel.querySelector("#msTitle").textContent = t(name);
+    panel.querySelector("#msClose").setAttribute("aria-label", t("close"));
+    panel.querySelector("#msBack").innerHTML = '← <span data-label="back"></span>';
+    panel.querySelector('#msBack [data-label="back"]').textContent = t("back");
     const content = panel.querySelector("#msContent");
     const actionHome = document.getElementById("profileLogoutArea");
     ["msSignOutAccountButton","msDeleteAccountButton"].forEach(id => { const btn=document.getElementById(id); if(btn && actionHome && !actionHome.contains(btn)) actionHome.appendChild(btn); });
@@ -611,5 +614,12 @@
   window.addEventListener("masir:calendar-preferences-changed", () => { try { if (typeof window.renderAll === "function") window.renderAll(); else if (typeof window.renderCalendar === "function") window.renderCalendar(); } catch (error) { console.error("Masir calendar refresh failed:", error); } });
 
   const mainLanguage = document.getElementById("appLanguage");
-  if (mainLanguage) mainLanguage.addEventListener("change", () => { try { localStorage.setItem(LANG_KEY, mainLanguage.value); } catch (_) {} if (!panel.hidden && activeSheet) showSheet(activeSheet); });
+  if (mainLanguage) mainLanguage.addEventListener("change", () => {
+    try { localStorage.setItem(LANG_KEY, mainLanguage.value); } catch (_) {}
+    button.setAttribute("aria-label", t("openMenu"));
+    button.title = t("appName");
+    panel.setAttribute("aria-label", t("menu"));
+    panel.querySelector("#msClose").setAttribute("aria-label", t("close"));
+    if (!panel.hidden && activeSheet) showSheet(activeSheet);
+  });
 })();
