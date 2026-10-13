@@ -128,7 +128,7 @@
     else profile.insertBefore(card, profile.firstChild);
     const key = () => "masir_profile_interests_goals_v1_" + String(window.masirCurrentUser?.id || "guest");
     const read = () => {
-      try { const value = JSON.parse(localStorage.getItem(key()) || "{}"); return { interests:Array.isArray(value.interests) ? value.interests.filter(x => typeof x === "string").slice(0,100) : [], goals:typeof value.goals === "string" ? value.goals : "" }; }
+      try { const value = JSON.parse(localStorage.getItem(key()) || "{}"); return { interests:Array.isArray(value.interests) ? value.interests.filter(x => typeof x === "string") : [], goals:typeof value.goals === "string" ? value.goals : "" }; }
       catch (_) { return {interests:[],goals:""}; }
     };
     const write = value => { try { localStorage.setItem(key(), JSON.stringify(value)); return true; } catch (_) { return false; } };
@@ -170,7 +170,6 @@
       const status = card.querySelector("#msInterestStatus");
       if (!value) { status.textContent = t("interestEmpty"); return; }
       const data = read();
-      if (data.interests.length >= 100) { status.textContent = t("interestLimit"); return; }
       if (data.interests.some(x => x.toLocaleLowerCase() === value.toLocaleLowerCase())) { status.textContent = t("interestDuplicate"); return; }
       data.interests.push(value);
       const ok = write(data);
@@ -191,12 +190,23 @@
   }
   mountProfileInterests();
 
+  function isMasirAdmin() {
+    const email = String(window.masirCurrentUser?.email || "").trim().toLowerCase();
+    return email === "ramtinxasf@gmail.com";
+  }
+
   function movePrivilegedPanel(id, slotId, headingKey) {
     const panelEl = document.getElementById(id);
     const slot = document.getElementById(slotId);
     if (!panelEl || !slot) return;
     slot.replaceChildren();
-    panelEl.style.display = panelEl.style.display || "block";
+    const adminOnly = ["adminUserExportPanel", "profileSecurityPanel", "profileBackupPanel"].includes(id);
+    if (adminOnly && !isMasirAdmin()) {
+      panelEl.style.display = "none";
+      if (legacyPanelParking && !legacyPanelParking.contains(panelEl)) legacyPanelParking.appendChild(panelEl);
+      return;
+    }
+    if (adminOnly) panelEl.style.display = "block";
     const heading = panelEl.querySelector("h3");
     if (heading && headingKey) heading.textContent = t(headingKey);
     slot.appendChild(panelEl);
@@ -239,7 +249,7 @@
     if (name === "profile") {
       const email = document.getElementById("profileEmail")?.textContent?.trim() || "—";
       const phone = document.getElementById("profilePhone")?.textContent?.trim() || "—";
-      content.innerHTML = '<div class="ms-card"><p><strong data-email-label></strong><br><span id="msProfileEmail"></span></p><p><strong data-phone-label></strong><br><span id="msProfilePhone"></span></p><p class="ms-muted" data-profile-info></p><div class="ms-actions"><button class="ms-primary" id="msManageProfile" type="button"></button><button id="msDownloadInfo" type="button"></button><button id="msOpenSecurity" type="button"></button><button id="msOpenBackup" type="button"></button><button id="msSignOut" type="button"></button><button id="msDeleteAccount" type="button"></button></div><div class="ms-status" id="msProfileStatus" role="status" aria-live="polite"></div><p class="ms-muted" data-delete-hint></p></div>';
+      content.innerHTML = '<div class="ms-card"><p><strong data-email-label></strong><br><span id="msProfileEmail"></span></p><p><strong data-phone-label></strong><br><span id="msProfilePhone"></span></p><p class="ms-muted" data-profile-info></p><div class="ms-actions"><button class="ms-primary" id="msManageProfile" type="button"></button><button id="msDownloadInfo" type="button"></button><button id="msSignOut" type="button"></button><button id="msDeleteAccount" type="button"></button></div><div class="ms-status" id="msProfileStatus" role="status" aria-live="polite"></div><p class="ms-muted" data-delete-hint></p></div>';
       content.querySelector("#msProfileEmail").textContent = email; content.querySelector("#msProfilePhone").textContent = phone;
       content.querySelector("[data-email-label]").textContent = t("emailLabel"); content.querySelector("[data-phone-label]").textContent = t("phoneLabel");
       content.querySelector("[data-profile-info]").textContent = t("accountInfo"); content.querySelector("#msManageProfile").textContent = t("manageProfile");
@@ -257,13 +267,10 @@
           setTimeout(() => URL.revokeObjectURL(url), 1000); status.textContent = t("userInfoDownloaded");
         } catch (_) { status.textContent = t("downloadFailed"); }
       };
-      content.querySelector("#msOpenSecurity").textContent = t("openSecurity"); content.querySelector("#msOpenBackup").textContent = t("openBackup");
       content.querySelector("#msSignOut").textContent = t("signOut"); content.querySelector("#msDeleteAccount").textContent = t("deleteAccount");
       content.querySelector("[data-delete-hint]").textContent = t("deleteHint");
       const openProfile = () => { closePanel(); if (typeof window.showPage === "function") window.showPage("profile"); };
       content.querySelector("#msManageProfile").onclick = openProfile;
-      content.querySelector("#msOpenSecurity").onclick = () => { openProfile(); setTimeout(() => { const el=document.getElementById("profileSecurityPanel"); if(el) { el.style.display="block"; el.scrollIntoView({behavior:"smooth",block:"start"}); } }, 150); };
-      content.querySelector("#msOpenBackup").onclick = () => { openProfile(); setTimeout(() => { const el=document.getElementById("profileBackupPanel"); if(el) { el.style.display="block"; el.scrollIntoView({behavior:"smooth",block:"start"}); } }, 150); };
       content.querySelector("#msSignOut").onclick = () => { openProfile(); setTimeout(() => { const area=document.getElementById("profileLogoutArea"); const btn=area?.querySelector("button"); if(btn) btn.click(); },150); };
       content.querySelector("#msDeleteAccount").onclick = () => { openProfile(); setTimeout(() => { const area=document.getElementById("profileLogoutArea"); const buttons=area ? Array.from(area.querySelectorAll("button")) : []; const btn=buttons.length > 1 ? buttons[buttons.length - 1] : null; if(btn) btn.click(); },150); };
     } else if (name === "settings") {
