@@ -1652,6 +1652,28 @@ input:focus, select:focus, .activity-priority:focus, .activity-category:focus {
     flex-shrink: 0;
 }
 
+
+.language-picker {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-bottom: 12px;
+    font-size: 12px;
+}
+.language-picker select {
+    max-width: 170px;
+    padding: 7px 10px;
+    border-radius: 9px;
+    background: var(--card);
+    color: var(--text);
+    border: 1px solid var(--border);
+    font: inherit;
+}
+html[dir="ltr"] body { direction: ltr; }
+html[dir="rtl"] body { direction: rtl; }
+html[dir="ltr"] .language-picker { justify-content: flex-end; }
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -1660,6 +1682,16 @@ input:focus, select:focus, .activity-priority:focus, .activity-category:focus {
 <div class="container">
 
 <header>
+    <div class="language-picker">
+        <label for="appLanguage">🌐 زبان / Language</label>
+        <select id="appLanguage" aria-label="زبان برنامه">
+            <option value="fa">فارسی</option>
+            <option value="en">English</option>
+            <option value="ar">العربية</option>
+            <option value="tr">Türkçe</option>
+            <option value="ja">日本語</option>
+        </select>
+    </div>
     <h1>مسیر 💜</h1>
     <p>هر روز یک قدم به زندگی دلخواهت نزدیک‌تر شو.</p>
 </header>
@@ -1953,6 +1985,116 @@ input:focus, select:focus, .activity-priority:focus, .activity-category:focus {
 </div>
 
 <script>
+// زبان رابط کاربری؛ انتخاب در همین مرورگر ذخیره می‌شود.
+const MASIR_LANGUAGE_KEY = "masir_app_language_v1";
+const MASIR_LANGUAGES = {
+    fa: { dir: "rtl", lang: "fa", text: {
+        "🌐 زبان / Language":"🌐 زبان برنامه","هر روز یک قدم به زندگی دلخواهت نزدیک‌تر شو.":"هر روز یک قدم به زندگی دلخواهت نزدیک‌تر شو.",
+        "🏠 خانه":"🏠 خانه","📅 برنامه‌ریزی":"📅 برنامه‌ریزی","🗓️ برنامهٔ روز":"🗓️ برنامهٔ روز","📊 گزارش‌ها":"📊 گزارش‌ها","👤 پروفایل":"👤 پروفایل",
+        "➕ افزودن فعالیت جدید":"➕ افزودن فعالیت جدید","نام فعالیت":"نام فعالیت","دسته‌بندی فعالیت":"دسته‌بندی فعالیت","ساعت شروع":"ساعت شروع","ساعت پایان":"ساعت پایان",
+        "ذخیره اطلاعات پروفایل":"ذخیره اطلاعات پروفایل","اطلاعات حساب":"اطلاعات حساب","امنیت حساب":"امنیت حساب","ایمیل حساب":"ایمیل حساب","تلفن حساب":"تلفن حساب",
+        "نام":"نام","نام خانوادگی":"نام خانوادگی","شماره تلفن":"شماره تلفن","تاریخ تولد":"تاریخ تولد","بدون دسته‌بندی":"بدون دسته‌بندی",
+        "کار":"کار","آموزش و مطالعه":"آموزش و مطالعه","سلامتی و ورزش":"سلامتی و ورزش","شخصی":"شخصی","مالی":"مالی",
+        "انجام‌شده":"انجام‌شده","پیشرفت روز":"پیشرفت روز","خانه":"خانه","امروز":"امروز","حذف":"حذف","ذخیره":"ذخیره"
+    }},
+    en: { dir: "ltr", lang: "en", text: {
+        "🌐 زبان / Language":"🌐 App language","هر روز یک قدم به زندگی دلخواهت نزدیک‌تر شو.":"Take one small step toward the life you want every day.",
+        "🏠 خانه":"🏠 Home","📅 برنامه‌ریزی":"📅 Planning","🗓️ برنامهٔ روز":"🗓️ Daily plan","📊 گزارش‌ها":"📊 Reports","👤 پروفایل":"👤 Profile",
+        "➕ افزودن فعالیت جدید":"➕ Add a new activity","نام فعالیت":"Activity name","دسته‌بندی فعالیت":"Activity category","ساعت شروع":"Start time","ساعت پایان":"End time",
+        "ذخیره اطلاعات پروفایل":"Save profile information","اطلاعات حساب":"Account information","امنیت حساب":"Account security","ایمیل حساب":"Account email","تلفن حساب":"Account phone",
+        "نام":"First name","نام خانوادگی":"Last name","شماره تلفن":"Phone number","تاریخ تولد":"Date of birth","بدون دسته‌بندی":"Uncategorized",
+        "کار":"Work","آموزش و مطالعه":"Learning & study","سلامتی و ورزش":"Health & fitness","شخصی":"Personal","مالی":"Finance",
+        "انجام‌شده":"Completed","پیشرفت روز":"Daily progress","خانه":"Home","امروز":"Today","حذف":"Delete","ذخیره":"Save",
+        "مثلاً مطالعه یا ورزش":"e.g. reading or exercise","برای تغییر رمز، لینک بازیابی به ایمیل حسابت ارسال می‌شود.":"To change your password, a recovery link will be sent to your account email."
+    }},
+    ar: { dir: "rtl", lang: "ar", text: {
+        "🌐 زبان / Language":"🌐 لغة التطبيق","هر روز یک قدم به زندگی دلخواهت نزدیک‌تر شو.":"اقترب كل يوم خطوة صغيرة من الحياة التي تريدها.",
+        "🏠 خانه":"🏠 الرئيسية","📅 برنامه‌ریزی":"📅 التخطيط","🗓️ برنامهٔ روز":"🗓️ خطة اليوم","📊 گزارش‌ها":"📊 التقارير","👤 پروفایل":"👤 الملف الشخصي",
+        "➕ افزودن فعالیت جدید":"➕ إضافة نشاط جديد","نام فعالیت":"اسم النشاط","دسته‌بندی فعالیت":"فئة النشاط","ساعت شروع":"وقت البدء","ساعت پایان":"وقت الانتهاء",
+        "ذخیره اطلاعات پروفایل":"حفظ معلومات الملف الشخصي","اطلاعات حساب":"معلومات الحساب","امنیت حساب":"أمان الحساب","ایمیل حساب":"البريد الإلكتروني للحساب","تلفن حساب":"هاتف الحساب",
+        "نام":"الاسم","نام خانوادگی":"اسم العائلة","شماره تلفن":"رقم الهاتف","تاریخ تولد":"تاريخ الميلاد","بدون دسته‌بندی":"بلا فئة",
+        "کار":"العمل","آموزش و مطالعه":"التعلم والدراسة","سلامتی و ورزش":"الصحة والرياضة","شخصی":"شخصي","مالی":"المالية",
+        "انجام‌شده":"مكتمل","پیشرفت روز":"التقدم اليومي","خانه":"الرئيسية","امروز":"اليوم","حذف":"حذف","ذخیره":"حفظ",
+        "مثلاً مطالعه یا ورزش":"مثلاً القراءة أو الرياضة"
+    }},
+    tr: { dir: "ltr", lang: "tr", text: {
+        "🌐 زبان / Language":"🌐 Uygulama dili","هر روز یک قدم به زندگی دلخواهت نزدیک‌تر شو.":"Her gün istediğin yaşama doğru küçük bir adım at.",
+        "🏠 خانه":"🏠 Ana sayfa","📅 برنامه‌ریزی":"📅 Planlama","🗓️ برنامهٔ روز":"🗓️ Günlük plan","📊 گزارش‌ها":"📊 Raporlar","👤 پروفایل":"👤 Profil",
+        "➕ افزودن فعالیت جدید":"➕ Yeni etkinlik ekle","نام فعالیت":"Etkinlik adı","دسته‌بندی فعالیت":"Etkinlik kategorisi","ساعت شروع":"Başlangıç saati","ساعت پایان":"Bitiş saati",
+        "ذخیره اطلاعات پروفایل":"Profil bilgilerini kaydet","اطلاعات حساب":"Hesap bilgileri","امنیت حساب":"Hesap güvenliği","ایمیل حساب":"Hesap e-postası","تلفن حساب":"Hesap telefonu",
+        "نام":"Ad","نام خانوادگی":"Soyadı","شماره تلفن":"Telefon numarası","تاریخ تولد":"Doğum tarihi","بدون دسته‌بندی":"Kategorisiz",
+        "کار":"İş","آموزش و مطالعه":"Eğitim ve çalışma","سلامتی و ورزش":"Sağlık ve spor","شخصی":"Kişisel","مالی":"Finans",
+        "انجام‌شده":"Tamamlandı","پیشرفت روز":"Günlük ilerleme","خانه":"Ana sayfa","امروز":"Bugün","حذف":"Sil","ذخیره":"Kaydet",
+        "مثلاً مطالعه یا ورزش":"ör. okuma veya spor"
+    }},
+    ja: { dir: "ltr", lang: "ja", text: {
+        "🌐 زبان / Language":"🌐 アプリの言語","هر روز یک قدم به زندگی دلخواهت نزدیک‌تر شو.":"毎日、小さな一歩で理想の生活に近づこう。",
+        "🏠 خانه":"🏠 ホーム","📅 برنامه‌ریزی":"📅 計画","🗓️ برنامهٔ روز":"🗓️ 今日の予定","📊 گزارش‌ها":"📊 レポート","👤 پروفایل":"👤 プロフィール",
+        "➕ افزودن فعالیت جدید":"➕ 新しい活動を追加","نام فعالیت":"活動名","دسته‌بندی فعالیت":"活動カテゴリ","ساعت شروع":"開始時刻","ساعت پایان":"終了時刻",
+        "ذخیره اطلاعات پروفایل":"プロフィール情報を保存","اطلاعات حساب":"アカウント情報","امنیت حساب":"アカウントのセキュリティ","ایمیل حساب":"アカウントのメール","تلفن حساب":"アカウントの電話番号",
+        "نام":"名","نام خانوادگی":"姓","شماره تلفن":"電話番号","تاریخ تولد":"生年月日","بدون دسته‌بندی":"未分類",
+        "کار":"仕事","آموزش و مطالعه":"学習・勉強","سلامتی و ورزش":"健康・運動","شخصی":"個人","مالی":"金融",
+        "انجام‌شده":"完了","پیشرفت روز":"今日の進捗","خانه":"ホーム","امروز":"今日","حذف":"削除","ذخیره":"保存",
+        "مثلاً مطالعه یا ورزش":"例：読書や運動"
+    }}
+};
+function applyMasirLanguage(language) {
+    const config = MASIR_LANGUAGES[language] || MASIR_LANGUAGES.fa;
+    const dict = config.text;
+    document.documentElement.lang = config.lang;
+    document.documentElement.dir = config.dir;
+    document.querySelectorAll("[data-masir-original]").forEach(el => {
+        const original = el.getAttribute("data-masir-original");
+        if (el.matches("input,textarea")) {
+            if (el.hasAttribute("placeholder")) el.placeholder = dict[original] || original;
+        } else if (el.tagName === "OPTION") {
+            el.textContent = dict[original] || original;
+        } else {
+            el.textContent = dict[original] || original;
+        }
+    });
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    const nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+    nodes.forEach(node => {
+        const parent = node.parentElement;
+        if (!parent || parent.closest("script,style,option,[data-no-translate]")) return;
+        const original = node.__masirOriginal || node.nodeValue;
+        if (!node.__masirOriginal) node.__masirOriginal = original;
+        const trimmed = original.trim();
+        if (dict[trimmed]) node.nodeValue = original.replace(trimmed, dict[trimmed]);
+        else if (language === "fa") node.nodeValue = original;
+    });
+    document.querySelectorAll("input[placeholder],textarea[placeholder]").forEach(el => {
+        if (!el.dataset.masirOriginalPlaceholder) el.dataset.masirOriginalPlaceholder = el.placeholder;
+        const original = el.dataset.masirOriginalPlaceholder;
+        el.placeholder = dict[original] || original;
+    });
+    document.querySelectorAll("label").forEach(el => {
+        if (!el.dataset.masirOriginal) el.dataset.masirOriginal = el.textContent.trim();
+        const original = el.dataset.masirOriginal;
+        if (dict[original]) el.textContent = dict[original];
+    });
+    const picker = document.getElementById("appLanguage");
+    if (picker && picker.value !== language) picker.value = language;
+    try { localStorage.setItem(MASIR_LANGUAGE_KEY, language); } catch (_) {}
+}
+(function initMasirLanguage() {
+    const picker = document.getElementById("appLanguage");
+    let language = "fa";
+    try { language = localStorage.getItem(MASIR_LANGUAGE_KEY) || "fa"; } catch (_) {}
+    if (picker) {
+        picker.value = language;
+        picker.addEventListener("change", () => applyMasirLanguage(picker.value));
+    }
+    applyMasirLanguage(language);
+    const observer = new MutationObserver(() => {
+        const current = picker ? picker.value : language;
+        if (current !== "fa") applyMasirLanguage(current);
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+})();
+
 const SUPABASE_URL = "https://pbwoutmlisabyjasagxc.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_yvGvqqX8tw245uhuV4DEsQ_xviAIFUJ";
 
