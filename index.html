@@ -1768,25 +1768,7 @@ html[dir="ltr"] .language-picker { justify-content: flex-end; }
 @media(max-width:520px){#masirSideDrawer{width: min(82vw,320px);min-width:0;padding:15px 10px}#masirMenuButton{top:8px;right:8px;width:40px;height:40px}#masirDrawerItems button{padding:10px 8px;font-size:12px}}
 
 </style>
-<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-<script>
-var SUPABASE_URL = "https://pbwoutmlisabyjasagxc.supabase.co";
-var SUPABASE_PUBLISHABLE_KEY = "sb_publishable_yvGvqqX8tw245uhuV4DEsQ_xviAIFUJ";
-var supabaseClient = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_PUBLISHABLE_KEY,
-    {
-        auth: {
-            autoRefreshToken: true,
-            persistSession: true,
-            detectSessionInUrl: true
-        },
-        global: {
-            headers: { "X-Client-Info": "masir-app" }
-        }
-    }
-);
-</script>
+
 </head>
 
 <body>
@@ -4748,7 +4730,26 @@ saveActivities();
 renderAll();
 const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIAHtnJki0xPxuFv_-52ZO8FChV8muEnUNAzjFyy4SZ9zlDejBG4oxCQ/exec';
 </script>
-    <!-- فرم ورود و ثبت‌نام مسیر -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script>
+var SUPABASE_URL = "https://pbwoutmlisabyjasagxc.supabase.co";
+var SUPABASE_PUBLISHABLE_KEY = "sb_publishable_yvGvqqX8tw245uhuV4DEsQ_xviAIFUJ";
+var supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_PUBLISHABLE_KEY,
+    {
+        auth: {
+            autoRefreshToken: true,
+            persistSession: true,
+            detectSessionInUrl: true
+        },
+        global: {
+            headers: { "X-Client-Info": "masir-app" }
+        }
+    }
+);
+</script>
+<!-- فرم ورود و ثبت‌نام مسیر -->
 <div id="masir-auth-overlay" style="position:fixed;inset:0;z-index:99999;background:#0b1020;display:flex;align-items:center;justify-content:center;padding:20px;font-family:Tahoma,Arial,sans-serif;direction:rtl;overflow-y:auto;">
     <div style="width:100%;max-width:420px;max-height:95vh;overflow-y:auto;background:#151c30;padding:24px;border-radius:18px;box-sizing:border-box;color:white;">
         <h2 style="text-align:center;margin-top:0;">مسیر</h2>
