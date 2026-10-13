@@ -294,10 +294,6 @@ button:hover {
     gap: 7px;
 }
 
-.home-week-days { margin: 10px 0 18px; }
-.home-week-days .calendar-day { cursor: pointer; min-height: 76px; }
-.home-week-days .day-count { display: block; }
-
 .calendar-day {
     background: #0d1426;
     color: var(--text);
@@ -1740,55 +1736,33 @@ html[dir="ltr"] .language-picker { justify-content: flex-end; }
   #bottomNav button { font-size:11px; padding:8px 5px; }
 }
 
-
-/* Masir side drawer and dedicated utility pages */
-#masirMenuButton{position:fixed;top:12px;right:12px;z-index:1002;width:44px;height:44px;border:1px solid var(--border);border-radius:13px;background:rgba(21,28,48,.96);color:var(--purple);font-size:25px;line-height:1;cursor:pointer;box-shadow:0 5px 18px #0004}
-#masirDrawerBackdrop{position:fixed;inset:0;background:rgba(3,6,16,.62);z-index:1003;opacity:0;visibility:hidden;transition:opacity .2s ease,visibility .2s ease}
-#masirDrawerBackdrop.is-open{opacity:1;visibility:visible}
-#masirSideDrawer{position:fixed;z-index:1004;top:0;right:0;height:100dvh;width:33.333vw;min-width:220px;max-width:340px;padding:18px 12px;background:linear-gradient(180deg,#171d32,#0e1425);border-left:1px solid #393454;box-shadow:-12px 0 36px #0006;transform:translateX(105%);transition:transform .24s ease;overflow-y:auto}
-#masirSideDrawer.is-open{transform:translateX(0)}
-#masirDrawerHead{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:3px 3px 18px;border-bottom:1px solid var(--border);margin-bottom:14px}
-#masirDrawerHead strong{color:var(--purple);font-size:17px}
-#masirDrawerClose{border:1px solid var(--border);border-radius:10px;background:#20283b;color:var(--text);width:36px;height:36px;font-size:20px;cursor:pointer}
-#masirDrawerItems{display:grid;gap:8px}
-#masirDrawerItems button{display:flex;align-items:center;gap:10px;width:100%;padding:11px 10px;border:1px solid transparent;border-radius:12px;background:transparent;color:var(--text);text-align:start;font:inherit;font-size:13px;cursor:pointer}
-#masirDrawerItems button:hover,#masirDrawerItems button:focus-visible{background:#292440;border-color:#514477;outline:none}
-#masirDrawerItems button span:first-child{width:25px;text-align:center;font-size:18px}
-.masir-utility-card{max-width:760px;margin-inline:auto}
-#appLanguageSettings{width:100%;margin-top:8px}
-#masirNoteTitle,#masirNoteBody{width:100%;margin:8px 0;padding:12px;border:1px solid var(--border);border-radius:12px;background:#0b1020;color:var(--text);font:inherit}
-#masirNoteBody{min-height:140px;resize:vertical}
-#masirNotesList{display:grid;gap:10px;margin-top:18px}
-.masir-note-item{padding:13px;border:1px solid var(--border);border-radius:13px;background:var(--card-light);overflow-wrap:anywhere}
-.masir-note-item h3{margin:0 0 5px;color:var(--purple)}
-.masir-note-item p{white-space:pre-wrap;margin:0 0 10px}
-.masir-note-actions{display:flex;gap:8px;flex-wrap:wrap}
-.masir-note-actions button{font:inherit;cursor:pointer}
-#masirNotesStatus{min-height:1.5em}
-@media(max-width:520px){#masirSideDrawer{width: min(82vw,320px);min-width:0;padding:15px 10px}#masirMenuButton{top:8px;right:8px;width:40px;height:40px}#masirDrawerItems button{padding:10px 8px;font-size:12px}}
-
 </style>
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+var SUPABASE_URL = "https://pbwoutmlisabyjasagxc.supabase.co";
+var SUPABASE_PUBLISHABLE_KEY = "sb_publishable_yvGvqqX8tw245uhuV4DEsQ_xviAIFUJ";
+var supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_PUBLISHABLE_KEY,
+    {
+        auth: {
+            autoRefreshToken: true,
+            persistSession: true,
+            detectSessionInUrl: true
+        },
+        global: {
+            headers: { "X-Client-Info": "masir-app" }
+        }
+    }
+);
+</script>
 </head>
 
 <body>
-<button type="button" id="masirMenuButton" aria-label="باز کردن منو" title="منو" aria-controls="masirSideDrawer" aria-expanded="false">⋮</button>
-<div id="masirDrawerBackdrop" aria-hidden="true"></div>
-<aside id="masirSideDrawer" aria-label="منوی اصلی" aria-hidden="true">
-  <div id="masirDrawerHead"><strong>مسیر 💜</strong><button type="button" id="masirDrawerClose" aria-label="بستن منو">×</button></div>
-  <nav id="masirDrawerItems">
-    <button type="button" data-masir-page="account"><span>👤</span><span>حساب کاربری</span></button>
-    <button type="button" data-masir-page="settings"><span>⚙️</span><span>تنظیمات</span></button>
-    <button type="button" data-masir-page="password"><span>🔐</span><span>تغییر رمز عبور</span></button>
-    <button type="button" data-masir-page="notes"><span>📝</span><span>یادداشت‌ها</span></button>
-    <button type="button" data-masir-page="calendar"><span>📅</span><span>تقویم</span></button>
-    <button type="button" data-masir-page="about"><span>💜</span><span>درباره مسیر</span></button>
-  </nav>
-</aside>
 <div class="container">
 
 <header>
-    <div class="language-picker" style="display:none;">
+    <div class="language-picker">
         <label for="appLanguage">🌐 زبان / Language</label>
         <select id="appLanguage" aria-label="زبان برنامه">
             <option value="fa">فارسی</option>
@@ -1827,30 +1801,6 @@ html[dir="ltr"] .language-picker { justify-content: flex-end; }
     </div>
 
     <div class="progress-label" id="progressLabel"></div>
-</section>
-
-<section class="card" id="activitiesSection">
-    <h2>📋 فعالیت‌های روز</h2>
-    <h3 style="margin:12px 0;">روزهای این هفته</h3>
-    <div class="week-calendar home-week-days" id="homeWeekDays" aria-label="انتخاب روز هفته"></div>
-
-    <div class="activity-filter-row">
-        <div class="activity-filter-field">
-            <label for="activityCategoryFilter">نمایش بر اساس دسته‌بندی</label>
-            <select id="activityCategoryFilter" class="activity-category">
-                <option value="all">همه دسته‌بندی‌ها</option>
-                <option value="general">بدون دسته‌بندی</option>
-                <option value="work">کار</option>
-                <option value="study">آموزش و مطالعه</option>
-                <option value="health">سلامتی و ورزش</option>
-                <option value="personal">شخصی</option>
-                <option value="finance">مالی</option>
-            </select>
-        </div>
-        <div class="activity-filter-count" id="activityFilterCount" aria-live="polite"></div>
-    </div>
-
-    <div class="activity-list" id="activityList"></div>
 </section>
 
 <section class="card" id="planningSection">
@@ -1960,15 +1910,15 @@ html[dir="ltr"] .language-picker { justify-content: flex-end; }
         </div>
 
         <div class="calendar-controls" aria-label="کنترل‌های تقویم">
-            <label for="calendarTypeSelect" style="margin:0;">نوع تقویم</label>
-            <select id="calendarTypeSelect" aria-label="نوع تقویم" style="width:auto;max-width:100%;">
-                <option value="auto">متناسب با زبان</option><option value="gregory">میلادی</option><option value="persian">شمسی</option><option value="islamic-umalqura">قمری</option><option value="japanese">ژاپنی</option>
-            </select>
-            <label for="calendarCountrySelect" style="margin:0;">کشور</label>
-            <select id="calendarCountrySelect" aria-label="کشور تقویم" style="width:auto;max-width:100%;">
-                <option value="IR">ایران</option><option value="US">ایالات متحده</option><option value="SA">عربستان سعودی</option><option value="TR">ترکیه</option><option value="JP">ژاپن</option><option value="GB">بریتانیا</option>
-            </select>
-            <button type="button" class="secondary-button" id="previousWeekButton">هفته قبل ←</button><button type="button" class="today-button" id="todayButton">امروز</button><button type="button" class="secondary-button" id="nextWeekButton">→ هفته بعد</button>
+            <button type="button" class="secondary-button" id="previousWeekButton">
+                هفته قبل ←
+            </button>
+            <button type="button" class="today-button" id="todayButton">
+                امروز
+            </button>
+            <button type="button" class="secondary-button" id="nextWeekButton">
+                → هفته بعد
+            </button>
         </div>
     </div>
 
@@ -1980,6 +1930,24 @@ html[dir="ltr"] .language-picker { justify-content: flex-end; }
     <div class="week-calendar" id="weekCalendar"></div>
 
     <div class="selected-date-title" id="selectedDateTitle"></div>
+
+    <div class="activity-filter-row">
+        <div class="activity-filter-field">
+            <label for="activityCategoryFilter">نمایش بر اساس دسته‌بندی</label>
+            <select id="activityCategoryFilter" class="activity-category">
+                <option value="all">همه دسته‌بندی‌ها</option>
+                <option value="general">بدون دسته‌بندی</option>
+                <option value="work">کار</option>
+                <option value="study">آموزش و مطالعه</option>
+                <option value="health">سلامتی و ورزش</option>
+                <option value="personal">شخصی</option>
+                <option value="finance">مالی</option>
+            </select>
+        </div>
+        <div class="activity-filter-count" id="activityFilterCount" aria-live="polite"></div>
+    </div>
+
+    <div class="activity-list" id="activityList"></div>
 </section>
 
 <section class="card" id="reportSection">
@@ -2022,50 +1990,21 @@ html[dir="ltr"] .language-picker { justify-content: flex-end; }
 </section>
     
 <section class="card" id="profileSection" style="display:none;">
-    <h2>👤 نمایه</h2>
-    <p class="help-text">اطلاعات ثبت‌شده حساب کاربری در این بخش فقط نمایش داده می‌شود. برای ویرایش، از منوی سه‌نقطه وارد «حساب کاربری» شو.</p>
-    <div class="profile-panel"><h3>اطلاعات شخصی</h3>
-        <div class="profile-account-line"><span>نام</span><strong id="profileViewFirstName">—</strong></div>
-        <div class="profile-account-line"><span>نام خانوادگی</span><strong id="profileViewLastName">—</strong></div>
-        <div class="profile-account-line"><span>سال تولد</span><strong id="profileViewBirthYear">—</strong></div>
-        <div class="profile-account-line"><span>ایمیل</span><strong id="profileViewEmail">—</strong></div>
-        <div class="profile-account-line"><span>شماره تلفن</span><strong id="profileViewPhone">—</strong></div>
-        <div class="profile-account-line"><span>علایق</span><strong id="profileViewInterests" style="white-space:pre-wrap;">—</strong></div>
-        <div class="profile-account-line"><span>اهداف</span><strong id="profileViewGoals" style="white-space:pre-wrap;">—</strong></div>
-    </div>
-</section>
-
-<section class="card" id="accountSection" style="display:none;">
-    <h2>👤 حساب کاربری</h2>
-    <p class="help-text">اطلاعات شخصی را اینجا ثبت و ویرایش کن. ابزارهای مدیریتی فقط برای حساب مدیر نمایش داده می‌شوند.</p>
+    <h2>👤 پروفایل من</h2>
+    <p class="help-text">اطلاعات شخصی، امنیت حساب و پشتیبان‌گیری را از این بخش مدیریت کن.</p>
     <div class="profile-panel">
         <h3>اطلاعات حساب</h3>
+        <div class="profile-account-line"><span>ایمیل حساب</span><strong id="profileEmail">—</strong></div>
         <div class="profile-account-line"><span>تلفن حساب</span><strong id="profilePhone">—</strong></div>
         <form id="profileForm">
             <div class="form-grid">
-                <div class="form-field"><label for="profileEmailInput">ایمیل</label><input type="email" id="profileEmailInput" maxlength="254" autocomplete="email" required><p id="profileEmailHelp" class="help-text" style="margin:5px 0 0;">برای حفظ دسترسی مدیر، ایمیل حساب مدیر از اینجا قابل تغییر نیست.</p></div>
                 <div class="form-field"><label for="profileFirstName">نام</label><input type="text" id="profileFirstName" maxlength="60" autocomplete="given-name" required></div>
                 <div class="form-field"><label for="profileLastName">نام خانوادگی</label><input type="text" id="profileLastName" maxlength="80" autocomplete="family-name" required></div>
                 <div class="form-field"><label for="profilePhoneInput">شماره تلفن</label><input type="tel" id="profilePhoneInput" maxlength="20" autocomplete="tel" placeholder="+989123456789"></div>
-                <div class="form-field"><label for="profileBirthYear">سال تولد</label><input type="number" id="profileBirthYear" min="1900" max="2100" inputmode="numeric" autocomplete="bday-year" placeholder="مثلاً ۱۳۷۵"></div>
-            </div>
-            <div class="form-field" style="margin-top:12px;">
-                <label for="profileInterestChoice">علایق</label>
-                <div class="form-grid" style="grid-template-columns:minmax(0,1fr) auto;align-items:end;">
-                    <div class="form-field"><label for="profileInterestChoice">انتخاب از علایق پیشنهادی</label><select id="profileInterestChoice">
-                        <option value="">یک علاقه انتخاب کن</option><option>هنر و طراحی</option><option>موسیقی</option><option>کتاب‌خوانی</option><option>برنامه‌نویسی</option>
-                        <option>امنیت سایبری</option><option>علم داده</option><option>ورزش و تناسب اندام</option><option>سفر</option><option>تاریخ</option><option>زبان‌آموزی</option>
-                        <option>کسب‌وکار و کارآفرینی</option><option>فناوری</option><option>عکاسی</option><option>طبیعت</option><option>بازی</option><option>آشپزی</option>
-                    </select></div><button type="button" class="secondary-button" id="addProfileInterestButton">افزودن</button>
-                </div>
-                <label for="profileInterests">علایق انتخاب‌شده یا علایق دلخواه را اینجا بنویس</label>
-                <textarea id="profileInterests" rows="3" maxlength="2000" placeholder="می‌توانی چند علاقه را با ویرگول جدا کنی یا دستی بنویسی." style="width:100%;padding:12px;border:1px solid var(--border);border-radius:10px;background:#0d1426;color:var(--text);font:inherit;"></textarea>
-            </div>
-            <div class="form-field" style="margin-top:12px;"><label for="profileGoals">اهداف</label>
-                <textarea id="profileGoals" rows="4" maxlength="4000" placeholder="هدف‌های شخصی‌ات را اینجا بنویس..." style="width:100%;padding:12px;border:1px solid var(--border);border-radius:10px;background:#0d1426;color:var(--text);font:inherit;"></textarea>
+                <div class="form-field"><label for="profileBirthDate">تاریخ تولد</label><input type="date" id="profileBirthDate" autocomplete="bday"></div>
             </div>
             <p id="profileSaveMessage" class="help-text" role="status" aria-live="polite"></p>
-            <button type="submit" class="primary-button" id="saveProfileButton" style="width:100%;margin-top:12px;">ذخیره اطلاعات حساب کاربری</button>
+            <button type="submit" class="primary-button" id="saveProfileButton" style="width:100%;margin-top:12px;">ذخیره اطلاعات پروفایل</button>
         </form>
     </div>
     <div class="profile-panel" id="profilePrivateChatLinkPanel" style="display:none;">
@@ -2073,9 +2012,48 @@ html[dir="ltr"] .language-picker { justify-content: flex-end; }
         <p class="help-text">برای پشتیبانی یا ارسال پیام خصوصی به مدیر وارد صفحهٔ چت شو.</p>
         <button type="button" class="primary-button" id="openPrivateChatFromProfile" style="width:100%;">💬 چت خصوصی با مدیر</button>
     </div>
-    
-    
-    
+    <div class="profile-panel" id="adminUserExportPanel" style="display:none;">
+        <h3>مدیریت کاربران</h3>
+        <p class="help-text">این بخش فقط برای حساب مدیریتی مجاز فعال است. رمز قبلی کاربران نمایش داده نمی‌شود؛ می‌توانی رمز جدید تنظیم کنی.</p>
+        <button type="button" class="secondary-button" id="exportUsersCsvButton" style="width:100%;text-align:right;">📄 دریافت فهرست کاربران (متن مرتب)</button>
+        <p id="adminUserExportMessage" class="help-text" role="status" aria-live="polite"></p>
+        <form id="adminResetPasswordForm" style="margin-top:16px;padding:14px;border:1px solid rgba(167,139,250,.35);border-radius:12px;background:rgba(139,92,246,.06);">
+            <h4 style="margin:0 0 8px;font-size:15px;">تغییر رمز عبور یک کاربر</h4>
+            <p class="help-text" style="margin:0 0 12px;">ابتدا ایمیل همان حسابی را وارد کن که می‌خواهی رمز آن را تغییر بدهی؛ سپس رمز جدید را تعیین کن.</p>
+            <div class="form-field"><label for="adminTargetEmail">ایمیل حساب کاربر موردنظر</label><input type="email" id="adminTargetEmail" name="targetUserEmail" autocomplete="off" required placeholder="مثلاً user@example.com" aria-describedby="adminTargetEmailHelp"><small id="adminTargetEmailHelp" class="help-text">رمز فقط برای حسابی با همین ایمیل تغییر می‌کند.</small></div>
+            <div class="form-field"><label for="adminNewPassword">رمز عبور جدید</label><input type="password" id="adminNewPassword" name="newUserPassword" autocomplete="new-password" required aria-describedby="adminPasswordRules"></div>
+            <div id="adminPasswordRules" class="help-text" style="font-size:12px;margin-top:-6px;">
+                رمز باید هر ۴ شرط را داشته باشد:
+                <div data-admin-rule="length">○ حداقل ۸ کاراکتر</div>
+                <div data-admin-rule="upper">○ حداقل یک حرف بزرگ انگلیسی (A-Z)</div>
+                <div data-admin-rule="lower">○ حداقل یک حرف کوچک انگلیسی (a-z)</div>
+                <div data-admin-rule="number">○ حداقل یک عدد انگلیسی (0-9)</div>
+            </div>
+            <button type="submit" class="primary-button" id="adminResetPasswordButton" style="width:100%;margin-top:10px;">🔐 تنظیم رمز جدید کاربر</button>
+            <p id="adminResetPasswordMessage" class="help-text" role="status" aria-live="polite"></p>
+        </form>
+        
+    </div>
+    <div class="profile-panel" id="profileSecurityPanel" style="display:none;">
+        <h3>امنیت حساب</h3>
+        <p class="help-text">برای تغییر رمز، لینک بازیابی به ایمیل حسابت ارسال می‌شود.</p>
+        <button type="button" class="secondary-button" id="profileResetPasswordButton" style="width:100%;text-align:right;">🔐 بازیابی رمز عبور</button>
+        <p id="profileSecurityMessage" class="help-text" role="status" aria-live="polite"></p>
+    </div>
+    <div class="profile-panel" id="profileBackupPanel" style="display:none;">
+        <h3>پشتیبان‌گیری و بازیابی</h3>
+        <button type="button" class="secondary-button" id="exportBackupButton" style="width:100%;text-align:right;">💾 دریافت نسخه پشتیبان <span style="float:left;">↓</span></button>
+        <div id="backupStatus" style="margin-top:10px;padding:12px;background:#211b38;border-radius:10px;font-size:13px;line-height:1.8;">وضعیت پشتیبان‌گیری هنوز بررسی نشده است.</div>
+        <button type="button" class="secondary-button" id="importBackupButton" style="width:100%;margin-top:12px;text-align:right;">📂 بازیابی از فایل پشتیبان <span style="float:left;">↑</span></button>
+        <input type="file" id="backupFileInput" accept=".json,application/json" style="display:none;">
+    </div>
+    <div class="profile-panel">
+        <button type="button" class="secondary-button" id="appInfoButton" style="width:100%;text-align:right;">ℹ️ اطلاعات برنامه <span style="float:left;">←</span></button>
+        <div id="appInfoDetails" style="display:none;margin-top:16px;">
+            <h3>مسیر</h3><p>برنامه‌ریز شخصی برای مدیریت فعالیت‌ها، پیگیری پیشرفت و بررسی گزارش‌ها.</p>
+            <p>هدف برنامه: کمک به مدیریت بهتر زمان و پیگیری عادت‌های روزانه.</p>
+        </div>
+    </div>
     <div id="profileLogoutArea" style="margin-top:24px;"></div>
 </section>
 
@@ -2112,107 +2090,13 @@ html[dir="ltr"] .language-picker { justify-content: flex-end; }
     </div>
 </section>
 
-
-<section class="card masir-utility-card" id="settingsSection" style="display:none;">
-  <h2>⚙️ تنظیمات</h2>
-  <div class="profile-panel">
-    <label for="appLanguageSettings">🌐 زبان برنامه</label>
-    <select id="appLanguageSettings" aria-label="زبان برنامه">
-      <option value="fa">فارسی</option><option value="en">English</option><option value="ar">العربية</option><option value="tr">Türkçe</option><option value="ja">日本語</option>
-    </select>
-    <p class="help-text">زبان انتخابی برای تمام بخش‌های رابط کاربری اعمال می‌شود. متن یادداشت‌های شخصی شما ترجمه نمی‌شود.</p>
-  </div>
-  
-  <div id="adminSettingsTools" style="display:none;">
-<div class="profile-panel" id="adminUserExportPanel" style="display:none;">
-        <h3>مدیریت کاربران</h3>
-        <p class="help-text">این بخش فقط برای حساب مدیریتی مجاز فعال است. رمز قبلی کاربران نمایش داده نمی‌شود؛ می‌توانی رمز جدید تنظیم کنی.</p>
-        <button type="button" class="secondary-button" id="exportUsersCsvButton" style="width:100%;text-align:right;">📄 دریافت فهرست کاربران (متن مرتب)</button>
-        <p id="adminUserExportMessage" class="help-text" role="status" aria-live="polite"></p>
-
-        
-    </div>
-<div class="profile-panel" id="profileBackupPanel" style="display:none;">
-        <h3>پشتیبان‌گیری و بازیابی</h3>
-        <button type="button" class="secondary-button" id="exportBackupButton" style="width:100%;text-align:right;">💾 دریافت نسخه پشتیبان <span style="float:left;">↓</span></button>
-        <div id="backupStatus" style="margin-top:10px;padding:12px;background:#211b38;border-radius:10px;font-size:13px;line-height:1.8;">وضعیت پشتیبان‌گیری هنوز بررسی نشده است.</div>
-        <button type="button" class="secondary-button" id="importBackupButton" style="width:100%;margin-top:12px;text-align:right;">📂 بازیابی از فایل پشتیبان <span style="float:left;">↑</span></button>
-        <input type="file" id="backupFileInput" accept=".json,application/json" style="display:none;">
-    </div>
-  </div>
-  <div class="profile-panel" id="settingsAccountActions">
-    <h3>مدیریت حساب</h3>
-    <p class="help-text">از این بخش می‌توانی از حساب خارج شوی یا آن را برای همیشه حذف کنی.</p>
-  </div>
-</section>
-<section class="card masir-utility-card" id="passwordSection" style="display:none;">
-  <h2>🔐 تغییر رمز عبور</h2>
-  <p class="help-text">رمز فعلی را وارد کن، سپس رمز جدیدی بساز که هر چهار شرط امنیتی را داشته باشد.</p>
-  <form id="masirChangePasswordForm" novalidate>
-    <label for="masirCurrentPassword">رمز عبور فعلی</label>
-    <input id="masirCurrentPassword" type="password" autocomplete="current-password" required style="width:100%;box-sizing:border-box;padding:12px;margin:8px 0 14px;border:1px solid var(--border);border-radius:10px;background:#0b1020;color:white;">
-    <label for="masirNewPassword">رمز عبور جدید</label>
-    <input id="masirNewPassword" type="password" autocomplete="new-password" required style="width:100%;box-sizing:border-box;padding:12px;margin:8px 0 8px;border:1px solid var(--border);border-radius:10px;background:#0b1020;color:white;">
-    <div id="masirChangePasswordRules" style="font-size:12px;line-height:1.9;margin-bottom:14px;color:#aab3ca;"><div data-rule="length">○ حداقل ۸ کاراکتر</div><div data-rule="upper">○ حداقل یک حرف بزرگ انگلیسی (A-Z)</div><div data-rule="lower">○ حداقل یک حرف کوچک انگلیسی (a-z)</div><div data-rule="number">○ حداقل یک عدد (0-9)</div></div>
-    <label for="masirConfirmNewPassword">تکرار رمز عبور جدید</label>
-    <input id="masirConfirmNewPassword" type="password" autocomplete="new-password" required style="width:100%;box-sizing:border-box;padding:12px;margin:8px 0 14px;border:1px solid var(--border);border-radius:10px;background:#0b1020;color:white;">
-    <button type="submit" class="primary-button" id="masirSaveChangedPassword" style="width:100%;">تغییر رمز عبور</button>
-    <p class="help-text" role="status" aria-live="polite" id="masirChangePasswordStatus"></p>
-  </form>
-
-  <div class="profile-panel" id="profileSecurityPanel" style="display:none;">
-        <h3>امنیت حساب</h3>
-        <p class="help-text">برای تغییر رمز، لینک بازیابی به ایمیل حسابت ارسال می‌شود.</p>
-        <button type="button" class="secondary-button" id="profileResetPasswordButton" style="width:100%;text-align:right;">🔐 بازیابی رمز عبور</button>
-        <p id="profileSecurityMessage" class="help-text" role="status" aria-live="polite"></p>
-    </div>
-  <div id="adminUserPasswordSection" style="display:none;margin-top:22px;">
-    <p class="help-text">این بخش فقط برای مدیر نمایش داده می‌شود.</p>
-    <form id="adminResetPasswordForm" style="margin-top:16px;padding:14px;border:1px solid rgba(167,139,250,.35);border-radius:12px;background:rgba(139,92,246,.06);">
-        <h4 style="margin:0 0 8px;font-size:15px;">تغییر رمز عبور کاربران</h4>
-        <p class="help-text" style="margin:0 0 12px;">ابتدا ایمیل همان حسابی را وارد کن که می‌خواهی رمز آن را تغییر بدهی؛ سپس رمز جدید را تعیین کن.</p>
-        <div class="form-field"><label for="adminTargetEmail">ایمیل حساب کاربر موردنظر</label><input type="email" id="adminTargetEmail" name="targetUserEmail" autocomplete="off" required placeholder="مثلاً user@example.com" aria-describedby="adminTargetEmailHelp"><small id="adminTargetEmailHelp" class="help-text">رمز فقط برای حسابی با همین ایمیل تغییر می‌کند.</small></div>
-        <div class="form-field"><label for="adminNewPassword">رمز عبور جدید</label><input type="password" id="adminNewPassword" name="newUserPassword" autocomplete="new-password" required aria-describedby="adminPasswordRules"></div>
-        <div id="adminPasswordRules" class="help-text" style="font-size:12px;margin-top:-6px;">
-            رمز باید هر ۴ شرط را داشته باشد:
-            <div data-admin-rule="length">○ حداقل ۸ کاراکتر</div>
-            <div data-admin-rule="upper">○ حداقل یک حرف بزرگ انگلیسی (A-Z)</div>
-            <div data-admin-rule="lower">○ حداقل یک حرف کوچک انگلیسی (a-z)</div>
-            <div data-admin-rule="number">○ حداقل یک عدد انگلیسی (0-9)</div>
-        </div>
-        <button type="submit" class="primary-button" id="adminResetPasswordButton" style="width:100%;margin-top:10px;">🔐 تنظیم رمز جدید کاربر</button>
-        <p id="adminResetPasswordMessage" class="help-text" role="status" aria-live="polite"></p>
-    </form>
-  </div>
-</section>
-<section class="card masir-utility-card" id="notesSection" style="display:none;">
-  <h2>📝 یادداشت‌ها</h2>
-  <form id="masirNoteForm">
-    <input type="hidden" id="masirEditingNoteId" value="">
-    <label for="masirNoteTitle">عنوان یادداشت</label>
-    <input id="masirNoteTitle" type="text" maxlength="120" placeholder="عنوان یادداشت" autocomplete="off">
-    <label for="masirNoteBody">متن یادداشت</label>
-    <textarea id="masirNoteBody" maxlength="10000" placeholder="یادداشت خود را اینجا بنویسید..."></textarea>
-    <div class="masir-note-actions"><button type="submit" class="primary-button" id="masirSaveNoteButton">ذخیره یادداشت</button><button type="button" class="secondary-button" id="masirCancelNoteEdit" style="display:none;">لغو ویرایش</button></div>
-  </form>
-  <p id="masirNotesStatus" class="help-text" role="status" aria-live="polite"></p>
-  <div id="masirNotesList"></div>
-</section>
-<section class="card masir-utility-card" id="aboutSection" style="display:none;">
-  <h2>💜 درباره مسیر</h2>
-  <div class="profile-panel"><h3>درباره برنامه</h3><p>مسیر یک برنامه‌ریز شخصی برای مدیریت فعالیت‌های روزانه، تنظیم برنامه، ثبت یادداشت‌ها و پیگیری پیشرفت است. هدف آن کمک به مدیریت بهتر زمان و ساختن عادت‌های مفید است.</p></div>
-  <div class="profile-panel"><h3>برنامه‌نویس</h3><p>رامتین همتای</p></div>
-  <div class="profile-panel"><h3>روش ارتباط با مدیر</h3><p>ایمیل: <a href="mailto:ramtinxasf@gmail.com">ramtinxasf@gmail.com</a></p><p class="help-text">برای پشتیبانی یا گزارش مشکل می‌توانید از این ایمیل استفاده کنید.</p></div>
-  <p class="help-text">هر روز یک قدم به زندگی دلخواهت نزدیک‌تر شو. 💜</p>
-</section>
-
 <nav id="bottomNav">
     <button type="button" id="nav-home" onclick="showPage('home')">🏠 خانه</button>
     <button type="button" id="nav-chat" onclick="showPage('chat')">💬 چت <span id="navChatUnreadBadge" aria-label="پیام ناخوانده" style="display:none;background:#ef4444;color:white;border-radius:999px;min-width:20px;height:20px;padding:0 6px;align-items:center;justify-content:center;font-size:11px;font-weight:800;margin-inline-start:5px;">0</span></button>
     <button type="button" id="nav-planning" onclick="showPage('planning')">📅 برنامه‌ریزی</button>
     <button type="button" id="nav-daily" onclick="showPage('daily')">🗓️ برنامهٔ روز</button>
     <button type="button" id="nav-reports" onclick="showPage('reports')">📊 گزارش‌ها</button>
-    <button type="button" id="nav-profile" onclick="showPage('profile')">👤 نمایه</button>
+    <button type="button" id="nav-profile" onclick="showPage('profile')">👤 پروفایل</button>
 </nav>
 <div class="footer-note">
     مسیر تو با قدم‌های کوچک ساخته می‌شود 💜
@@ -2220,65 +2104,13 @@ html[dir="ltr"] .language-picker { justify-content: flex-end; }
 
 </div>
 
-<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-<script>
-var SUPABASE_URL = "https://pbwoutmlisabyjasagxc.supabase.co";
-var SUPABASE_PUBLISHABLE_KEY = "sb_publishable_yvGvqqX8tw245uhuV4DEsQ_xviAIFUJ";
-var supabaseClient = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_PUBLISHABLE_KEY,
-    {
-        auth: {
-            autoRefreshToken: true,
-            persistSession: true,
-            detectSessionInUrl: true
-        },
-        global: {
-            headers: { "X-Client-Info": "masir-app" }
-        }
-    }
-);
-</script>
-
 <script>
 // زبان رابط کاربری؛ انتخاب در همین مرورگر ذخیره می‌شود.
 const MASIR_LANGUAGE_KEY = "masir_app_language_v1";
 const MASIR_LANGUAGES = {
     fa: { dir: "rtl", lang: "fa", text: {
-        "حساب کاربری":"حساب کاربری",
-        "تنظیمات":"تنظیمات",
-        "تغییر رمز عبور":"تغییر رمز عبور",
-        "یادداشت‌ها":"یادداشت‌ها",
-        "تقویم":"تقویم",
-        "درباره مسیر":"درباره مسیر",
-        "⚙️ تنظیمات":"⚙️ تنظیمات",
-        "👤 حساب کاربری":"👤 حساب کاربری",
-        "🔐 تغییر رمز عبور":"🔐 تغییر رمز عبور",
-        "📝 یادداشت‌ها":"📝 یادداشت‌ها",
-        "💜 درباره مسیر":"💜 درباره مسیر",
-        "🌐 زبان برنامه":"🌐 زبان برنامه",
-
-        "منو":"منو",
-        "باز کردن منو":"باز کردن منو",
-        "بستن منو":"بستن منو",
-        "عنوان یادداشت":"عنوان یادداشت",
-        "یادداشت خود را اینجا بنویسید...":"یادداشت خود را اینجا بنویسید...",
-        "ذخیره یادداشت":"ذخیره یادداشت",
-        "لغو ویرایش":"لغو ویرایش",
-        "زبان انتخابی برای تمام بخش‌های رابط کاربری اعمال می‌شود. متن یادداشت‌های شخصی شما ترجمه نمی‌شود.":"زبان انتخابی برای تمام بخش‌های رابط کاربری اعمال می‌شود. متن یادداشت‌های شخصی شما ترجمه نمی‌شود.",
-        "برای حفظ امنیت حساب، لینک بازیابی رمز به ایمیل حساب شما ارسال می‌شود.":"برای حفظ امنیت حساب، لینک بازیابی رمز به ایمیل حساب شما ارسال می‌شود.",
-        "ادامه به مدیریت رمز عبور":"ادامه به مدیریت رمز عبور",
-        "مسیر، همراهی برای برنامه‌ریزی روزانه، مدیریت زمان و پیگیری پیشرفت شخصی است.":"مسیر، همراهی برای برنامه‌ریزی روزانه، مدیریت زمان و پیگیری پیشرفت شخصی است.",
-        "هر روز یک قدم به زندگی دلخواهت نزدیک‌تر شو. 💜":"هر روز یک قدم به زندگی دلخواهت نزدیک‌تر شو. 💜",
-        "یادداشت ذخیره شد.":"یادداشت ذخیره شد.",
-        "یادداشت حذف شد.":"یادداشت حذف شد.",
-        "عنوان و متن یادداشت را وارد کن.":"عنوان و متن یادداشت را وارد کن.",
-        "ویرایش":"ویرایش",
-        "حذف":"حذف",
-        "هنوز یادداشتی ثبت نشده است.":"هنوز یادداشتی ثبت نشده است.",
-        "یادداشت ویرایش شد.":"یادداشت ویرایش شد.",
         "🌐 زبان / Language":"🌐 زبان برنامه","مسیر":"مسیر","مسیر 💜":"مسیر 💜","مسیر | برنامه‌ریز شخصی":"مسیر | برنامه‌ریز شخصی","هر روز یک قدم به زندگی دلخواهت نزدیک‌تر شو.":"هر روز یک قدم به زندگی دلخواهت نزدیک‌تر شو.",
-        "🏠 خانه":"🏠 خانه","💬 چت":"💬 چت","📅 برنامه‌ریزی":"📅 برنامه‌ریزی","🗓️ برنامهٔ روز":"🗓️ برنامهٔ روز","📊 گزارش‌ها":"📊 گزارش‌ها","👤 نمایه":"👤 نمایه",
+        "🏠 خانه":"🏠 خانه","💬 چت":"💬 چت","📅 برنامه‌ریزی":"📅 برنامه‌ریزی","🗓️ برنامهٔ روز":"🗓️ برنامهٔ روز","📊 گزارش‌ها":"📊 گزارش‌ها","👤 پروفایل":"👤 پروفایل",
         "➕ افزودن فعالیت جدید":"➕ افزودن فعالیت جدید","نام فعالیت":"نام فعالیت","دسته‌بندی فعالیت":"دسته‌بندی فعالیت","ساعت شروع":"ساعت شروع","ساعت پایان":"ساعت پایان",
         "ذخیره اطلاعات پروفایل":"ذخیره اطلاعات پروفایل","اطلاعات حساب":"اطلاعات حساب","امنیت حساب":"امنیت حساب","ایمیل حساب":"ایمیل حساب","تلفن حساب":"تلفن حساب",
         "نام":"نام","نام خانوادگی":"نام خانوادگی","شماره تلفن":"شماره تلفن","تاریخ تولد":"تاریخ تولد","بدون دسته‌بندی":"بدون دسته‌بندی",
@@ -2286,40 +2118,8 @@ const MASIR_LANGUAGES = {
         "انجام‌شده":"انجام‌شده","پیشرفت روز":"پیشرفت روز","خانه":"خانه","امروز":"امروز","حذف":"حذف","ذخیره":"ذخیره"
     }},
     en: { dir: "ltr", lang: "en", text: {
-        "حساب کاربری":"Account",
-        "تنظیمات":"Settings",
-        "تغییر رمز عبور":"Change password",
-        "یادداشت‌ها":"Notes",
-        "تقویم":"Calendar",
-        "درباره مسیر":"About Masir",
-        "⚙️ تنظیمات":"⚙️ Settings",
-        "👤 حساب کاربری":"👤 Account",
-        "🔐 تغییر رمز عبور":"🔐 Change password",
-        "📝 یادداشت‌ها":"📝 Notes",
-        "💜 درباره مسیر":"💜 About Masir",
-        "🌐 زبان برنامه":"🌐 App language",
-
-        "منو":"Menu",
-        "باز کردن منو":"Open menu",
-        "بستن منو":"Close menu",
-        "عنوان یادداشت":"Note title",
-        "یادداشت خود را اینجا بنویسید...":"Write your note here...",
-        "ذخیره یادداشت":"Save note",
-        "لغو ویرایش":"Cancel editing",
-        "زبان انتخابی برای تمام بخش‌های رابط کاربری اعمال می‌شود. متن یادداشت‌های شخصی شما ترجمه نمی‌شود.":"Your selected language applies to the entire interface. Your personal notes are not translated.",
-        "برای حفظ امنیت حساب، لینک بازیابی رمز به ایمیل حساب شما ارسال می‌شود.":"A password recovery link will be sent to your account email to keep your account secure.",
-        "ادامه به مدیریت رمز عبور":"Continue to password management",
-        "مسیر، همراهی برای برنامه‌ریزی روزانه، مدیریت زمان و پیگیری پیشرفت شخصی است.":"Masir helps you plan your days, manage time, and track personal progress.",
-        "هر روز یک قدم به زندگی دلخواهت نزدیک‌تر شو. 💜":"Take one step closer to the life you want every day. 💜",
-        "یادداشت ذخیره شد.":"Note saved.",
-        "یادداشت حذف شد.":"Note deleted.",
-        "عنوان و متن یادداشت را وارد کن.":"Enter a note title and text.",
-        "ویرایش":"Edit",
-        "حذف":"Delete",
-        "هنوز یادداشتی ثبت نشده است.":"No notes yet.",
-        "یادداشت ویرایش شد.":"Note updated.",
         "🌐 زبان / Language":"🌐 App language","مسیر":"Path","مسیر 💜":"Path 💜","مسیر | برنامه‌ریز شخصی":"Path | Personal Planner","هر روز یک قدم به زندگی دلخواهت نزدیک‌تر شو.":"Take one small step toward the life you want every day.",
-        "🏠 خانه":"🏠 Home","📅 برنامه‌ریزی":"📅 Planning","🗓️ برنامهٔ روز":"🗓️ Daily plan","📊 گزارش‌ها":"📊 Reports","👤 نمایه":"👤 Profile",
+        "🏠 خانه":"🏠 Home","📅 برنامه‌ریزی":"📅 Planning","🗓️ برنامهٔ روز":"🗓️ Daily plan","📊 گزارش‌ها":"📊 Reports","👤 پروفایل":"👤 Profile",
         "➕ افزودن فعالیت جدید":"➕ Add a new activity","نام فعالیت":"Activity name","دسته‌بندی فعالیت":"Activity category","ساعت شروع":"Start time","ساعت پایان":"End time",
         "ذخیره اطلاعات پروفایل":"Save profile information","اطلاعات حساب":"Account information","امنیت حساب":"Account security","ایمیل حساب":"Account email","تلفن حساب":"Account phone",
         "نام":"First name","نام خانوادگی":"Last name","شماره تلفن":"Phone number","تاریخ تولد":"Date of birth","بدون دسته‌بندی":"Uncategorized",
@@ -2499,40 +2299,8 @@ const MASIR_LANGUAGES = {
         "برای ورود یا ساخت حساب با پیامک، نام و نام خانوادگی را وارد کن.": "To sign in or create an account by SMS, enter your first and last name.",
     }},
     ar: { dir: "rtl", lang: "ar", text: {
-        "حساب کاربری":"الحساب",
-        "تنظیمات":"الإعدادات",
-        "تغییر رمز عبور":"تغيير كلمة المرور",
-        "یادداشت‌ها":"الملاحظات",
-        "تقویم":"التقويم",
-        "درباره مسیر":"حول مسير",
-        "⚙️ تنظیمات":"⚙️ الإعدادات",
-        "👤 حساب کاربری":"👤 الحساب",
-        "🔐 تغییر رمز عبور":"🔐 تغيير كلمة المرور",
-        "📝 یادداشت‌ها":"📝 الملاحظات",
-        "💜 درباره مسیر":"💜 حول مسير",
-        "🌐 زبان برنامه":"🌐 لغة التطبيق",
-
-        "منو":"القائمة",
-        "باز کردن منو":"فتح القائمة",
-        "بستن منو":"إغلاق القائمة",
-        "عنوان یادداشت":"عنوان الملاحظة",
-        "یادداشت خود را اینجا بنویسید...":"اكتب ملاحظتك هنا...",
-        "ذخیره یادداشت":"حفظ الملاحظة",
-        "لغو ویرایش":"إلغاء التعديل",
-        "زبان انتخابی برای تمام بخش‌های رابط کاربری اعمال می‌شود. متن یادداشت‌های شخصی شما ترجمه نمی‌شود.":"تُطبّق اللغة المختارة على الواجهة كلها. لن تُترجم ملاحظاتك الشخصية.",
-        "برای حفظ امنیت حساب، لینک بازیابی رمز به ایمیل حساب شما ارسال می‌شود.":"سيُرسل رابط استعادة كلمة المرور إلى بريد حسابك للحفاظ على أمانه.",
-        "ادامه به مدیریت رمز عبور":"متابعة إدارة كلمة المرور",
-        "مسیر، همراهی برای برنامه‌ریزی روزانه، مدیریت زمان و پیگیری پیشرفت شخصی است.":"مسير يساعدك على التخطيط اليومي وإدارة الوقت ومتابعة تقدمك الشخصي.",
-        "هر روز یک قدم به زندگی دلخواهت نزدیک‌تر شو. 💜":"اقترب كل يوم خطوة من الحياة التي تريدها. 💜",
-        "یادداشت ذخیره شد.":"تم حفظ الملاحظة.",
-        "یادداشت حذف شد.":"تم حذف الملاحظة.",
-        "عنوان و متن یادداشت را وارد کن.":"أدخل عنوان الملاحظة ونصها.",
-        "ویرایش":"تعديل",
-        "حذف":"حذف",
-        "هنوز یادداشتی ثبت نشده است.":"لا توجد ملاحظات بعد.",
-        "یادداشت ویرایش شد.":"تم تحديث الملاحظة.",
         "🌐 زبان / Language":"🌐 لغة التطبيق","مسیر":"المسار","مسیر 💜":"المسار 💜","مسیر | برنامه‌ریز شخصی":"المسار | مخطط شخصي","هر روز یک قدم به زندگی دلخواهت نزدیک‌تر شو.":"اقترب كل يوم خطوة صغيرة من الحياة التي تريدها.",
-        "🏠 خانه":"🏠 الرئيسية","📅 برنامه‌ریزی":"📅 التخطيط","🗓️ برنامهٔ روز":"🗓️ خطة اليوم","📊 گزارش‌ها":"📊 التقارير","👤 نمایه":"👤 الملف الشخصي",
+        "🏠 خانه":"🏠 الرئيسية","📅 برنامه‌ریزی":"📅 التخطيط","🗓️ برنامهٔ روز":"🗓️ خطة اليوم","📊 گزارش‌ها":"📊 التقارير","👤 پروفایل":"👤 الملف الشخصي",
         "➕ افزودن فعالیت جدید":"➕ إضافة نشاط جديد","نام فعالیت":"اسم النشاط","دسته‌بندی فعالیت":"فئة النشاط","ساعت شروع":"وقت البدء","ساعت پایان":"وقت الانتهاء",
         "ذخیره اطلاعات پروفایل":"حفظ معلومات الملف الشخصي","اطلاعات حساب":"معلومات الحساب","امنیت حساب":"أمان الحساب","ایمیل حساب":"البريد الإلكتروني للحساب","تلفن حساب":"هاتف الحساب",
         "نام":"الاسم","نام خانوادگی":"اسم العائلة","شماره تلفن":"رقم الهاتف","تاریخ تولد":"تاريخ الميلاد","بدون دسته‌بندی":"بلا فئة",
@@ -2711,40 +2479,8 @@ const MASIR_LANGUAGES = {
         "برای ورود یا ساخت حساب با پیامک، نام و نام خانوادگی را وارد کن.": "لتسجيل الدخول أو إنشاء حساب عبر الرسائل النصية، أدخل الاسم الأول واسم العائلة.",
     }},
     tr: { dir: "ltr", lang: "tr", text: {
-        "حساب کاربری":"Hesap",
-        "تنظیمات":"Ayarlar",
-        "تغییر رمز عبور":"Şifreyi değiştir",
-        "یادداشت‌ها":"Notlar",
-        "تقویم":"Takvim",
-        "درباره مسیر":"Masir hakkında",
-        "⚙️ تنظیمات":"⚙️ Ayarlar",
-        "👤 حساب کاربری":"👤 Hesap",
-        "🔐 تغییر رمز عبور":"🔐 Şifreyi değiştir",
-        "📝 یادداشت‌ها":"📝 Notlar",
-        "💜 درباره مسیر":"💜 Masir hakkında",
-        "🌐 زبان برنامه":"🌐 Uygulama dili",
-
-        "منو":"Menü",
-        "باز کردن منو":"Menüyü aç",
-        "بستن منو":"Menüyü kapat",
-        "عنوان یادداشت":"Not başlığı",
-        "یادداشت خود را اینجا بنویسید...":"Notunuzu buraya yazın...",
-        "ذخیره یادداشت":"Notu kaydet",
-        "لغو ویرایش":"Düzenlemeyi iptal et",
-        "زبان انتخابی برای تمام بخش‌های رابط کاربری اعمال می‌شود. متن یادداشت‌های شخصی شما ترجمه نمی‌شود.":"Seçtiğiniz dil tüm arayüze uygulanır. Kişisel notlarınız çevrilmez.",
-        "برای حفظ امنیت حساب، لینک بازیابی رمز به ایمیل حساب شما ارسال می‌شود.":"Hesabınızı korumak için e-posta adresinize parola sıfırlama bağlantısı gönderilir.",
-        "ادامه به مدیریت رمز عبور":"Parola yönetimine devam et",
-        "مسیر، همراهی برای برنامه‌ریزی روزانه، مدیریت زمان و پیگیری پیشرفت شخصی است.":"Masir günlük planlama, zaman yönetimi ve kişisel ilerlemenizi takip etmenize yardımcı olur.",
-        "هر روز یک قدم به زندگی دلخواهت نزدیک‌تر شو. 💜":"İstediğin yaşama her gün bir adım yaklaş. 💜",
-        "یادداشت ذخیره شد.":"Not kaydedildi.",
-        "یادداشت حذف شد.":"Not silindi.",
-        "عنوان و متن یادداشت را وارد کن.":"Bir not başlığı ve metni girin.",
-        "ویرایش":"Düzenle",
-        "حذف":"Sil",
-        "هنوز یادداشتی ثبت نشده است.":"Henüz not yok.",
-        "یادداشت ویرایش شد.":"Not güncellendi.",
         "🌐 زبان / Language":"🌐 Uygulama dili","مسیر":"Yol","مسیر 💜":"Yol 💜","مسیر | برنامه‌ریز شخصی":"Yol | Kişisel Planlayıcı","هر روز یک قدم به زندگی دلخواهت نزدیک‌تر شو.":"Her gün istediğin yaşama doğru küçük bir adım at.",
-        "🏠 خانه":"🏠 Ana sayfa","📅 برنامه‌ریزی":"📅 Planlama","🗓️ برنامهٔ روز":"🗓️ Günlük plan","📊 گزارش‌ها":"📊 Raporlar","👤 نمایه":"👤 Profil",
+        "🏠 خانه":"🏠 Ana sayfa","📅 برنامه‌ریزی":"📅 Planlama","🗓️ برنامهٔ روز":"🗓️ Günlük plan","📊 گزارش‌ها":"📊 Raporlar","👤 پروفایل":"👤 Profil",
         "➕ افزودن فعالیت جدید":"➕ Yeni etkinlik ekle","نام فعالیت":"Etkinlik adı","دسته‌بندی فعالیت":"Etkinlik kategorisi","ساعت شروع":"Başlangıç saati","ساعت پایان":"Bitiş saati",
         "ذخیره اطلاعات پروفایل":"Profil bilgilerini kaydet","اطلاعات حساب":"Hesap bilgileri","امنیت حساب":"Hesap güvenliği","ایمیل حساب":"Hesap e-postası","تلفن حساب":"Hesap telefonu",
         "نام":"Ad","نام خانوادگی":"Soyadı","شماره تلفن":"Telefon numarası","تاریخ تولد":"Doğum tarihi","بدون دسته‌بندی":"Kategorisiz",
@@ -2923,40 +2659,8 @@ const MASIR_LANGUAGES = {
         "برای ورود یا ساخت حساب با پیامک، نام و نام خانوادگی را وارد کن.": "SMS ile giriş yapmak veya hesap oluşturmak için adınızı ve soyadınızı girin.",
     }},
     ja: { dir: "ltr", lang: "ja", text: {
-        "حساب کاربری":"アカウント",
-        "تنظیمات":"設定",
-        "تغییر رمز عبور":"パスワード変更",
-        "یادداشت‌ها":"メモ",
-        "تقویم":"カレンダー",
-        "درباره مسیر":"Masirについて",
-        "⚙️ تنظیمات":"⚙️ 設定",
-        "👤 حساب کاربری":"👤 アカウント",
-        "🔐 تغییر رمز عبور":"🔐 パスワード変更",
-        "📝 یادداشت‌ها":"📝 メモ",
-        "💜 درباره مسیر":"💜 Masirについて",
-        "🌐 زبان برنامه":"🌐 アプリの言語",
-
-        "منو":"メニュー",
-        "باز کردن منو":"メニューを開く",
-        "بستن منو":"メニューを閉じる",
-        "عنوان یادداشت":"メモのタイトル",
-        "یادداشت خود را اینجا بنویسید...":"ここにメモを入力してください...",
-        "ذخیره یادداشت":"メモを保存",
-        "لغو ویرایش":"編集をキャンセル",
-        "زبان انتخابی برای تمام بخش‌های رابط کاربری اعمال می‌شود. متن یادداشت‌های شخصی شما ترجمه نمی‌شود.":"選択した言語は画面全体に適用されます。個人のメモは翻訳されません。",
-        "برای حفظ امنیت حساب، لینک بازیابی رمز به ایمیل حساب شما ارسال می‌شود.":"アカウントの安全のため、パスワード再設定リンクをメールで送信します。",
-        "ادامه به مدیریت رمز عبور":"パスワード管理へ進む",
-        "مسیر، همراهی برای برنامه‌ریزی روزانه، مدیریت زمان و پیگیری پیشرفت شخصی است.":"Masirは日々の計画、時間管理、個人の進捗確認をサポートします。",
-        "هر روز یک قدم به زندگی دلخواهت نزدیک‌تر شو. 💜":"毎日一歩ずつ、理想の暮らしへ。💜",
-        "یادداشت ذخیره شد.":"メモを保存しました。",
-        "یادداشت حذف شد.":"メモを削除しました。",
-        "عنوان و متن یادداشت را وارد کن.":"メモのタイトルと本文を入力してください。",
-        "ویرایش":"編集",
-        "حذف":"削除",
-        "هنوز یادداشتی ثبت نشده است.":"メモはまだありません。",
-        "یادداشت ویرایش شد.":"メモを更新しました。",
         "🌐 زبان / Language":"🌐 アプリの言語","مسیر":"道","مسیر 💜":"道 💜","مسیر | برنامه‌ریز شخصی":"道 | パーソナルプランナー","هر روز یک قدم به زندگی دلخواهت نزدیک‌تر شو.":"毎日、小さな一歩で理想の生活に近づこう。",
-        "🏠 خانه":"🏠 ホーム","📅 برنامه‌ریزی":"📅 計画","🗓️ برنامهٔ روز":"🗓️ 今日の予定","📊 گزارش‌ها":"📊 レポート","👤 نمایه":"👤 プロフィール",
+        "🏠 خانه":"🏠 ホーム","📅 برنامه‌ریزی":"📅 計画","🗓️ برنامهٔ روز":"🗓️ 今日の予定","📊 گزارش‌ها":"📊 レポート","👤 پروفایل":"👤 プロフィール",
         "➕ افزودن فعالیت جدید":"➕ 新しい活動を追加","نام فعالیت":"活動名","دسته‌بندی فعالیت":"活動カテゴリ","ساعت شروع":"開始時刻","ساعت پایان":"終了時刻",
         "ذخیره اطلاعات پروفایل":"プロフィール情報を保存","اطلاعات حساب":"アカウント情報","امنیت حساب":"アカウントのセキュリティ","ایمیل حساب":"アカウントのメール","تلفن حساب":"アカウントの電話番号",
         "نام":"名","نام خانوادگی":"姓","شماره تلفن":"電話番号","تاریخ تولد":"生年月日","بدون دسته‌بندی":"未分類",
@@ -3135,16 +2839,6 @@ const MASIR_LANGUAGES = {
         "برای ورود یا ساخت حساب با پیامک، نام و نام خانوادگی را وارد کن.": "SMSでログインまたはアカウントを作成するには、名と姓を入力してください。",
     }}
 };
-const MASIR_ACCOUNT_TRANSLATION_KEYS = ["نمایه","اطلاعات شخصی","اطلاعات ثبت‌شده حساب کاربری در این بخش فقط نمایش داده می‌شود. برای ویرایش، از منوی سه‌نقطه وارد «حساب کاربری» شو.","اطلاعات شخصی را اینجا ثبت و ویرایش کن. ابزارهای مدیریتی فقط برای حساب مدیر نمایش داده می‌شوند.","ایمیل","سال تولد","علایق","اهداف","انتخاب از علایق پیشنهادی","یک علاقه انتخاب کن","افزودن","علایق انتخاب‌شده یا علایق دلخواه را اینجا بنویس","می‌توانی چند علاقه را با ویرگول جدا کنی یا دستی بنویسی.","هدف‌های شخصی‌ات را اینجا بنویس...","ذخیره اطلاعات حساب کاربری","اطلاعات حساب کاربری ذخیره شد.","سال تولد باید یک سال معتبر باشد.","هنر و طراحی","موسیقی","کتاب‌خوانی","برنامه‌نویسی","امنیت سایبری","علم داده","ورزش و تناسب اندام","سفر","تاریخ","زبان‌آموزی","کسب‌وکار و کارآفرینی","فناوری","عکاسی","طبیعت","بازی","آشپزی","برای حفظ دسترسی مدیر، ایمیل حساب مدیر از اینجا قابل تغییر نیست.","اطلاعات ذخیره شد. برای نهایی شدن تغییر ایمیل، لینک تأیید ارسال‌شده به ایمیل جدید را باز کن.","ایمیل را وارد کن."];
-const MASIR_ACCOUNT_TRANSLATION_VALUES = {"fa":["نمایه","اطلاعات شخصی","اطلاعات ثبت‌شده حساب کاربری در این بخش فقط نمایش داده می‌شود. برای ویرایش، از منوی سه‌نقطه وارد «حساب کاربری» شو.","اطلاعات شخصی را اینجا ثبت و ویرایش کن. ابزارهای مدیریتی فقط برای حساب مدیر نمایش داده می‌شوند.","ایمیل","سال تولد","علایق","اهداف","انتخاب از علایق پیشنهادی","یک علاقه انتخاب کن","افزودن","علایق انتخاب‌شده یا علایق دلخواه را اینجا بنویس","می‌توانی چند علاقه را با ویرگول جدا کنی یا دستی بنویسی.","هدف‌های شخصی‌ات را اینجا بنویس...","ذخیره اطلاعات حساب کاربری","اطلاعات حساب کاربری ذخیره شد.","سال تولد باید یک سال معتبر باشد.","هنر و طراحی","موسیقی","کتاب‌خوانی","برنامه‌نویسی","امنیت سایبری","علم داده","ورزش و تناسب اندام","سفر","تاریخ","زبان‌آموزی","کسب‌وکار و کارآفرینی","فناوری","عکاسی","طبیعت","بازی","آشپزی","برای حفظ دسترسی مدیر، ایمیل حساب مدیر از اینجا قابل تغییر نیست.","اطلاعات ذخیره شد. برای نهایی شدن تغییر ایمیل، لینک تأیید ارسال‌شده به ایمیل جدید را باز کن.","ایمیل را وارد کن."],"en":["Profile","Personal information","This section only displays saved account information. To edit it, open Account from the three-dot menu.","Add and edit your personal information here. Management tools are visible only to the administrator.","Email","Birth year","Interests","Goals","Choose a suggested interest","Choose an interest","Add","Selected or custom interests","Separate multiple interests with commas, or type them manually.","Write your personal goals here...","Save account information","Account information saved.","Enter a valid birth year.","Art and design","Music","Reading","Programming","Cybersecurity","Data science","Sports and fitness","Travel","History","Language learning","Business and entrepreneurship","Technology","Photography","Nature","Gaming","Cooking","The administrator email cannot be changed here to preserve administrator access.","Information saved. To complete the email change, open the confirmation link sent to the new email address.","Enter an email address."],"ar":["الملف الشخصي","المعلومات الشخصية","يعرض هذا القسم معلومات الحساب المحفوظة فقط. للتعديل، افتح الحساب من قائمة النقاط الثلاث.","أضف معلوماتك الشخصية وعدّلها هنا. تظهر أدوات الإدارة للمسؤول فقط.","البريد الإلكتروني","سنة الميلاد","الاهتمامات","الأهداف","اختر اهتمامًا مقترحًا","اختر اهتمامًا","إضافة","الاهتمامات المختارة أو المخصصة","افصل بين الاهتمامات بفواصل أو اكتبها يدويًا.","اكتب أهدافك الشخصية هنا...","حفظ معلومات الحساب","تم حفظ معلومات الحساب.","أدخل سنة ميلاد صحيحة.","الفن والتصميم","الموسيقى","القراءة","البرمجة","الأمن السيبراني","علم البيانات","الرياضة واللياقة","السفر","التاريخ","تعلم اللغات","الأعمال وريادة الأعمال","التقنية","التصوير","الطبيعة","الألعاب","الطبخ","لا يمكن تغيير بريد المسؤول من هنا للحفاظ على صلاحيات الإدارة.","تم حفظ المعلومات. لإكمال تغيير البريد الإلكتروني، افتح رابط التأكيد المرسل إلى البريد الجديد.","أدخل البريد الإلكتروني."],"tr":["Profil","Kişisel bilgiler","Bu bölüm kayıtlı hesap bilgilerini yalnızca gösterir. Düzenlemek için üç nokta menüsünden Hesap bölümünü açın.","Kişisel bilgilerinizi burada ekleyip düzenleyin. Yönetim araçları yalnızca yöneticiye görünür.","E-posta","Doğum yılı","İlgi alanları","Hedefler","Önerilen ilgi alanını seçin","Bir ilgi alanı seçin","Ekle","Seçilen veya özel ilgi alanları","Birden fazla ilgi alanını virgülle ayırın veya elle yazın.","Kişisel hedeflerinizi buraya yazın...","Hesap bilgilerini kaydet","Hesap bilgileri kaydedildi.","Geçerli bir doğum yılı girin.","Sanat ve tasarım","Müzik","Kitap okuma","Programlama","Siber güvenlik","Veri bilimi","Spor ve fitness","Seyahat","Tarih","Dil öğrenme","İş ve girişimcilik","Teknoloji","Fotoğrafçılık","Doğa","Oyun","Yemek pişirme","Yönetici erişimini korumak için yönetici e-postası buradan değiştirilemez.","Bilgiler kaydedildi. E-posta değişikliğini tamamlamak için yeni adrese gönderilen doğrulama bağlantısını açın.","Bir e-posta adresi girin."],"ja":["プロフィール","個人情報","このセクションには保存済みのアカウント情報のみ表示されます。編集するには三点メニューからアカウントを開いてください。","ここで個人情報を登録・編集できます。管理ツールは管理者にのみ表示されます。","メールアドレス","生年","興味・関心","目標","おすすめの興味を選択","興味を選択","追加","選択した興味・関心、または自由入力","複数の場合はカンマで区切るか、手入力してください。","個人の目標を入力してください...","アカウント情報を保存","アカウント情報を保存しました。","有効な生年を入力してください。","アート・デザイン","音楽","読書","プログラミング","サイバーセキュリティ","データサイエンス","スポーツ・フィットネス","旅行","歴史","語学学習","ビジネス・起業","テクノロジー","写真","自然","ゲーム","料理","管理者権限を維持するため、管理者のメールアドレスはここから変更できません。","情報を保存しました。メール変更を完了するには、新しいメールアドレスに送信された確認リンクを開いてください。","メールアドレスを入力してください。"]};
-for (const lang of Object.keys(MASIR_ACCOUNT_TRANSLATION_VALUES)) { const d = {}; MASIR_ACCOUNT_TRANSLATION_KEYS.forEach((key, i) => d[key] = MASIR_ACCOUNT_TRANSLATION_VALUES[lang][i]); Object.assign(MASIR_LANGUAGES[lang].text, d); }
-
-const MASIR_ACCOUNT_TRANSLATIONS = {"fa":{"حساب کاربری":"حساب کاربری","نمایه":"نمایه","اطلاعات شخصی":"اطلاعات شخصی","ایمیل":"ایمیل","سال تولد":"سال تولد","علایق":"علایق","اهداف":"اهداف","انتخاب از علایق پیشنهادی":"انتخاب از علایق پیشنهادی","یک علاقه انتخاب کن":"یک علاقه انتخاب کن","افزودن":"افزودن","علایق انتخاب‌شده یا علایق دلخواه را اینجا بنویس":"علایق انتخاب‌شده یا علایق دلخواه را اینجا بنویس","می‌توانی چند علاقه را با ویرگول جدا کنی یا دستی بنویسی.":"می‌توانی چند علاقه را با ویرگول جدا کنی یا دستی بنویسی.","هدف‌های شخصی‌ات را اینجا بنویس...":"هدف‌های شخصی‌ات را اینجا بنویس...","ذخیره اطلاعات حساب کاربری":"ذخیره اطلاعات حساب کاربری","اطلاعات حساب کاربری ذخیره شد.":"اطلاعات حساب کاربری ذخیره شد.","سال تولد باید یک سال معتبر باشد.":"سال تولد باید یک سال معتبر باشد.","هنر و طراحی":"هنر و طراحی","موسیقی":"موسیقی","کتاب‌خوانی":"کتاب‌خوانی","برنامه‌نویسی":"برنامه‌نویسی","امنیت سایبری":"امنیت سایبری","علم داده":"علم داده","ورزش و تناسب اندام":"ورزش و تناسب اندام","سفر":"سفر","تاریخ":"تاریخ","زبان‌آموزی":"زبان‌آموزی","کسب‌وکار و کارآفرینی":"کسب‌وکار و کارآفرینی","فناوری":"فناوری","عکاسی":"عکاسی","طبیعت":"طبیعت","بازی":"بازی","آشپزی":"آشپزی"},"en":{"حساب کاربری":"Account","نمایه":"Profile","اطلاعات شخصی":"Personal information","ایمیل":"Email","سال تولد":"Birth year","علایق":"Interests","اهداف":"Goals","انتخاب از علایق پیشنهادی":"Choose a suggested interest","یک علاقه انتخاب کن":"Choose an interest","افزودن":"Add","علایق انتخاب‌شده یا علایق دلخواه را اینجا بنویس":"Selected or custom interests","می‌توانی چند علاقه را با ویرگول جدا کنی یا دستی بنویسی.":"Separate interests with commas or type them manually.","هدف‌های شخصی‌ات را اینجا بنویس...":"Write your personal goals here...","ذخیره اطلاعات حساب کاربری":"Save account information","اطلاعات حساب کاربری ذخیره شد.":"Account information saved.","سال تولد باید یک سال معتبر باشد.":"Enter a valid birth year.","هنر و طراحی":"Art and design","موسیقی":"Music","کتاب‌خوانی":"Reading","برنامه‌نویسی":"Programming","امنیت سایبری":"Cybersecurity","علم داده":"Data science","ورزش و تناسب اندام":"Sports and fitness","سفر":"Travel","تاریخ":"History","زبان‌آموزی":"Language learning","کسب‌وکار و کارآفرینی":"Business and entrepreneurship","فناوری":"Technology","عکاسی":"Photography","طبیعت":"Nature","بازی":"Gaming","آشپزی":"Cooking"},"ar":{"حساب کاربری":"الحساب","نمایه":"الملف الشخصي","اطلاعات شخصی":"المعلومات الشخصية","ایمیل":"البريد الإلكتروني","سال تولد":"سنة الميلاد","علایق":"الاهتمامات","اهداف":"الأهداف","انتخاب از علایق پیشنهادی":"اختر اهتمامًا مقترحًا","یک علاقه انتخاب کن":"اختر اهتمامًا","افزودن":"إضافة","علایق انتخاب‌شده یا علایق دلخواه را اینجا بنویس":"الاهتمامات المختارة أو المخصصة","می‌توانی چند علاقه را با ویرگول جدا کنی یا دستی بنویسی.":"افصل بين الاهتمامات بفواصل أو اكتبها يدويًا.","هدف‌های شخصی‌ات را اینجا بنویس...":"اكتب أهدافك الشخصية هنا...","ذخیره اطلاعات حساب کاربری":"حفظ معلومات الحساب","اطلاعات حساب کاربری ذخیره شد.":"تم حفظ معلومات الحساب.","سال تولد باید یک سال معتبر باشد.":"أدخل سنة ميلاد صحيحة.","هنر و طراحی":"الفن والتصميم","موسیقی":"الموسيقى","کتاب‌خوانی":"القراءة","برنامه‌نویسی":"البرمجة","امنیت سایبری":"الأمن السيبراني","علم داده":"علم البيانات","ورزش و تناسب اندام":"الرياضة واللياقة","سفر":"السفر","تاریخ":"التاريخ","زبان‌آموزی":"تعلم اللغات","کسب‌وکار و کارآفرینی":"الأعمال وريادة الأعمال","فناوری":"التقنية","عکاسی":"التصوير","طبیعت":"الطبيعة","بازی":"الألعاب","آشپزی":"الطبخ"},"tr":{"حساب کاربری":"Hesap","نمایه":"Profil","اطلاعات شخصی":"Kişisel bilgiler","ایمیل":"E-posta","سال تولد":"Doğum yılı","علایق":"İlgi alanları","اهداف":"Hedefler","انتخاب از علایق پیشنهادی":"Önerilen ilgi alanını seçin","یک علاقه انتخاب کن":"Bir ilgi alanı seçin","افزودن":"Ekle","علایق انتخاب‌شده یا علایق دلخواه را اینجا بنویس":"Seçilen veya özel ilgi alanları","می‌توانی چند علاقه را با ویرگول جدا کنی یا دستی بنویسی.":"Birden fazla ilgi alanını virgülle ayırın veya elle yazın.","هدف‌های شخصی‌ات را اینجا بنویس...":"Kişisel hedeflerinizi buraya yazın...","ذخیره اطلاعات حساب کاربری":"Hesap bilgilerini kaydet","اطلاعات حساب کاربری ذخیره شد.":"Hesap bilgileri kaydedildi.","سال تولد باید یک سال معتبر باشد.":"Geçerli bir doğum yılı girin.","هنر و طراحی":"Sanat ve tasarım","موسیقی":"Müzik","کتاب‌خوانی":"Kitap okuma","برنامه‌نویسی":"Programlama","امنیت سایبری":"Siber güvenlik","علم داده":"Veri bilimi","ورزش و تناسب اندام":"Spor ve fitness","سفر":"Seyahat","تاریخ":"Tarih","زبان‌آموزی":"Dil öğrenme","کسب‌وکار و کارآفرینی":"İş ve girişimcilik","فناوری":"Teknoloji","عکاسی":"Fotoğrafçılık","طبیعت":"Doğa","بازی":"Oyun","آشپزی":"Yemek pişirme"},"ja":{"حساب کاربری":"アカウント","نمایه":"プロフィール","اطلاعات شخصی":"個人情報","ایمیل":"メールアドレス","سال تولد":"生年","علایق":"興味・関心","اهداف":"目標","انتخاب از علایق پیشنهادی":"おすすめの興味を選択","یک علاقه انتخاب کن":"興味を選択","افزودن":"追加","علایق انتخاب‌شده یا علایق دلخواه را اینجا بنویس":"選択した興味・関心、または自由入力","می‌توانی چند علاقه را با ویرگول جدا کنی یا دستی بنویسی.":"複数の場合はカンマで区切るか、手入力してください。","هدف‌های شخصی‌ات را اینجا بنویس...":"個人の目標を入力してください...","ذخیره اطلاعات حساب کاربری":"アカウント情報を保存","اطلاعات حساب کاربری ذخیره شد.":"アカウント情報を保存しました。","سال تولد باید یک سال معتبر باشد.":"有効な生年を入力してください。","هنر و طراحی":"アート・デザイン","موسیقی":"音楽","کتاب‌خوانی":"読書","برنامه‌نویسی":"プログラミング","امنیت سایبری":"サイバーセキュリティ","علم داده":"データサイエンス","ورزش و تناسب اندام":"スポーツ・フィットネス","سفر":"旅行","تاریخ":"歴史","زبان‌آموزی":"語学学習","کسب‌وکار و کارآفرینی":"ビジネス・起業","فناوری":"テクノロジー","عکاسی":"写真","طبیعت":"自然","بازی":"ゲーム","آشپزی":"料理"}};
-for (const lang of Object.keys(MASIR_ACCOUNT_TRANSLATIONS)) Object.assign(MASIR_LANGUAGES[lang].text, MASIR_ACCOUNT_TRANSLATIONS[lang]);
-
-const MASIR_SETTINGS_TRANSLATIONS = {"fa":{"تغییر رمز عبور کاربران":"تغییر رمز عبور کاربران","این بخش فقط برای مدیر نمایش داده می‌شود.":"این بخش فقط برای مدیر نمایش داده می‌شود.","مدیریت حساب":"مدیریت حساب","از این بخش می‌توانی از حساب خارج شوی یا آن را برای همیشه حذف کنی.":"از این بخش می‌توانی از حساب خارج شوی یا آن را برای همیشه حذف کنی.","رمز فعلی را وارد کن، سپس رمز جدیدی بساز که هر چهار شرط امنیتی را داشته باشد.":"رمز فعلی را وارد کن، سپس رمز جدیدی بساز که هر چهار شرط امنیتی را داشته باشد.","رمز عبور فعلی":"رمز عبور فعلی","تکرار رمز عبور جدید":"تکرار رمز عبور جدید","تغییر رمز عبور":"تغییر رمز عبور","رمز عبور فعلی را وارد کن.":"رمز عبور فعلی را وارد کن.","رمز جدید و تکرار آن یکسان نیستند.":"رمز جدید و تکرار آن یکسان نیستند.","رمز جدید باید با رمز فعلی متفاوت باشد.":"رمز جدید باید با رمز فعلی متفاوت باشد.","برای بررسی رمز فعلی، حساب باید ایمیل یا شماره تلفن داشته باشد.":"برای بررسی رمز فعلی، حساب باید ایمیل یا شماره تلفن داشته باشد.","در حال بررسی رمز فعلی...":"در حال بررسی رمز فعلی...","رمز عبور فعلی صحیح نیست.":"رمز عبور فعلی صحیح نیست.","تغییر رمز انجام نشد. رمز فعلی یا اتصال حساب را بررسی کن.":"تغییر رمز انجام نشد. رمز فعلی یا اتصال حساب را بررسی کن.","بازیابی رمز عبور فقط برای مدیر فعال است.":"بازیابی رمز عبور فقط برای مدیر فعال است."},"en":{"تغییر رمز عبور کاربران":"Change users’ passwords","این بخش فقط برای مدیر نمایش داده می‌شود.":"This section is visible to the administrator only.","مدیریت حساب":"Account management","از این بخش می‌توانی از حساب خارج شوی یا آن را برای همیشه حذف کنی.":"Sign out or permanently delete your account here.","رمز فعلی را وارد کن، سپس رمز جدیدی بساز که هر چهار شرط امنیتی را داشته باشد.":"Enter your current password, then choose a new one that meets all four security requirements.","رمز عبور فعلی":"Current password","تکرار رمز عبور جدید":"Repeat new password","تغییر رمز عبور":"Change password","رمز عبور فعلی را وارد کن.":"Enter your current password.","رمز جدید و تکرار آن یکسان نیستند.":"The new passwords do not match.","رمز جدید باید با رمز فعلی متفاوت باشد.":"The new password must differ from the current password.","برای بررسی رمز فعلی، حساب باید ایمیل یا شماره تلفن داشته باشد.":"The account needs an email or phone number to verify the current password.","در حال بررسی رمز فعلی...":"Verifying current password...","رمز عبور فعلی صحیح نیست.":"The current password is incorrect.","تغییر رمز انجام نشد. رمز فعلی یا اتصال حساب را بررسی کن.":"Could not change password. Check the current password and account connection.","بازیابی رمز عبور فقط برای مدیر فعال است.":"Password recovery is available only to the administrator."},"ar":{"تغییر رمز عبور کاربران":"تغيير كلمات مرور المستخدمين","این بخش فقط برای مدیر نمایش داده می‌شود.":"هذا القسم متاح للمدير فقط.","مدیریت حساب":"إدارة الحساب","از این بخش می‌توانی از حساب خارج شوی یا آن را برای همیشه حذف کنی.":"يمكنك تسجيل الخروج أو حذف حسابك نهائيًا من هنا.","رمز فعلی را وارد کن، سپس رمز جدیدی بساز که هر چهار شرط امنیتی را داشته باشد.":"أدخل كلمة المرور الحالية ثم اختر كلمة مرور جديدة تستوفي الشروط الأمنية الأربعة.","رمز عبور فعلی":"كلمة المرور الحالية","تکرار رمز عبور جدید":"تأكيد كلمة المرور الجديدة","تغییر رمز عبور":"تغيير كلمة المرور","رمز عبور فعلی را وارد کن.":"أدخل كلمة المرور الحالية.","رمز جدید و تکرار آن یکسان نیستند.":"كلمتا المرور الجديدتان غير متطابقتين.","رمز جدید باید با رمز فعلی متفاوت باشد.":"يجب أن تختلف كلمة المرور الجديدة عن الحالية.","برای بررسی رمز فعلی، حساب باید ایمیل یا شماره تلفن داشته باشد.":"يجب أن يحتوي الحساب على بريد إلكتروني أو رقم هاتف للتحقق من كلمة المرور الحالية.","در حال بررسی رمز فعلی...":"جارٍ التحقق من كلمة المرور الحالية...","رمز عبور فعلی صحیح نیست.":"كلمة المرور الحالية غير صحيحة.","تغییر رمز انجام نشد. رمز فعلی یا اتصال حساب را بررسی کن.":"تعذر تغيير كلمة المرور. تحقق من كلمة المرور الحالية والاتصال.","بازیابی رمز عبور فقط برای مدیر فعال است.":"استعادة كلمة المرور متاحة للمسؤول فقط."},"tr":{"تغییر رمز عبور کاربران":"Kullanıcı parolalarını değiştir","این بخش فقط برای مدیر نمایش داده می‌شود.":"Bu bölüm yalnızca yöneticiye gösterilir.","مدیریت حساب":"Hesap yönetimi","از این بخش می‌توانی از حساب خارج شوی یا آن را برای همیشه حذف کنی.":"Buradan çıkış yapabilir veya hesabınızı kalıcı olarak silebilirsiniz.","رمز فعلی را وارد کن، سپس رمز جدیدی بساز که هر چهار شرط امنیتی را داشته باشد.":"Mevcut parolanızı girin ve dört güvenlik koşulunu karşılayan yeni bir parola seçin.","رمز عبور فعلی":"Mevcut parola","تکرار رمز عبور جدید":"Yeni parolayı tekrarla","تغییر رمز عبور":"Parolayı değiştir","رمز عبور فعلی را وارد کن.":"Mevcut parolanızı girin.","رمز جدید و تکرار آن یکسان نیستند.":"Yeni parolalar eşleşmiyor.","رمز جدید باید با رمز فعلی متفاوت باشد.":"Yeni parola mevcut paroladan farklı olmalı.","برای بررسی رمز فعلی، حساب باید ایمیل یا شماره تلفن داشته باشد.":"Mevcut parolayı doğrulamak için hesapta e-posta veya telefon bulunmalıdır.","در حال بررسی رمز فعلی...":"Mevcut parola doğrulanıyor...","رمز عبور فعلی صحیح نیست.":"Mevcut parola yanlış.","تغییر رمز انجام نشد. رمز فعلی یا اتصال حساب را بررسی کن.":"Parola değiştirilemedi. Mevcut parolayı ve bağlantıyı kontrol edin.","بازیابی رمز عبور فقط برای مدیر فعال است.":"Parola kurtarma yalnızca yöneticiye açıktır."},"ja":{"تغییر رمز عبور کاربران":"ユーザーのパスワードを変更","این بخش فقط برای مدیر نمایش داده می‌شود.":"このセクションは管理者にのみ表示されます。","مدیریت حساب":"アカウント管理","از این بخش می‌توانی از حساب خارج شوی یا آن را برای همیشه حذف کنی.":"ここからサインアウト、またはアカウントを完全に削除できます。","رمز فعلی را وارد کن، سپس رمز جدیدی بساز که هر چهار شرط امنیتی را داشته باشد.":"現在のパスワードを入力し、4つのセキュリティ条件を満たす新しいパスワードを設定してください。","رمز عبور فعلی":"現在のパスワード","تکرار رمز عبور جدید":"新しいパスワードを再入力","تغییر رمز عبور":"パスワードを変更","رمز عبور فعلی را وارد کن.":"現在のパスワードを入力してください。","رمز جدید و تکرار آن یکسان نیستند.":"新しいパスワードが一致しません。","رمز جدید باید با رمز فعلی متفاوت باشد.":"新しいパスワードは現在のものと異なる必要があります。","برای بررسی رمز فعلی، حساب باید ایمیل یا شماره تلفن داشته باشد.":"現在のパスワードを確認するには、アカウントにメールアドレスまたは電話番号が必要です。","در حال بررسی رمز فعلی...":"現在のパスワードを確認中...","رمز عبور فعلی صحیح نیست.":"現在のパスワードが正しくありません。","تغییر رمز انجام نشد. رمز فعلی یا اتصال حساب را بررسی کن.":"パスワードを変更できませんでした。現在のパスワードと接続を確認してください。","بازیابی رمز عبور فقط برای مدیر فعال است.":"パスワードの再設定は管理者のみ利用できます。"}};
-for (const lang of Object.keys(MASIR_SETTINGS_TRANSLATIONS)) Object.assign(MASIR_LANGUAGES[lang].text, MASIR_SETTINGS_TRANSLATIONS[lang]);
-
 function masirCurrentLanguage() {
     const picker = document.getElementById("appLanguage");
     if (picker && picker.value) return picker.value;
@@ -3183,17 +2877,12 @@ function formatCountLabel(label, count) {
 }
 function localizedCalendarLocale() {
     const lang = masirCurrentLanguage();
-    const countrySelect = document.getElementById("calendarCountrySelect");
-    const typeSelect = document.getElementById("calendarTypeSelect");
-    const country = countrySelect && countrySelect.value ? countrySelect.value : ({fa:"IR",ar:"SA",tr:"TR",ja:"JP",en:"US"}[lang] || "IR");
-    let calendar = typeSelect && typeSelect.value ? typeSelect.value : "auto";
-    // در حالت خودکار، ابتدا تقویم رایج کشور انتخاب‌شده اعمال می‌شود؛ زبان برنامه قالب نمایش را تعیین می‌کند.
-    if (calendar === "auto") {
-        const countryCalendars = {IR:"persian",SA:"islamic-umalqura",JP:"japanese",US:"gregory",GB:"gregory",TR:"gregory"};
-        calendar = countryCalendars[country] || ({fa:"persian",ar:"islamic-umalqura",ja:"japanese",en:"gregory",tr:"gregory"}[lang] || "gregory");
-    }
-    const locales = {IR:"fa-IR",US:"en-US",SA:"ar-SA",TR:"tr-TR",JP:"ja-JP",GB:"en-GB"};
-    return (locales[country] || "fa-IR") + "-u-ca-" + calendar;
+    // تقویم متناسب با زبان انتخاب‌شده: شمسی، میلادی، قمری، میلادی ترکی و ژاپنی.
+    if (lang === "fa") return "fa-IR-u-ca-persian";
+    if (lang === "ar") return "ar-SA-u-ca-islamic-umalqura";
+    if (lang === "ja") return "ja-JP-u-ca-japanese";
+    if (lang === "tr") return "tr-TR-u-ca-gregory";
+    return "en-US-u-ca-gregory";
 }
 function localizedDate(date) {
     return new Intl.DateTimeFormat(localizedCalendarLocale(), {
@@ -3204,7 +2893,8 @@ function localizedDayNumber(date) {
     return new Intl.DateTimeFormat(localizedCalendarLocale(), { day: "numeric" }).format(date);
 }
 function localizedWeekday(date) {
-    const locale = localizedCalendarLocale().split("-u-")[0];
+    const lang = masirCurrentLanguage();
+    const locale = lang === "fa" ? "fa-IR" : lang === "ar" ? "ar" : lang === "ja" ? "ja-JP" : lang === "tr" ? "tr-TR" : "en-US";
     return new Intl.DateTimeFormat(locale, { weekday: "long" }).format(date);
 }
 function formatActivityFilterCount(count, all, total) {
@@ -3293,7 +2983,6 @@ function applyMasirLanguage(language) {
     const picker = document.getElementById("appLanguage");
     if (picker && picker.value !== language) picker.value = language;
     try { localStorage.setItem(MASIR_LANGUAGE_KEY, language); } catch (_) {}
-    if (typeof window.masirUpdateCalendarDefaultsForLanguage === "function") window.masirUpdateCalendarDefaultsForLanguage(language);
 }
 (function initMasirLanguage() {
     const picker = document.getElementById("appLanguage");
@@ -3459,35 +3148,23 @@ let activities = [];
 
 function showPage(page) {
     const sections = {
-        home: ["homeStats", "homeProgress", "activitiesSection"],
+        home: ["homeStats", "homeProgress", "calendarSection"],
         chat: ["chatSection"],
         daily: ["dailyOverviewSection"],
         planning: ["planningSection"],
         reports: ["reportSection"],
-        profile: ["profileSection"],
-        account: ["accountSection"],
-        settings: ["settingsSection"],
-        password: ["passwordSection"],
-        notes: ["notesSection"],
-        calendar: ["calendarSection"],
-        about: ["aboutSection"]
+        profile: ["profileSection"]
     };
 
     const allSections = [
         "homeStats",
         "homeProgress",
-        "activitiesSection",
         "chatSection",
         "dailyOverviewSection",
         "planningSection",
         "calendarSection",
         "reportSection",
-        "profileSection",
-        "accountSection",
-        "settingsSection",
-        "passwordSection",
-        "notesSection",
-        "aboutSection"
+        "profileSection"
     ];
 
     allSections.forEach(function(id) {
@@ -3526,7 +3203,7 @@ function showPage(page) {
 
     if (page === "chat") { if (window.masirConfigureChatPage) window.masirConfigureChatPage(); }
 
-    if ((page === "profile" || page === "account") && window.masirCurrentUser) {
+    if (page === "profile" && window.masirCurrentUser) {
         if (window.masirPopulateProfile) window.masirPopulateProfile(window.masirCurrentUser);
     }
 }
@@ -3922,59 +3599,18 @@ function renderCalendarMonth() {
     document.getElementById("calendarMonth").textContent = first === last ? first : `${first}${rangeWord}${last}`;
 }
 
-function localizedDateInputValue(date) {
-    const parts = new Intl.DateTimeFormat(localizedCalendarLocale(), {
-        year: "numeric", month: "2-digit", day: "2-digit"
-    }).formatToParts(date);
-    const values = Object.fromEntries(parts.filter(part => part.type !== "literal").map(part => [part.type, part.value]));
-    return `${values.year}/${values.month}/${values.day}`;
-}
-
-function parseLocalizedDateInput(value) {
-    const normalized = String(value)
-        .replace(/[۰-۹]/g, digit => "۰۱۲۳۴۵۶۷۸۹".indexOf(digit))
-        .replace(/[٠-٩]/g, digit => "٠١٢٣٤٥٦٧٨٩".indexOf(digit))
-        .trim();
-    const match = normalized.match(new RegExp("^(\\\\d{1,4})[./-](\\\\d{1,2})[./-](\\\\d{1,2})$"));
-    if (!match) return null;
-    const year = Number(match[1]), month = Number(match[2]), day = Number(match[3]);
-    const lang = masirCurrentLanguage();
-
-    const activeLocale = localizedCalendarLocale();
-    if (activeLocale.includes("ca-persian")) return persianDateToGregorian(normalized);
-    // تاریخ ورودی با تقویم انتخاب‌شده تفسیر می‌شود.
-    const from = activeLocale.includes("islamic") ? 2020 : activeLocale.includes("japanese") ? 2019 : Math.max(1900, year - 1);
-    const to = activeLocale.includes("islamic") || activeLocale.includes("japanese") ? 2035 : Math.min(2200, year + 1);
-    const formatter = new Intl.DateTimeFormat(activeLocale, { year: "numeric", month: "numeric", day: "numeric" });
-    for (let timestamp = Date.UTC(from, 0, 1, 12); timestamp <= Date.UTC(to, 11, 31, 12); timestamp += 86400000) {
-        const candidate = new Date(timestamp);
-        const parts = Object.fromEntries(formatter.formatToParts(candidate).filter(part => part.type !== "literal").map(part => [part.type, Number(part.value)]));
-        if (parts.year === year && parts.month === month && parts.day === day) return candidate;
-    }
-    return null;
-}
-
-function updateDateJumpLanguage() {
-    const input = document.getElementById("calendarDateJump");
-    const lang = masirCurrentLanguage();
-    const examples = {fa: "۱۴۰۵/۰۷/۲۹", en: "2026/10/13", ar: "١٤٤٨/٠٤/٠١", tr: "2026/10/13", ja: "令和8/10/13"};
-    const labels = {
-        fa: "تاریخ شمسی برای نمایش در تقویم",
-        en: "Date to show in calendar (YYYY/MM/DD)",
-        ar: "التاريخ المراد عرضه في التقويم (سنة/شهر/يوم)",
-        tr: "Takvimde gösterilecek tarih (Yıl/Ay/Gün)",
-        ja: "カレンダーに表示する日付（年/月/日）"
-    };
-    input.placeholder = examples[lang] || examples.fa;
-    input.setAttribute("aria-label", labels[lang] || labels.fa);
+function getPersianDateInputValue(date) {
+    const parts = getPersianDateParts(date);
+    const month = String(parts.month).padStart(2, "0");
+    const day = String(parts.day).padStart(2, "0");
+    return toPersianNumber(`${parts.year}/${month}/${day}`);
 }
 
 function renderCalendar() {
     const calendar = document.getElementById("weekCalendar");
     calendar.innerHTML = "";
-    updateDateJumpLanguage();
 
-    document.getElementById("calendarDateJump").value = localizedDateInputValue(selectedDate);
+    document.getElementById("calendarDateJump").value = getPersianDateInputValue(selectedDate);
 
     const dates = getWeekDates(selectedDate);
     const todayKey = getDateKey(getTodayDate());
@@ -4511,51 +4147,8 @@ function goDailyOverviewToday() {
     renderDailyOverview();
 }
 
-function renderHomeWeekDays() {
-    const container = document.getElementById("homeWeekDays");
-    if (!container) return;
-    container.innerHTML = "";
-    const dates = getWeekDates(selectedDate);
-    const todayKey = getDateKey(getTodayDate());
-    const selectedKey = getDateKey(selectedDate);
-
-    dates.forEach(date => {
-        const key = getDateKey(date);
-        const count = getActivitiesForDate(date).length;
-        const button = document.createElement("button");
-        button.type = "button";
-        button.className = "calendar-day home-week-day";
-        if (key === selectedKey) button.classList.add("selected");
-        if (key === todayKey) button.classList.add("today");
-        button.setAttribute("aria-pressed", key === selectedKey ? "true" : "false");
-        button.setAttribute("aria-label", `${localizedWeekday(date)}, ${localizedDate(date)}`);
-
-        const name = document.createElement("div");
-        name.className = "day-name";
-        name.textContent = localizedWeekday(date);
-        const number = document.createElement("div");
-        number.className = "day-number";
-        number.textContent = new Intl.DateTimeFormat(localizedCalendarLocale(), { day: "numeric" }).format(date);
-        const countLabel = document.createElement("span");
-        countLabel.className = "day-count";
-        const lang = masirCurrentLanguage();
-        countLabel.textContent = lang === "fa" ? `${count} فعالیت`
-            : lang === "ar" ? `${count} أنشطة`
-            : lang === "tr" ? `${count} etkinlik`
-            : lang === "ja" ? `${count}件`
-            : `${count} activities`;
-        button.append(name, number, countLabel);
-        button.addEventListener("click", () => {
-            selectedDate = new Date(date);
-            renderAll();
-        });
-        container.appendChild(button);
-    });
-}
-
 function renderAll() {
     renderCalendar();
-    renderHomeWeekDays();
     renderActivities();
     updateStats();
     renderWeeklyReport();
@@ -4704,38 +4297,8 @@ function persianDateToGregorian(value) {
     return null;
 }
 
-(function initCalendarPreferences(){
-    const typeSelect = document.getElementById("calendarTypeSelect");
-    const countrySelect = document.getElementById("calendarCountrySelect");
-    const lang = masirCurrentLanguage();
-    const defaults = {fa:{country:"IR"},ar:{country:"SA"},tr:{country:"TR"},ja:{country:"JP"},en:{country:"US"}};
-    let savedType = "auto", savedCountry = (defaults[lang] || defaults.fa).country;
-    try { savedType = localStorage.getItem("masir_calendar_type") || "auto"; savedCountry = localStorage.getItem("masir_calendar_country") || savedCountry; } catch (_) {}
-    if (typeSelect) typeSelect.value = savedType;
-    if (countrySelect) countrySelect.value = savedCountry;
-    const countryLabels = {fa:{IR:"ایران",US:"ایالات متحده",SA:"عربستان سعودی",TR:"ترکیه",JP:"ژاپن",GB:"بریتانیا"},en:{IR:"Iran",US:"United States",SA:"Saudi Arabia",TR:"Türkiye",JP:"Japan",GB:"United Kingdom"},ar:{IR:"إيران",US:"الولايات المتحدة",SA:"السعودية",TR:"تركيا",JP:"اليابان",GB:"المملكة المتحدة"},tr:{IR:"İran",US:"Amerika Birleşik Devletleri",SA:"Suudi Arabistan",TR:"Türkiye",JP:"Japonya",GB:"Birleşik Krallık"},ja:{IR:"イラン",US:"アメリカ合衆国",SA:"サウジアラビア",TR:"トルコ",JP:"日本",GB:"イギリス"}};
-    const typeLabels = {fa:{auto:"متناسب با زبان",gregory:"میلادی",persian:"شمسی","islamic-umalqura":"قمری",japanese:"ژاپنی"},en:{auto:"Match app language",gregory:"Gregorian",persian:"Persian","islamic-umalqura":"Islamic (Hijri)",japanese:"Japanese"},ar:{auto:"حسب لغة التطبيق",gregory:"ميلادي",persian:"فارسي","islamic-umalqura":"هجري قمري",japanese:"ياباني"},tr:{auto:"Uygulama diline göre",gregory:"Miladi",persian:"Pers","islamic-umalqura":"Hicri",japanese:"Japon"},ja:{auto:"アプリの言語に合わせる",gregory:"西暦",persian:"ペルシャ暦","islamic-umalqura":"イスラム暦",japanese:"和暦"}};
-    function updateLabels(language) {
-        if (countrySelect) [...countrySelect.options].forEach(o => o.textContent = (countryLabels[language] || countryLabels.fa)[o.value] || o.value);
-        if (typeSelect) [...typeSelect.options].forEach(o => o.textContent = (typeLabels[language] || typeLabels.fa)[o.value] || o.value);
-    }
-    function persistAndRender() {
-        try { localStorage.setItem("masir_calendar_type", typeSelect.value); localStorage.setItem("masir_calendar_country", countrySelect.value); } catch (_) {}
-        renderAll();
-    }
-    if (typeSelect) typeSelect.addEventListener("change", persistAndRender);
-    if (countrySelect) countrySelect.addEventListener("change", persistAndRender);
-    window.masirUpdateCalendarDefaultsForLanguage = function(language) {
-        const preferred = defaults[language] || defaults.fa;
-        if (countrySelect) countrySelect.value = preferred.country;
-        if (typeSelect) typeSelect.value = "auto";
-        try { localStorage.setItem("masir_calendar_country", preferred.country); localStorage.setItem("masir_calendar_type", "auto"); } catch (_) {}
-        updateLabels(language);
-    };
-    updateLabels(lang);
-})();
 document.getElementById("calendarDateJump").addEventListener("change", event => {
-    const date = parseLocalizedDateInput(event.target.value);
+    const date = persianDateToGregorian(event.target.value);
     if (!date) {
         renderCalendar();
         return;
@@ -4863,7 +4426,6 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
         });
     });
     const profileLogoutArea = document.getElementById("profileLogoutArea");
-    const settingsAccountActions = document.getElementById("settingsAccountActions");
     let authMode = "email";
     let signupMode = false;
 
@@ -4918,7 +4480,7 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
             logoutButton.disabled = false;
         }
     });
-    if (settingsAccountActions) settingsAccountActions.appendChild(logoutButton);
+    if (profileLogoutArea) profileLogoutArea.appendChild(logoutButton);
 
     // حذف دائمی حساب فقط پس از یک تأیید صریح کاربر
     const deleteAccountButton = document.createElement("button");
@@ -4980,7 +4542,7 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
             deleteAccountButton.textContent = "حذف دائمی حساب";
         }
     });
-    if (settingsAccountActions) settingsAccountActions.appendChild(deleteAccountButton);
+    if (profileLogoutArea) profileLogoutArea.appendChild(deleteAccountButton);
 
     function setAuthMode(mode) {
         authMode = mode;
@@ -5089,28 +4651,18 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
     }
     function populateProfile(user) {
         const metadata = user && user.user_metadata ? user.user_metadata : {};
-        const setValue = (id, value) => { const element = document.getElementById(id); if (element) element.value = value == null ? "" : value; };
-        const setText = (id, value) => { const element = document.getElementById(id); if (element) element.textContent = value == null || value === "" ? "ثبت نشده" : String(value); };
-        const email = user && user.email ? user.email : "";
-        const phone = user && (user.phone || metadata.phone) ? (user.phone || metadata.phone) : "";
-        const firstName = metadata.first_name || metadata.firstName || "";
-        const lastName = metadata.last_name || metadata.lastName || "";
-        const birthYear = metadata.birth_year || metadata.birthYear || (metadata.birth_date || metadata.birthDate || "").slice(0, 4) || "";
-        const interests = Array.isArray(metadata.interests) ? metadata.interests.join("، ") : (metadata.interests || "");
-        const goals = metadata.goals || "";
-        const emailInput = document.getElementById("profileEmailInput");
-        const emailHelp = document.getElementById("profileEmailHelp");
-        const isAdmin = Boolean(user && typeof user.email === "string" && user.email.trim().toLowerCase() === "ramtinxasf@gmail.com");
-        if (emailInput) { emailInput.value = email; emailInput.disabled = isAdmin; }
-        if (emailHelp) emailHelp.style.display = isAdmin ? "block" : "none";
+        const setValue = (id, value) => {
+            const element = document.getElementById(id);
+            if (element) element.value = value || "";
+        };
+        const emailElement = document.getElementById("profileEmail");
         const phoneElement = document.getElementById("profilePhone");
-        if (phoneElement) phoneElement.textContent = phone || "ثبت نشده";
-        setValue("profileFirstName", firstName); setValue("profileLastName", lastName);
-        setValue("profilePhoneInput", phone); setValue("profileBirthYear", birthYear);
-        setValue("profileInterests", interests); setValue("profileGoals", goals);
-        setText("profileViewFirstName", firstName); setText("profileViewLastName", lastName);
-        setText("profileViewBirthYear", birthYear); setText("profileViewEmail", email);
-        setText("profileViewPhone", phone); setText("profileViewInterests", interests); setText("profileViewGoals", goals);
+        if (emailElement) emailElement.textContent = user.email || "بدون ایمیل";
+        if (phoneElement) phoneElement.textContent = user.phone || metadata.phone || "ثبت نشده";
+        setValue("profileFirstName", metadata.first_name || metadata.firstName);
+        setValue("profileLastName", metadata.last_name || metadata.lastName);
+        setValue("profilePhoneInput", user.phone || metadata.phone);
+        setValue("profileBirthDate", metadata.birth_date || metadata.birthDate);
         configureAdminUserExport(user);
     }
     function configureAdminUserExport(user) {
@@ -5118,12 +4670,8 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
         const panel = document.getElementById("adminUserExportPanel");
         const securityPanel = document.getElementById("profileSecurityPanel");
         const backupPanel = document.getElementById("profileBackupPanel");
-        const adminSettingsTools = document.getElementById("adminSettingsTools");
         const profileChatLink = document.getElementById("profilePrivateChatLinkPanel");
-        if (adminSettingsTools) adminSettingsTools.style.display = isAdmin ? "block" : "none";
         if (panel) panel.style.display = isAdmin ? "block" : "none";
-        const adminUserPasswordSection = document.getElementById("adminUserPasswordSection");
-        if (adminUserPasswordSection) adminUserPasswordSection.style.display = isAdmin ? "block" : "none";
         if (securityPanel) securityPanel.style.display = isAdmin ? "block" : "none";
         if (backupPanel) backupPanel.style.display = isAdmin ? "block" : "none";
         if (profileChatLink) profileChatLink.style.display = user && !isAdmin ? "block" : "none";
@@ -5283,18 +4831,6 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
 
     window.masirPopulateProfile = populateProfile;
 
-    const addProfileInterestButton = document.getElementById("addProfileInterestButton");
-    if (addProfileInterestButton) addProfileInterestButton.addEventListener("click", function() {
-        const choice = document.getElementById("profileInterestChoice");
-        const interestsField = document.getElementById("profileInterests");
-        if (!choice || !interestsField || !choice.value) return;
-        const current = interestsField.value.split(/[,،;؛\n]+/).map(item => item.trim()).filter(Boolean);
-        if (!current.some(item => item.toLocaleLowerCase() === choice.value.toLocaleLowerCase())) current.push(choice.value);
-        interestsField.value = current.join("، ");
-        choice.value = "";
-        interestsField.focus();
-    });
-
     const profileForm = document.getElementById("profileForm");
     if (profileForm) profileForm.addEventListener("submit", async function(event) {
         event.preventDefault();
@@ -5303,38 +4839,21 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
         const firstName = document.getElementById("profileFirstName").value.trim();
         const lastName = document.getElementById("profileLastName").value.trim();
         const phone = document.getElementById("profilePhoneInput").value.trim();
-        const newEmail = document.getElementById("profileEmailInput").value.trim();
-        const currentEmail = String(user.email || "").trim();
-        const isAdmin = currentEmail.toLowerCase() === "ramtinxasf@gmail.com";
-        const emailChanged = newEmail.toLowerCase() !== currentEmail.toLowerCase();
-        if (!newEmail) return showProfileMessage("ایمیل را وارد کن.", true);
-        if (emailChanged && isAdmin) return showProfileMessage("برای حفظ دسترسی مدیر، ایمیل حساب مدیر از اینجا قابل تغییر نیست.", true);
-        const birthYear = document.getElementById("profileBirthYear").value.trim();
-        const interests = document.getElementById("profileInterests").value.split(/[,،;؛\n]+/).map(item => item.trim()).filter(Boolean).filter((item, index, array) => array.indexOf(item) === index);
-        const goals = document.getElementById("profileGoals").value.trim();
+        const birthDate = document.getElementById("profileBirthDate").value;
         if (!firstName || !lastName) return showProfileMessage("نام و نام خانوادگی را وارد کن.", true);
-        if (birthYear && (!/^\d{4}$/.test(birthYear) || Number(birthYear) < 1900 || Number(birthYear) > new Date().getFullYear())) return showProfileMessage("سال تولد باید یک سال معتبر باشد.", true);
         const button = document.getElementById("saveProfileButton");
         button.disabled = true;
         showProfileMessage("در حال ذخیره اطلاعات...");
         try {
-            const updatePayload = {
-                data: { ...(user.user_metadata || {}), first_name: firstName, last_name: lastName, phone, birth_year: birthYear, interests, goals }
-            };
-            if (emailChanged) updatePayload.email = newEmail;
-            const { data, error } = await supabaseClient.auth.updateUser(updatePayload);
+            const { data, error } = await supabaseClient.auth.updateUser({
+                data: { ...(user.user_metadata || {}), first_name: firstName, last_name: lastName, phone, birth_date: birthDate }
+            });
             if (error) throw error;
             window.masirCurrentUser = data && data.user ? data.user : {
-                ...user, user_metadata: { ...(user.user_metadata || {}), first_name: firstName, last_name: lastName, phone, birth_year: birthYear, interests, goals }
+                ...user, user_metadata: { ...(user.user_metadata || {}), first_name: firstName, last_name: lastName, phone, birth_date: birthDate }
             };
             populateProfile(window.masirCurrentUser);
-            if (emailChanged) {
-                const emailInput = document.getElementById("profileEmailInput");
-                if (emailInput) emailInput.value = newEmail;
-                showProfileMessage("اطلاعات ذخیره شد. برای نهایی شدن تغییر ایمیل، لینک تأیید ارسال‌شده به ایمیل جدید را باز کن.");
-            } else {
-                showProfileMessage("اطلاعات حساب کاربری ذخیره شد.");
-            }
+            showProfileMessage("اطلاعات پروفایل ذخیره شد.");
         } catch (error) {
             console.error("ذخیره پروفایل ناموفق بود:", error);
             showProfileMessage("ذخیره اطلاعات انجام نشد. اتصال حساب را بررسی کن.", true);
@@ -5558,7 +5077,7 @@ async function loadUserActivities(user) {
         try {
             const { data, error } = await supabaseClient.auth.signUp({
                 email, password,
-                options: { data: { first_name: firstName, last_name: lastName, phone, birth_year: birthYear, interests, goals } }
+                options: { data: { first_name: firstName, last_name: lastName, phone, birth_date: birthDate } }
             });
             if (error) throw error;
             if (data.session && data.user) await loadUserActivities(data.user);
@@ -5685,13 +5204,6 @@ async function loadUserActivities(user) {
     // اگر ورود یا خروج از جای دیگری انجام شد، وضعیت حساب را هماهنگ کن.
     supabaseClient.auth.onAuthStateChange(async function (event, session) {
         if (event === "PASSWORD_RECOVERY") {
-            const recoveryEmail = String(session && session.user && session.user.email || "").trim().toLowerCase();
-            if (recoveryEmail !== ADMIN_EMAIL) {
-                showMessage("بازیابی رمز عبور فقط برای مدیر فعال است.", true);
-                recoveryPanel.style.display = "none";
-                recoveryMode = false;
-                return;
-            }
             showRecoveryForm();
             return;
         }
@@ -5878,141 +5390,6 @@ if($("profileSupportEmail"))$("profileSupportEmail").addEventListener("change",r
 refreshUserUnreadBadge();
 setInterval(refreshUserUnreadBadge,20000);
 if($("adminSupportReplyButton"))$("adminSupportReplyButton").onclick=async()=>{const st=$("adminSupportStatus"),b=$("adminSupportReplyButton"),msg=$("adminSupportReply").value.trim(),broadcast=$("adminSupportBroadcastAll")?.checked;if(!msg){st.textContent="پیام را بنویس.";return;}if(broadcast&&!confirm("این پیام برای همه کاربران دارای گفتگو ارسال شود؟"))return;if(!broadcast&&!chosen){st.textContent="ابتدا گفتگو را انتخاب کن یا گزینه ارسال به همه را فعال کن.";return;}b.disabled=true;try{if(broadcast){const result=await adminApi({action:"admin_broadcast",message:msg});$("adminSupportReply").value="";$("adminSupportBroadcastAll").checked=false;st.style.color="#a7f3d0";st.textContent="پیام همگانی برای "+result.sent_count+" گفتگو ارسال شد.";}else{await adminApi({action:"admin_reply",thread_id:chosen,message:msg});$("adminSupportReply").value="";await readThread();st.style.color="#a7f3d0";st.textContent="پاسخ ارسال شد.";}await refresh();}catch(e){st.style.color="#fb7185";st.textContent=e.message;}finally{b.disabled=false;}};
-})();
-</script>
-
-
-<script>
-(function initMasirDrawerAndPages(){
-  const menuButton=document.getElementById("masirMenuButton");
-  const drawer=document.getElementById("masirSideDrawer");
-  const backdrop=document.getElementById("masirDrawerBackdrop");
-  const closeButton=document.getElementById("masirDrawerClose");
-  const langTop=document.getElementById("appLanguage");
-  const langSettings=document.getElementById("appLanguageSettings");
-  function setDrawer(open){
-    drawer.classList.toggle("is-open",open);
-    backdrop.classList.toggle("is-open",open);
-    drawer.setAttribute("aria-hidden",String(!open));
-    backdrop.setAttribute("aria-hidden",String(!open));
-    menuButton.setAttribute("aria-expanded",String(open));
-    menuButton.setAttribute("aria-label",masirTranslate(open?"بستن منو":"باز کردن منو"));
-    document.body.style.overflow=open?"hidden":"";
-    if(open) closeButton.focus();
-  }
-  menuButton.addEventListener("click",()=>setDrawer(!drawer.classList.contains("is-open")));
-  closeButton.addEventListener("click",()=>setDrawer(false));
-  backdrop.addEventListener("click",()=>setDrawer(false));
-  document.addEventListener("keydown",e=>{if(e.key==="Escape"&&drawer.classList.contains("is-open"))setDrawer(false);});
-  document.querySelectorAll("#masirDrawerItems [data-masir-page]").forEach(button=>{
-    button.addEventListener("click",()=>{
-      const page=button.getAttribute("data-masir-page");
-      setDrawer(false);
-      if(typeof showPage==="function") showPage(page);
-      window.scrollTo({top:0,behavior:"smooth"});
-      if(page==="notes") document.getElementById("masirNoteTitle").focus({preventScroll:true});
-    });
-  });
-  if(langSettings&&langTop){
-    langSettings.value=localStorage.getItem("masir_language")||langTop.value||"fa";
-    langTop.value=langSettings.value;
-    langSettings.addEventListener("change",()=>{
-      langTop.value=langSettings.value;
-      localStorage.setItem("masir_language",langSettings.value);
-      applyMasirLanguage(langSettings.value);
-      window.dispatchEvent(new Event("masir-language-changed"));
-      if(typeof renderAll==="function")renderAll();
-    });
-    langTop.addEventListener("change",()=>{langSettings.value=langTop.value;localStorage.setItem("masir_language",langTop.value);applyMasirLanguage(langTop.value);window.dispatchEvent(new Event("masir-language-changed"));});
-  }
-
-  const changePasswordForm=document.getElementById("masirChangePasswordForm");
-  const currentPasswordInput=document.getElementById("masirCurrentPassword");
-  const newPasswordInput=document.getElementById("masirNewPassword");
-  const confirmPasswordInput=document.getElementById("masirConfirmNewPassword");
-  const passwordRulesBox=document.getElementById("masirChangePasswordRules");
-  const passwordStatus=document.getElementById("masirChangePasswordStatus");
-  const passwordSaveButton=document.getElementById("masirSaveChangedPassword");
-  const passwordChecks={length:p=>p.length>=8,upper:p=>/[A-Z]/.test(p),lower:p=>/[a-z]/.test(p),number:p=>/[0-9]/.test(p)};
-  function validateMasirNewPassword(){const value=newPasswordInput.value;let valid=true;Object.entries(passwordChecks).forEach(([key,check])=>{const item=passwordRulesBox.querySelector('[data-rule="'+key+'"]');const ok=check(value);valid=valid&&ok;if(item){item.style.color=ok?"#34d399":"#fca5a5";item.textContent=(ok?"✓ ":"○ ")+({length:"حداقل ۸ کاراکتر",upper:"حداقل یک حرف بزرگ انگلیسی (A-Z)",lower:"حداقل یک حرف کوچک انگلیسی (a-z)",number:"حداقل یک عدد (0-9)"}[key]);}});return valid;}
-  newPasswordInput.addEventListener("input",validateMasirNewPassword);
-  if(changePasswordForm)changePasswordForm.addEventListener("submit",async event=>{
-    event.preventDefault();const user=window.masirCurrentUser;const current=currentPasswordInput.value;const next=newPasswordInput.value;const repeat=confirmPasswordInput.value;
-    const say=(message,error=false)=>{passwordStatus.textContent=message;passwordStatus.style.color=error?"#fb7185":"#34d399";};
-    if(!user){say("ابتدا وارد حساب شو.",true);return;}
-    if(!current){say("رمز عبور فعلی را وارد کن.",true);return;}
-    if(!validateMasirNewPassword()){say("رمز جدید باید هر چهار شرط امنیتی را داشته باشد.",true);return;}
-    if(next!==repeat){say("رمز جدید و تکرار آن یکسان نیستند.",true);return;}
-    if(current===next){say("رمز جدید باید با رمز فعلی متفاوت باشد.",true);return;}
-    if(!user.email && !user.phone){say("برای بررسی رمز فعلی، حساب باید ایمیل یا شماره تلفن داشته باشد.",true);return;}
-    passwordSaveButton.disabled=true;say("در حال بررسی رمز فعلی...");
-    try{
-      const credentials=user.email?{email:user.email,password:current}:{phone:user.phone,password:current};
-      const verified=await supabaseClient.auth.signInWithPassword(credentials);
-      if(verified.error)throw new Error("رمز عبور فعلی صحیح نیست.");
-      const changed=await supabaseClient.auth.updateUser({password:next});
-      if(changed.error)throw changed.error;
-      if(changed.data&&changed.data.user)window.masirCurrentUser=changed.data.user;
-      currentPasswordInput.value="";newPasswordInput.value="";confirmPasswordInput.value="";validateMasirNewPassword();
-      say("رمز عبور با موفقیت تغییر کرد.");
-    }catch(error){console.error("تغییر رمز عبور ناموفق بود:",error);say(error.message==="رمز عبور فعلی صحیح نیست."?error.message:"تغییر رمز انجام نشد. رمز فعلی یا اتصال حساب را بررسی کن.",true);}
-    finally{passwordSaveButton.disabled=false;}
-  });
-  const noteKey="masir_notes_v1";
-  const form=document.getElementById("masirNoteForm");
-  const titleInput=document.getElementById("masirNoteTitle");
-  const bodyInput=document.getElementById("masirNoteBody");
-  const editingInput=document.getElementById("masirEditingNoteId");
-  const list=document.getElementById("masirNotesList");
-  const status=document.getElementById("masirNotesStatus");
-  const saveButton=document.getElementById("masirSaveNoteButton");
-  const cancelButton=document.getElementById("masirCancelNoteEdit");
-  function t(key){return typeof masirTranslate==="function"?masirTranslate(key):key;}
-  function getNotes(){
-    try{const data=JSON.parse(localStorage.getItem(noteKey)||"[]");return Array.isArray(data)?data:[];}
-    catch(_){return [];}
-  }
-  function putNotes(notes){try{localStorage.setItem(noteKey,JSON.stringify(notes));return true;}catch(_){status.textContent="";return false;}}
-  function resetNoteForm(){form.reset();editingInput.value="";cancelButton.style.display="none";saveButton.textContent=t("ذخیره یادداشت");}
-  function renderNotes(){
-    const notes=getNotes();
-    list.replaceChildren();
-    if(!notes.length){const empty=document.createElement("p");empty.className="help-text";empty.textContent=t("هنوز یادداشتی ثبت نشده است.");list.appendChild(empty);return;}
-    notes.sort((a,b)=>(b.updatedAt||0)-(a.updatedAt||0)).forEach(note=>{
-      const item=document.createElement("article");item.className="masir-note-item";
-      const title=document.createElement("h3");title.textContent=note.title;
-      const body=document.createElement("p");body.textContent=note.body;
-      const actions=document.createElement("div");actions.className="masir-note-actions";
-      const edit=document.createElement("button");edit.type="button";edit.className="secondary-button";edit.textContent="✏️ "+t("ویرایش");
-      edit.addEventListener("click",()=>{titleInput.value=note.title;bodyInput.value=note.body;editingInput.value=note.id;cancelButton.style.display="";saveButton.textContent=t("ذخیره یادداشت");status.textContent="";titleInput.focus();});
-      const remove=document.createElement("button");remove.type="button";remove.className="secondary-button";remove.textContent="🗑️ "+t("حذف");
-      remove.addEventListener("click",()=>{if(!putNotes(getNotes().filter(n=>n.id!==note.id)))return;status.textContent=t("یادداشت حذف شد.");if(editingInput.value===note.id)resetNoteForm();renderNotes();});
-      actions.append(edit,remove);item.append(title,body,actions);list.appendChild(item);
-    });
-  }
-  form.addEventListener("submit",event=>{
-    event.preventDefault();
-    const title=titleInput.value.trim(),body=bodyInput.value.trim();
-    if(!title||!body){status.textContent=t("عنوان و متن یادداشت را وارد کن.");return;}
-    const notes=getNotes(),id=editingInput.value;
-    if(id){const index=notes.findIndex(n=>n.id===id);if(index>=0){notes[index]={...notes[index],title,body,updatedAt:Date.now()};}else notes.unshift({id:makeNoteId(),title,body,createdAt:Date.now(),updatedAt:Date.now()});}
-    else notes.unshift({id:makeNoteId(),title,body,createdAt:Date.now(),updatedAt:Date.now()});
-    if(!putNotes(notes)){status.textContent="";return;}
-    status.textContent=t(id?"یادداشت ویرایش شد.":"یادداشت ذخیره شد.");
-    resetNoteForm();renderNotes();
-  });
-  function makeNoteId(){return "note-"+Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,9);}
-  cancelButton.addEventListener("click",()=>{resetNoteForm();status.textContent="";});
-  document.getElementById("masirOpenPasswordSettings").addEventListener("click",()=>{
-    if(typeof showPage==="function")showPage("account");
-    window.scrollTo({top:0,behavior:"smooth"});
-    const target=document.getElementById("profileSecurityPanel");
-    if(target)target.scrollIntoView({behavior:"smooth",block:"center"});
-    const button=document.getElementById("profileResetPasswordButton");
-    if(button)setTimeout(()=>button.focus({preventScroll:true}),150);
-  });
-  window.addEventListener("masir-language-changed",renderNotes);
-  renderNotes();
 })();
 </script>
 
