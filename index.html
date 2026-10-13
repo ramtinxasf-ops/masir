@@ -3140,7 +3140,11 @@ function localizedCalendarLocale() {
     const typeSelect = document.getElementById("calendarTypeSelect");
     const country = countrySelect && countrySelect.value ? countrySelect.value : ({fa:"IR",ar:"SA",tr:"TR",ja:"JP",en:"US"}[lang] || "IR");
     let calendar = typeSelect && typeSelect.value ? typeSelect.value : "auto";
-    if (calendar === "auto") calendar = ({fa:"persian",ar:"islamic-umalqura",ja:"japanese",en:"gregory",tr:"gregory"}[lang] || "gregory");
+    // در حالت خودکار، ابتدا تقویم رایج کشور انتخاب‌شده اعمال می‌شود؛ زبان برنامه قالب نمایش را تعیین می‌کند.
+    if (calendar === "auto") {
+        const countryCalendars = {IR:"persian",SA:"islamic-umalqura",JP:"japanese",US:"gregory",GB:"gregory",TR:"gregory"};
+        calendar = countryCalendars[country] || ({fa:"persian",ar:"islamic-umalqura",ja:"japanese",en:"gregory",tr:"gregory"}[lang] || "gregory");
+    }
     const locales = {IR:"fa-IR",US:"en-US",SA:"ar-SA",TR:"tr-TR",JP:"ja-JP",GB:"en-GB"};
     return (locales[country] || "fa-IR") + "-u-ca-" + calendar;
 }
