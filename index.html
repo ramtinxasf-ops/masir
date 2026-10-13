@@ -3654,10 +3654,11 @@ function renderActivities() {
     const list = document.getElementById("activityList");
     list.innerHTML = "";
 
+    const selectedTitlePrefix = { fa: "فعالیت‌های", en: "Activities for", ar: "أنشطة يوم", tr: "Günün etkinlikleri:", ja: "のアクティビティ" };
     document.getElementById("selectedDateTitle").textContent =
         masirCurrentLanguage() === "fa"
             ? `فعالیت‌های ${getPersianWeekday(selectedDate)}، ${getPersianDate(selectedDate)}`
-            : `${masirTranslate("فعالیت‌های")} ${localizedWeekday(selectedDate)}, ${localizedDate(selectedDate)}`;
+            : `${selectedTitlePrefix[masirCurrentLanguage()] || selectedTitlePrefix.en} ${localizedWeekday(selectedDate)}, ${localizedDate(selectedDate)}`;
 
     const allDayActivities = getActivitiesForDate(selectedDate);
     const dayActivities = selectedCategoryFilter === "all"
