@@ -1601,6 +1601,39 @@ input:focus, select:focus, .activity-priority:focus, .activity-category:focus {
     height: 19px;
 }
 
+
+/* فعالیت تیک‌خورده: فقط نام و ساعت بماند تا کارت کوتاه شود */
+#activityList .activity-item.done {
+    min-height: 0 !important;
+    padding: 7px 10px !important;
+    gap: 8px !important;
+    border-radius: 10px !important;
+    box-shadow: none !important;
+}
+#activityList .activity-item.done .activity-info {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 2px 10px;
+}
+#activityList .activity-item.done .activity-name {
+    font-size: 13px;
+    line-height: 1.35;
+}
+#activityList .activity-item.done .activity-time {
+    margin-top: 0;
+    font-size: 11px;
+}
+#activityList .activity-item.done .activity-priority,
+#activityList .activity-item.done .activity-category,
+#activityList .activity-item.done .activity-schedule {
+    display: none !important;
+}
+#activityList .activity-item.done .activity-checkbox {
+    width: 17px;
+    height: 17px;
+}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
