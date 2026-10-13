@@ -2877,7 +2877,25 @@ function formatCountLabel(label, count) {
 }
 function localizedCalendarLocale() {
     const lang = masirCurrentLanguage();
-    // تقویم متناسب با زبان انتخاب‌شده: شمسی، میلادی، قمری، میلادی ترکی و ژاپنی.
+    let calendarType = "auto";
+    let country = "";
+    try {
+        calendarType = localStorage.getItem("masir.calendarType") || "auto";
+        country = localStorage.getItem("masir.calendarCountry") || "";
+    } catch (_) {}
+    if (calendarType === "solar") return "fa-IR-u-ca-persian";
+    if (calendarType === "lunar") return "ar-SA-u-ca-islamic-umalqura";
+    if (calendarType === "japanese") return "ja-JP-u-ca-japanese";
+    if (calendarType === "gregorian") {
+        const locales = {
+            "Azerbaijan":"az-AZ-u-ca-gregory", "Iran":"fa-IR-u-ca-gregory",
+            "Turkey":"tr-TR-u-ca-gregory", "Japan":"ja-JP-u-ca-gregory",
+            "United States":"en-US-u-ca-gregory", "United Kingdom":"en-GB-u-ca-gregory",
+            "Saudi Arabia":"ar-SA-u-ca-gregory", "United Arab Emirates":"ar-AE-u-ca-gregory",
+            "Afghanistan":"fa-AF-u-ca-gregory", "Pakistan":"ur-PK-u-ca-gregory"
+        };
+        return locales[country] || (lang === "fa" ? "fa-IR-u-ca-gregory" : lang === "ar" ? "ar-SA-u-ca-gregory" : lang === "ja" ? "ja-JP-u-ca-gregory" : lang === "tr" ? "tr-TR-u-ca-gregory" : "en-US-u-ca-gregory");
+    }
     if (lang === "fa") return "fa-IR-u-ca-persian";
     if (lang === "ar") return "ar-SA-u-ca-islamic-umalqura";
     if (lang === "ja") return "ja-JP-u-ca-japanese";
