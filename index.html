@@ -1736,6 +1736,33 @@ html[dir="ltr"] .language-picker { justify-content: flex-end; }
   #bottomNav button { font-size:11px; padding:8px 5px; }
 }
 
+
+/* Masir side drawer and dedicated utility pages */
+#masirMenuButton{position:fixed;top:12px;right:12px;z-index:1002;width:44px;height:44px;border:1px solid var(--border);border-radius:13px;background:rgba(21,28,48,.96);color:var(--purple);font-size:25px;line-height:1;cursor:pointer;box-shadow:0 5px 18px #0004}
+#masirDrawerBackdrop{position:fixed;inset:0;background:rgba(3,6,16,.62);z-index:1003;opacity:0;visibility:hidden;transition:opacity .2s ease,visibility .2s ease}
+#masirDrawerBackdrop.is-open{opacity:1;visibility:visible}
+#masirSideDrawer{position:fixed;z-index:1004;top:0;right:0;height:100dvh;width:33.333vw;min-width:220px;max-width:340px;padding:18px 12px;background:linear-gradient(180deg,#171d32,#0e1425);border-left:1px solid #393454;box-shadow:-12px 0 36px #0006;transform:translateX(105%);transition:transform .24s ease;overflow-y:auto}
+#masirSideDrawer.is-open{transform:translateX(0)}
+#masirDrawerHead{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:3px 3px 18px;border-bottom:1px solid var(--border);margin-bottom:14px}
+#masirDrawerHead strong{color:var(--purple);font-size:17px}
+#masirDrawerClose{border:1px solid var(--border);border-radius:10px;background:#20283b;color:var(--text);width:36px;height:36px;font-size:20px;cursor:pointer}
+#masirDrawerItems{display:grid;gap:8px}
+#masirDrawerItems button{display:flex;align-items:center;gap:10px;width:100%;padding:11px 10px;border:1px solid transparent;border-radius:12px;background:transparent;color:var(--text);text-align:start;font:inherit;font-size:13px;cursor:pointer}
+#masirDrawerItems button:hover,#masirDrawerItems button:focus-visible{background:#292440;border-color:#514477;outline:none}
+#masirDrawerItems button span:first-child{width:25px;text-align:center;font-size:18px}
+.masir-utility-card{max-width:760px;margin-inline:auto}
+#appLanguageSettings{width:100%;margin-top:8px}
+#masirNoteTitle,#masirNoteBody{width:100%;margin:8px 0;padding:12px;border:1px solid var(--border);border-radius:12px;background:#0b1020;color:var(--text);font:inherit}
+#masirNoteBody{min-height:140px;resize:vertical}
+#masirNotesList{display:grid;gap:10px;margin-top:18px}
+.masir-note-item{padding:13px;border:1px solid var(--border);border-radius:13px;background:var(--card-light);overflow-wrap:anywhere}
+.masir-note-item h3{margin:0 0 5px;color:var(--purple)}
+.masir-note-item p{white-space:pre-wrap;margin:0 0 10px}
+.masir-note-actions{display:flex;gap:8px;flex-wrap:wrap}
+.masir-note-actions button{font:inherit;cursor:pointer}
+#masirNotesStatus{min-height:1.5em}
+@media(max-width:520px){#masirSideDrawer{width: min(82vw,320px);min-width:0;padding:15px 10px}#masirMenuButton{top:8px;right:8px;width:40px;height:40px}#masirDrawerItems button{padding:10px 8px;font-size:12px}}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -1759,6 +1786,19 @@ var supabaseClient = window.supabase.createClient(
 </head>
 
 <body>
+<button type="button" id="masirMenuButton" aria-label="باز کردن منو" title="منو" aria-controls="masirSideDrawer" aria-expanded="false">⋮</button>
+<div id="masirDrawerBackdrop" aria-hidden="true"></div>
+<aside id="masirSideDrawer" aria-label="منوی اصلی" aria-hidden="true">
+  <div id="masirDrawerHead"><strong>مسیر 💜</strong><button type="button" id="masirDrawerClose" aria-label="بستن منو">×</button></div>
+  <nav id="masirDrawerItems">
+    <button type="button" data-masir-page="profile"><span>👤</span><span>حساب کاربری</span></button>
+    <button type="button" data-masir-page="settings"><span>⚙️</span><span>تنظیمات</span></button>
+    <button type="button" data-masir-page="password"><span>🔐</span><span>تغییر رمز عبور</span></button>
+    <button type="button" data-masir-page="notes"><span>📝</span><span>یادداشت‌ها</span></button>
+    <button type="button" data-masir-page="calendar"><span>📅</span><span>تقویم</span></button>
+    <button type="button" data-masir-page="about"><span>💜</span><span>درباره مسیر</span></button>
+  </nav>
+</aside>
 <div class="container">
 
 <header>
@@ -2090,6 +2130,42 @@ var supabaseClient = window.supabase.createClient(
     </div>
 </section>
 
+
+<section class="card masir-utility-card" id="settingsSection" style="display:none;">
+  <h2>⚙️ تنظیمات</h2>
+  <div class="profile-panel">
+    <label for="appLanguageSettings">🌐 زبان برنامه</label>
+    <select id="appLanguageSettings" aria-label="زبان برنامه">
+      <option value="fa">فارسی</option><option value="en">English</option><option value="ar">العربية</option><option value="tr">Türkçe</option><option value="ja">日本語</option>
+    </select>
+    <p class="help-text">زبان انتخابی برای تمام بخش‌های رابط کاربری اعمال می‌شود. متن یادداشت‌های شخصی شما ترجمه نمی‌شود.</p>
+  </div>
+</section>
+<section class="card masir-utility-card" id="passwordSection" style="display:none;">
+  <h2>🔐 تغییر رمز عبور</h2>
+  <p class="help-text">برای حفظ امنیت حساب، لینک بازیابی رمز به ایمیل حساب شما ارسال می‌شود.</p>
+  <button type="button" class="primary-button" id="masirOpenPasswordSettings" style="width:100%;">ادامه به مدیریت رمز عبور</button>
+  <p class="help-text" role="status" id="masirPasswordPageStatus"></p>
+</section>
+<section class="card masir-utility-card" id="notesSection" style="display:none;">
+  <h2>📝 یادداشت‌ها</h2>
+  <form id="masirNoteForm">
+    <input type="hidden" id="masirEditingNoteId" value="">
+    <label for="masirNoteTitle">عنوان یادداشت</label>
+    <input id="masirNoteTitle" type="text" maxlength="120" placeholder="عنوان یادداشت" autocomplete="off">
+    <label for="masirNoteBody">متن یادداشت</label>
+    <textarea id="masirNoteBody" maxlength="10000" placeholder="یادداشت خود را اینجا بنویسید..."></textarea>
+    <div class="masir-note-actions"><button type="submit" class="primary-button" id="masirSaveNoteButton">ذخیره یادداشت</button><button type="button" class="secondary-button" id="masirCancelNoteEdit" style="display:none;">لغو ویرایش</button></div>
+  </form>
+  <p id="masirNotesStatus" class="help-text" role="status" aria-live="polite"></p>
+  <div id="masirNotesList"></div>
+</section>
+<section class="card masir-utility-card" id="aboutSection" style="display:none;">
+  <h2>💜 درباره مسیر</h2>
+  <p>مسیر، همراهی برای برنامه‌ریزی روزانه، مدیریت زمان و پیگیری پیشرفت شخصی است.</p>
+  <p class="help-text">هر روز یک قدم به زندگی دلخواهت نزدیک‌تر شو. 💜</p>
+</section>
+
 <nav id="bottomNav">
     <button type="button" id="nav-home" onclick="showPage('home')">🏠 خانه</button>
     <button type="button" id="nav-chat" onclick="showPage('chat')">💬 چت <span id="navChatUnreadBadge" aria-label="پیام ناخوانده" style="display:none;background:#ef4444;color:white;border-radius:999px;min-width:20px;height:20px;padding:0 6px;align-items:center;justify-content:center;font-size:11px;font-weight:800;margin-inline-start:5px;">0</span></button>
@@ -2109,6 +2185,31 @@ var supabaseClient = window.supabase.createClient(
 const MASIR_LANGUAGE_KEY = "masir_app_language_v1";
 const MASIR_LANGUAGES = {
     fa: { dir: "rtl", lang: "fa", text: {
+        "حساب کاربری":"حساب کاربری",
+        "تنظیمات":"تنظیمات",
+        "تغییر رمز عبور":"تغییر رمز عبور",
+        "یادداشت‌ها":"یادداشت‌ها",
+        "تقویم":"تقویم",
+        "درباره مسیر":"درباره مسیر",
+        "منو":"منو",
+        "باز کردن منو":"باز کردن منو",
+        "بستن منو":"بستن منو",
+        "عنوان یادداشت":"عنوان یادداشت",
+        "یادداشت خود را اینجا بنویسید...":"یادداشت خود را اینجا بنویسید...",
+        "ذخیره یادداشت":"ذخیره یادداشت",
+        "لغو ویرایش":"لغو ویرایش",
+        "زبان انتخابی برای تمام بخش‌های رابط کاربری اعمال می‌شود. متن یادداشت‌های شخصی شما ترجمه نمی‌شود.":"زبان انتخابی برای تمام بخش‌های رابط کاربری اعمال می‌شود. متن یادداشت‌های شخصی شما ترجمه نمی‌شود.",
+        "برای حفظ امنیت حساب، لینک بازیابی رمز به ایمیل حساب شما ارسال می‌شود.":"برای حفظ امنیت حساب، لینک بازیابی رمز به ایمیل حساب شما ارسال می‌شود.",
+        "ادامه به مدیریت رمز عبور":"ادامه به مدیریت رمز عبور",
+        "مسیر، همراهی برای برنامه‌ریزی روزانه، مدیریت زمان و پیگیری پیشرفت شخصی است.":"مسیر، همراهی برای برنامه‌ریزی روزانه، مدیریت زمان و پیگیری پیشرفت شخصی است.",
+        "هر روز یک قدم به زندگی دلخواهت نزدیک‌تر شو. 💜":"هر روز یک قدم به زندگی دلخواهت نزدیک‌تر شو. 💜",
+        "یادداشت ذخیره شد.":"یادداشت ذخیره شد.",
+        "یادداشت حذف شد.":"یادداشت حذف شد.",
+        "عنوان و متن یادداشت را وارد کن.":"عنوان و متن یادداشت را وارد کن.",
+        "ویرایش":"ویرایش",
+        "حذف":"حذف",
+        "هنوز یادداشتی ثبت نشده است.":"هنوز یادداشتی ثبت نشده است.",
+        "یادداشت ویرایش شد.":"یادداشت ویرایش شد.",
         "🌐 زبان / Language":"🌐 زبان برنامه","مسیر":"مسیر","مسیر 💜":"مسیر 💜","مسیر | برنامه‌ریز شخصی":"مسیر | برنامه‌ریز شخصی","هر روز یک قدم به زندگی دلخواهت نزدیک‌تر شو.":"هر روز یک قدم به زندگی دلخواهت نزدیک‌تر شو.",
         "🏠 خانه":"🏠 خانه","💬 چت":"💬 چت","📅 برنامه‌ریزی":"📅 برنامه‌ریزی","🗓️ برنامهٔ روز":"🗓️ برنامهٔ روز","📊 گزارش‌ها":"📊 گزارش‌ها","👤 نمایه":"👤 نمایه",
         "➕ افزودن فعالیت جدید":"➕ افزودن فعالیت جدید","نام فعالیت":"نام فعالیت","دسته‌بندی فعالیت":"دسته‌بندی فعالیت","ساعت شروع":"ساعت شروع","ساعت پایان":"ساعت پایان",
@@ -2118,6 +2219,31 @@ const MASIR_LANGUAGES = {
         "انجام‌شده":"انجام‌شده","پیشرفت روز":"پیشرفت روز","خانه":"خانه","امروز":"امروز","حذف":"حذف","ذخیره":"ذخیره"
     }},
     en: { dir: "ltr", lang: "en", text: {
+        "حساب کاربری":"Account",
+        "تنظیمات":"Settings",
+        "تغییر رمز عبور":"Change password",
+        "یادداشت‌ها":"Notes",
+        "تقویم":"Calendar",
+        "درباره مسیر":"About Masir",
+        "منو":"Menu",
+        "باز کردن منو":"Open menu",
+        "بستن منو":"Close menu",
+        "عنوان یادداشت":"Note title",
+        "یادداشت خود را اینجا بنویسید...":"Write your note here...",
+        "ذخیره یادداشت":"Save note",
+        "لغو ویرایش":"Cancel editing",
+        "زبان انتخابی برای تمام بخش‌های رابط کاربری اعمال می‌شود. متن یادداشت‌های شخصی شما ترجمه نمی‌شود.":"Your selected language applies to the entire interface. Your personal notes are not translated.",
+        "برای حفظ امنیت حساب، لینک بازیابی رمز به ایمیل حساب شما ارسال می‌شود.":"A password recovery link will be sent to your account email to keep your account secure.",
+        "ادامه به مدیریت رمز عبور":"Continue to password management",
+        "مسیر، همراهی برای برنامه‌ریزی روزانه، مدیریت زمان و پیگیری پیشرفت شخصی است.":"Masir helps you plan your days, manage time, and track personal progress.",
+        "هر روز یک قدم به زندگی دلخواهت نزدیک‌تر شو. 💜":"Take one step closer to the life you want every day. 💜",
+        "یادداشت ذخیره شد.":"Note saved.",
+        "یادداشت حذف شد.":"Note deleted.",
+        "عنوان و متن یادداشت را وارد کن.":"Enter a note title and text.",
+        "ویرایش":"Edit",
+        "حذف":"Delete",
+        "هنوز یادداشتی ثبت نشده است.":"No notes yet.",
+        "یادداشت ویرایش شد.":"Note updated.",
         "🌐 زبان / Language":"🌐 App language","مسیر":"Path","مسیر 💜":"Path 💜","مسیر | برنامه‌ریز شخصی":"Path | Personal Planner","هر روز یک قدم به زندگی دلخواهت نزدیک‌تر شو.":"Take one small step toward the life you want every day.",
         "🏠 خانه":"🏠 Home","📅 برنامه‌ریزی":"📅 Planning","🗓️ برنامهٔ روز":"🗓️ Daily plan","📊 گزارش‌ها":"📊 Reports","👤 نمایه":"👤 Profile",
         "➕ افزودن فعالیت جدید":"➕ Add a new activity","نام فعالیت":"Activity name","دسته‌بندی فعالیت":"Activity category","ساعت شروع":"Start time","ساعت پایان":"End time",
@@ -2299,6 +2425,31 @@ const MASIR_LANGUAGES = {
         "برای ورود یا ساخت حساب با پیامک، نام و نام خانوادگی را وارد کن.": "To sign in or create an account by SMS, enter your first and last name.",
     }},
     ar: { dir: "rtl", lang: "ar", text: {
+        "حساب کاربری":"الحساب",
+        "تنظیمات":"الإعدادات",
+        "تغییر رمز عبور":"تغيير كلمة المرور",
+        "یادداشت‌ها":"الملاحظات",
+        "تقویم":"التقويم",
+        "درباره مسیر":"حول مسير",
+        "منو":"القائمة",
+        "باز کردن منو":"فتح القائمة",
+        "بستن منو":"إغلاق القائمة",
+        "عنوان یادداشت":"عنوان الملاحظة",
+        "یادداشت خود را اینجا بنویسید...":"اكتب ملاحظتك هنا...",
+        "ذخیره یادداشت":"حفظ الملاحظة",
+        "لغو ویرایش":"إلغاء التعديل",
+        "زبان انتخابی برای تمام بخش‌های رابط کاربری اعمال می‌شود. متن یادداشت‌های شخصی شما ترجمه نمی‌شود.":"تُطبّق اللغة المختارة على الواجهة كلها. لن تُترجم ملاحظاتك الشخصية.",
+        "برای حفظ امنیت حساب، لینک بازیابی رمز به ایمیل حساب شما ارسال می‌شود.":"سيُرسل رابط استعادة كلمة المرور إلى بريد حسابك للحفاظ على أمانه.",
+        "ادامه به مدیریت رمز عبور":"متابعة إدارة كلمة المرور",
+        "مسیر، همراهی برای برنامه‌ریزی روزانه، مدیریت زمان و پیگیری پیشرفت شخصی است.":"مسير يساعدك على التخطيط اليومي وإدارة الوقت ومتابعة تقدمك الشخصي.",
+        "هر روز یک قدم به زندگی دلخواهت نزدیک‌تر شو. 💜":"اقترب كل يوم خطوة من الحياة التي تريدها. 💜",
+        "یادداشت ذخیره شد.":"تم حفظ الملاحظة.",
+        "یادداشت حذف شد.":"تم حذف الملاحظة.",
+        "عنوان و متن یادداشت را وارد کن.":"أدخل عنوان الملاحظة ونصها.",
+        "ویرایش":"تعديل",
+        "حذف":"حذف",
+        "هنوز یادداشتی ثبت نشده است.":"لا توجد ملاحظات بعد.",
+        "یادداشت ویرایش شد.":"تم تحديث الملاحظة.",
         "🌐 زبان / Language":"🌐 لغة التطبيق","مسیر":"المسار","مسیر 💜":"المسار 💜","مسیر | برنامه‌ریز شخصی":"المسار | مخطط شخصي","هر روز یک قدم به زندگی دلخواهت نزدیک‌تر شو.":"اقترب كل يوم خطوة صغيرة من الحياة التي تريدها.",
         "🏠 خانه":"🏠 الرئيسية","📅 برنامه‌ریزی":"📅 التخطيط","🗓️ برنامهٔ روز":"🗓️ خطة اليوم","📊 گزارش‌ها":"📊 التقارير","👤 نمایه":"👤 الملف الشخصي",
         "➕ افزودن فعالیت جدید":"➕ إضافة نشاط جديد","نام فعالیت":"اسم النشاط","دسته‌بندی فعالیت":"فئة النشاط","ساعت شروع":"وقت البدء","ساعت پایان":"وقت الانتهاء",
@@ -2479,6 +2630,31 @@ const MASIR_LANGUAGES = {
         "برای ورود یا ساخت حساب با پیامک، نام و نام خانوادگی را وارد کن.": "لتسجيل الدخول أو إنشاء حساب عبر الرسائل النصية، أدخل الاسم الأول واسم العائلة.",
     }},
     tr: { dir: "ltr", lang: "tr", text: {
+        "حساب کاربری":"Hesap",
+        "تنظیمات":"Ayarlar",
+        "تغییر رمز عبور":"Şifreyi değiştir",
+        "یادداشت‌ها":"Notlar",
+        "تقویم":"Takvim",
+        "درباره مسیر":"Masir hakkında",
+        "منو":"Menü",
+        "باز کردن منو":"Menüyü aç",
+        "بستن منو":"Menüyü kapat",
+        "عنوان یادداشت":"Not başlığı",
+        "یادداشت خود را اینجا بنویسید...":"Notunuzu buraya yazın...",
+        "ذخیره یادداشت":"Notu kaydet",
+        "لغو ویرایش":"Düzenlemeyi iptal et",
+        "زبان انتخابی برای تمام بخش‌های رابط کاربری اعمال می‌شود. متن یادداشت‌های شخصی شما ترجمه نمی‌شود.":"Seçtiğiniz dil tüm arayüze uygulanır. Kişisel notlarınız çevrilmez.",
+        "برای حفظ امنیت حساب، لینک بازیابی رمز به ایمیل حساب شما ارسال می‌شود.":"Hesabınızı korumak için e-posta adresinize parola sıfırlama bağlantısı gönderilir.",
+        "ادامه به مدیریت رمز عبور":"Parola yönetimine devam et",
+        "مسیر، همراهی برای برنامه‌ریزی روزانه، مدیریت زمان و پیگیری پیشرفت شخصی است.":"Masir günlük planlama, zaman yönetimi ve kişisel ilerlemenizi takip etmenize yardımcı olur.",
+        "هر روز یک قدم به زندگی دلخواهت نزدیک‌تر شو. 💜":"İstediğin yaşama her gün bir adım yaklaş. 💜",
+        "یادداشت ذخیره شد.":"Not kaydedildi.",
+        "یادداشت حذف شد.":"Not silindi.",
+        "عنوان و متن یادداشت را وارد کن.":"Bir not başlığı ve metni girin.",
+        "ویرایش":"Düzenle",
+        "حذف":"Sil",
+        "هنوز یادداشتی ثبت نشده است.":"Henüz not yok.",
+        "یادداشت ویرایش شد.":"Not güncellendi.",
         "🌐 زبان / Language":"🌐 Uygulama dili","مسیر":"Yol","مسیر 💜":"Yol 💜","مسیر | برنامه‌ریز شخصی":"Yol | Kişisel Planlayıcı","هر روز یک قدم به زندگی دلخواهت نزدیک‌تر شو.":"Her gün istediğin yaşama doğru küçük bir adım at.",
         "🏠 خانه":"🏠 Ana sayfa","📅 برنامه‌ریزی":"📅 Planlama","🗓️ برنامهٔ روز":"🗓️ Günlük plan","📊 گزارش‌ها":"📊 Raporlar","👤 نمایه":"👤 Profil",
         "➕ افزودن فعالیت جدید":"➕ Yeni etkinlik ekle","نام فعالیت":"Etkinlik adı","دسته‌بندی فعالیت":"Etkinlik kategorisi","ساعت شروع":"Başlangıç saati","ساعت پایان":"Bitiş saati",
@@ -2659,6 +2835,31 @@ const MASIR_LANGUAGES = {
         "برای ورود یا ساخت حساب با پیامک، نام و نام خانوادگی را وارد کن.": "SMS ile giriş yapmak veya hesap oluşturmak için adınızı ve soyadınızı girin.",
     }},
     ja: { dir: "ltr", lang: "ja", text: {
+        "حساب کاربری":"アカウント",
+        "تنظیمات":"設定",
+        "تغییر رمز عبور":"パスワード変更",
+        "یادداشت‌ها":"メモ",
+        "تقویم":"カレンダー",
+        "درباره مسیر":"Masirについて",
+        "منو":"メニュー",
+        "باز کردن منو":"メニューを開く",
+        "بستن منو":"メニューを閉じる",
+        "عنوان یادداشت":"メモのタイトル",
+        "یادداشت خود را اینجا بنویسید...":"ここにメモを入力してください...",
+        "ذخیره یادداشت":"メモを保存",
+        "لغو ویرایش":"編集をキャンセル",
+        "زبان انتخابی برای تمام بخش‌های رابط کاربری اعمال می‌شود. متن یادداشت‌های شخصی شما ترجمه نمی‌شود.":"選択した言語は画面全体に適用されます。個人のメモは翻訳されません。",
+        "برای حفظ امنیت حساب، لینک بازیابی رمز به ایمیل حساب شما ارسال می‌شود.":"アカウントの安全のため、パスワード再設定リンクをメールで送信します。",
+        "ادامه به مدیریت رمز عبور":"パスワード管理へ進む",
+        "مسیر، همراهی برای برنامه‌ریزی روزانه، مدیریت زمان و پیگیری پیشرفت شخصی است.":"Masirは日々の計画、時間管理、個人の進捗確認をサポートします。",
+        "هر روز یک قدم به زندگی دلخواهت نزدیک‌تر شو. 💜":"毎日一歩ずつ、理想の暮らしへ。💜",
+        "یادداشت ذخیره شد.":"メモを保存しました。",
+        "یادداشت حذف شد.":"メモを削除しました。",
+        "عنوان و متن یادداشت را وارد کن.":"メモのタイトルと本文を入力してください。",
+        "ویرایش":"編集",
+        "حذف":"削除",
+        "هنوز یادداشتی ثبت نشده است.":"メモはまだありません。",
+        "یادداشت ویرایش شد.":"メモを更新しました。",
         "🌐 زبان / Language":"🌐 アプリの言語","مسیر":"道","مسیر 💜":"道 💜","مسیر | برنامه‌ریز شخصی":"道 | パーソナルプランナー","هر روز یک قدم به زندگی دلخواهت نزدیک‌تر شو.":"毎日、小さな一歩で理想の生活に近づこう。",
         "🏠 خانه":"🏠 ホーム","📅 برنامه‌ریزی":"📅 計画","🗓️ برنامهٔ روز":"🗓️ 今日の予定","📊 گزارش‌ها":"📊 レポート","👤 نمایه":"👤 プロフィール",
         "➕ افزودن فعالیت جدید":"➕ 新しい活動を追加","نام فعالیت":"活動名","دسته‌بندی فعالیت":"活動カテゴリ","ساعت شروع":"開始時刻","ساعت پایان":"終了時刻",
@@ -3153,7 +3354,12 @@ function showPage(page) {
         daily: ["dailyOverviewSection"],
         planning: ["planningSection"],
         reports: ["reportSection"],
-        profile: ["profileSection"]
+        profile: ["profileSection"],
+        settings: ["settingsSection"],
+        password: ["passwordSection"],
+        notes: ["notesSection"],
+        calendar: ["calendarSection"],
+        about: ["aboutSection"]
     };
 
     const allSections = [
@@ -3164,7 +3370,11 @@ function showPage(page) {
         "planningSection",
         "calendarSection",
         "reportSection",
-        "profileSection"
+        "profileSection",
+        "settingsSection",
+        "passwordSection",
+        "notesSection",
+        "aboutSection"
     ];
 
     allSections.forEach(function(id) {
@@ -5434,6 +5644,104 @@ if($("profileSupportEmail"))$("profileSupportEmail").addEventListener("change",r
 refreshUserUnreadBadge();
 setInterval(refreshUserUnreadBadge,20000);
 if($("adminSupportReplyButton"))$("adminSupportReplyButton").onclick=async()=>{const st=$("adminSupportStatus"),b=$("adminSupportReplyButton"),msg=$("adminSupportReply").value.trim(),broadcast=$("adminSupportBroadcastAll")?.checked;if(!msg){st.textContent="پیام را بنویس.";return;}if(broadcast&&!confirm("این پیام برای همه کاربران دارای گفتگو ارسال شود؟"))return;if(!broadcast&&!chosen){st.textContent="ابتدا گفتگو را انتخاب کن یا گزینه ارسال به همه را فعال کن.";return;}b.disabled=true;try{if(broadcast){const result=await adminApi({action:"admin_broadcast",message:msg});$("adminSupportReply").value="";$("adminSupportBroadcastAll").checked=false;st.style.color="#a7f3d0";st.textContent="پیام همگانی برای "+result.sent_count+" گفتگو ارسال شد.";}else{await adminApi({action:"admin_reply",thread_id:chosen,message:msg});$("adminSupportReply").value="";await readThread();st.style.color="#a7f3d0";st.textContent="پاسخ ارسال شد.";}await refresh();}catch(e){st.style.color="#fb7185";st.textContent=e.message;}finally{b.disabled=false;}};
+})();
+</script>
+
+
+<script>
+(function initMasirDrawerAndPages(){
+  const menuButton=document.getElementById("masirMenuButton");
+  const drawer=document.getElementById("masirSideDrawer");
+  const backdrop=document.getElementById("masirDrawerBackdrop");
+  const closeButton=document.getElementById("masirDrawerClose");
+  const langTop=document.getElementById("appLanguage");
+  const langSettings=document.getElementById("appLanguageSettings");
+  function setDrawer(open){
+    drawer.classList.toggle("is-open",open);
+    backdrop.classList.toggle("is-open",open);
+    drawer.setAttribute("aria-hidden",String(!open));
+    backdrop.setAttribute("aria-hidden",String(!open));
+    menuButton.setAttribute("aria-expanded",String(open));
+    menuButton.setAttribute("aria-label",masirTranslate(open?"بستن منو":"باز کردن منو"));
+    document.body.style.overflow=open?"hidden":"";
+    if(open) closeButton.focus();
+  }
+  menuButton.addEventListener("click",()=>setDrawer(!drawer.classList.contains("is-open")));
+  closeButton.addEventListener("click",()=>setDrawer(false));
+  backdrop.addEventListener("click",()=>setDrawer(false));
+  document.addEventListener("keydown",e=>{if(e.key==="Escape"&&drawer.classList.contains("is-open"))setDrawer(false);});
+  document.querySelectorAll("#masirDrawerItems [data-masir-page]").forEach(button=>{
+    button.addEventListener("click",()=>{
+      const page=button.getAttribute("data-masir-page");
+      setDrawer(false);
+      if(typeof showPage==="function") showPage(page);
+      window.scrollTo({top:0,behavior:"smooth"});
+      if(page==="notes") document.getElementById("masirNoteTitle").focus({preventScroll:true});
+    });
+  });
+  if(langSettings&&langTop){
+    langSettings.value=langTop.value||"fa";
+    langSettings.addEventListener("change",()=>{
+      langTop.value=langSettings.value;
+      applyMasirLanguage(langSettings.value);
+      if(typeof renderAll==="function")renderAll();
+    });
+    langTop.addEventListener("change",()=>{langSettings.value=langTop.value;});
+  }
+  const noteKey="masir_notes_v1";
+  const form=document.getElementById("masirNoteForm");
+  const titleInput=document.getElementById("masirNoteTitle");
+  const bodyInput=document.getElementById("masirNoteBody");
+  const editingInput=document.getElementById("masirEditingNoteId");
+  const list=document.getElementById("masirNotesList");
+  const status=document.getElementById("masirNotesStatus");
+  const saveButton=document.getElementById("masirSaveNoteButton");
+  const cancelButton=document.getElementById("masirCancelNoteEdit");
+  function t(key){return typeof masirTranslate==="function"?masirTranslate(key):key;}
+  function getNotes(){
+    try{const data=JSON.parse(localStorage.getItem(noteKey)||"[]");return Array.isArray(data)?data:[];}
+    catch(_){return [];}
+  }
+  function putNotes(notes){try{localStorage.setItem(noteKey,JSON.stringify(notes));return true;}catch(_){status.textContent="";return false;}}
+  function resetNoteForm(){form.reset();editingInput.value="";cancelButton.style.display="none";saveButton.textContent=t("ذخیره یادداشت");}
+  function renderNotes(){
+    const notes=getNotes();
+    list.replaceChildren();
+    if(!notes.length){const empty=document.createElement("p");empty.className="help-text";empty.textContent=t("هنوز یادداشتی ثبت نشده است.");list.appendChild(empty);return;}
+    notes.sort((a,b)=>(b.updatedAt||0)-(a.updatedAt||0)).forEach(note=>{
+      const item=document.createElement("article");item.className="masir-note-item";
+      const title=document.createElement("h3");title.textContent=note.title;
+      const body=document.createElement("p");body.textContent=note.body;
+      const actions=document.createElement("div");actions.className="masir-note-actions";
+      const edit=document.createElement("button");edit.type="button";edit.className="secondary-button";edit.textContent="✏️ "+t("ویرایش");
+      edit.addEventListener("click",()=>{titleInput.value=note.title;bodyInput.value=note.body;editingInput.value=note.id;cancelButton.style.display="";saveButton.textContent=t("ذخیره یادداشت");status.textContent="";titleInput.focus();});
+      const remove=document.createElement("button");remove.type="button";remove.className="secondary-button";remove.textContent="🗑️ "+t("حذف");
+      remove.addEventListener("click",()=>{if(!putNotes(getNotes().filter(n=>n.id!==note.id)))return;status.textContent=t("یادداشت حذف شد.");if(editingInput.value===note.id)resetNoteForm();renderNotes();});
+      actions.append(edit,remove);item.append(title,body,actions);list.appendChild(item);
+    });
+  }
+  form.addEventListener("submit",event=>{
+    event.preventDefault();
+    const title=titleInput.value.trim(),body=bodyInput.value.trim();
+    if(!title||!body){status.textContent=t("عنوان و متن یادداشت را وارد کن.");return;}
+    const notes=getNotes(),id=editingInput.value;
+    if(id){const index=notes.findIndex(n=>n.id===id);if(index>=0){notes[index]={...notes[index],title,body,updatedAt:Date.now()};}else notes.unshift({id:makeNoteId(),title,body,createdAt:Date.now(),updatedAt:Date.now()});}
+    else notes.unshift({id:makeNoteId(),title,body,createdAt:Date.now(),updatedAt:Date.now()});
+    if(!putNotes(notes)){status.textContent="";return;}
+    status.textContent=t(id?"یادداشت ویرایش شد.":"یادداشت ذخیره شد.");
+    resetNoteForm();renderNotes();
+  });
+  function makeNoteId(){return "note-"+Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,9);}
+  cancelButton.addEventListener("click",()=>{resetNoteForm();status.textContent="";});
+  document.getElementById("masirOpenPasswordSettings").addEventListener("click",()=>{
+    if(typeof showPage==="function")showPage("profile");
+    window.scrollTo({top:0,behavior:"smooth"});
+    const target=document.getElementById("profileSecurityPanel");
+    if(target)target.scrollIntoView({behavior:"smooth",block:"center"});
+    const button=document.getElementById("profileResetPasswordButton");
+    if(button)setTimeout(()=>button.focus({preventScroll:true}),150);
+  });
+  renderNotes();
 })();
 </script>
 
