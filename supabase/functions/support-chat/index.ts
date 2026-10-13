@@ -84,7 +84,17 @@ Deno.serve(async (request: Request) => {
         const { count, error: countError } = await db.from("support_chat_messages").select("id", { count: "exact", head: true })
           .eq("thread_id", threadId).eq("sender", "admin").eq("read_by_user", false);
         if (countError) throw countError;
-        return json({ success: true, unread_count: count || 0, email: thread.email, display_name: thread.display_name });
+        const { data: unreadMessages, error: unreadError } = await db.from("support_chat_messages")
+          .select("id,message,created_at").eq("thread_id", threadId).eq("sender", "admin")
+          .eq("read_by_user", false).order("created_at", { ascending: true }).limit(50);
+        if (unreadError) throw unreadError;
+        return json({
+          success: true,
+          unread_count: count || 0,
+          unread_messages: unreadMessages || [],
+          email: thread.email,
+          display_name: thread.display_name
+        });
       }
 
       if (action === "user_read") {
