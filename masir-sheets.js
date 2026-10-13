@@ -267,6 +267,8 @@
   }
 
   hideLegacyProfileActions();
+  // Re-check once the main login script has finished restoring the remembered email.
+  document.addEventListener("DOMContentLoaded", hideLegacyProfileActions, { once: true });
 
   function moveAccountActionsToSettings(slotId) {
     const slot = document.getElementById(slotId);
