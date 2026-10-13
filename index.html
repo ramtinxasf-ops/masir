@@ -1768,7 +1768,25 @@ html[dir="ltr"] .language-picker { justify-content: flex-end; }
 @media(max-width:520px){#masirSideDrawer{width: min(82vw,320px);min-width:0;padding:15px 10px}#masirMenuButton{top:8px;right:8px;width:40px;height:40px}#masirDrawerItems button{padding:10px 8px;font-size:12px}}
 
 </style>
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+var SUPABASE_URL = "https://pbwoutmlisabyjasagxc.supabase.co";
+var SUPABASE_PUBLISHABLE_KEY = "sb_publishable_yvGvqqX8tw245uhuV4DEsQ_xviAIFUJ";
+var supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_PUBLISHABLE_KEY,
+    {
+        auth: {
+            autoRefreshToken: true,
+            persistSession: true,
+            detectSessionInUrl: true
+        },
+        global: {
+            headers: { "X-Client-Info": "masir-app" }
+        }
+    }
+);
+</script>
 </head>
 
 <body>
@@ -2220,26 +2238,6 @@ html[dir="ltr"] .language-picker { justify-content: flex-end; }
 
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script>
-var SUPABASE_URL = "https://pbwoutmlisabyjasagxc.supabase.co";
-var SUPABASE_PUBLISHABLE_KEY = "sb_publishable_yvGvqqX8tw245uhuV4DEsQ_xviAIFUJ";
-var supabaseClient = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_PUBLISHABLE_KEY,
-    {
-        auth: {
-            autoRefreshToken: true,
-            persistSession: true,
-            detectSessionInUrl: true
-        },
-        global: {
-            headers: { "X-Client-Info": "masir-app" }
-        }
-    }
-);
-</script>
-
 <script>
 // زبان رابط کاربری؛ انتخاب در همین مرورگر ذخیره می‌شود.
 const MASIR_LANGUAGE_KEY = "masir_app_language_v1";
@@ -2251,13 +2249,6 @@ const MASIR_LANGUAGES = {
         "یادداشت‌ها":"یادداشت‌ها",
         "تقویم":"تقویم",
         "درباره مسیر":"درباره مسیر",
-        "⚙️ تنظیمات":"⚙️ تنظیمات",
-        "👤 حساب کاربری":"👤 حساب کاربری",
-        "🔐 تغییر رمز عبور":"🔐 تغییر رمز عبور",
-        "📝 یادداشت‌ها":"📝 یادداشت‌ها",
-        "💜 درباره مسیر":"💜 درباره مسیر",
-        "🌐 زبان برنامه":"🌐 زبان برنامه",
-
         "منو":"منو",
         "باز کردن منو":"باز کردن منو",
         "بستن منو":"بستن منو",
@@ -2292,13 +2283,6 @@ const MASIR_LANGUAGES = {
         "یادداشت‌ها":"Notes",
         "تقویم":"Calendar",
         "درباره مسیر":"About Masir",
-        "⚙️ تنظیمات":"⚙️ Settings",
-        "👤 حساب کاربری":"👤 Account",
-        "🔐 تغییر رمز عبور":"🔐 Change password",
-        "📝 یادداشت‌ها":"📝 Notes",
-        "💜 درباره مسیر":"💜 About Masir",
-        "🌐 زبان برنامه":"🌐 App language",
-
         "منو":"Menu",
         "باز کردن منو":"Open menu",
         "بستن منو":"Close menu",
@@ -2505,13 +2489,6 @@ const MASIR_LANGUAGES = {
         "یادداشت‌ها":"الملاحظات",
         "تقویم":"التقويم",
         "درباره مسیر":"حول مسير",
-        "⚙️ تنظیمات":"⚙️ الإعدادات",
-        "👤 حساب کاربری":"👤 الحساب",
-        "🔐 تغییر رمز عبور":"🔐 تغيير كلمة المرور",
-        "📝 یادداشت‌ها":"📝 الملاحظات",
-        "💜 درباره مسیر":"💜 حول مسير",
-        "🌐 زبان برنامه":"🌐 لغة التطبيق",
-
         "منو":"القائمة",
         "باز کردن منو":"فتح القائمة",
         "بستن منو":"إغلاق القائمة",
@@ -2717,13 +2694,6 @@ const MASIR_LANGUAGES = {
         "یادداشت‌ها":"Notlar",
         "تقویم":"Takvim",
         "درباره مسیر":"Masir hakkında",
-        "⚙️ تنظیمات":"⚙️ Ayarlar",
-        "👤 حساب کاربری":"👤 Hesap",
-        "🔐 تغییر رمز عبور":"🔐 Şifreyi değiştir",
-        "📝 یادداشت‌ها":"📝 Notlar",
-        "💜 درباره مسیر":"💜 Masir hakkında",
-        "🌐 زبان برنامه":"🌐 Uygulama dili",
-
         "منو":"Menü",
         "باز کردن منو":"Menüyü aç",
         "بستن منو":"Menüyü kapat",
@@ -2929,13 +2899,6 @@ const MASIR_LANGUAGES = {
         "یادداشت‌ها":"メモ",
         "تقویم":"カレンダー",
         "درباره مسیر":"Masirについて",
-        "⚙️ تنظیمات":"⚙️ 設定",
-        "👤 حساب کاربری":"👤 アカウント",
-        "🔐 تغییر رمز عبور":"🔐 パスワード変更",
-        "📝 یادداشت‌ها":"📝 メモ",
-        "💜 درباره مسیر":"💜 Masirについて",
-        "🌐 زبان برنامه":"🌐 アプリの言語",
-
         "منو":"メニュー",
         "باز کردن منو":"メニューを開く",
         "بستن منو":"メニューを閉じる",
@@ -6003,8 +5966,7 @@ if($("adminSupportReplyButton"))$("adminSupportReplyButton").onclick=async()=>{c
   });
   function makeNoteId(){return "note-"+Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,9);}
   cancelButton.addEventListener("click",()=>{resetNoteForm();status.textContent="";});
-  const openPasswordSettingsButton=document.getElementById("masirOpenPasswordSettings");
-  if(openPasswordSettingsButton) openPasswordSettingsButton.addEventListener("click",()=>{
+  document.getElementById("masirOpenPasswordSettings").addEventListener("click",()=>{
     if(typeof showPage==="function")showPage("account");
     window.scrollTo({top:0,behavior:"smooth"});
     const target=document.getElementById("profileSecurityPanel");
