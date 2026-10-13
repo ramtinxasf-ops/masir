@@ -238,7 +238,7 @@
     // Registered account details are shown read-only in the right-hand Profile sheet.
     const form = document.getElementById("profileForm");
     const accountPanel = form && form.closest(".profile-panel");
-    if (accountPanel) accountPanel.hidden = true;
+    if (accountPanel) accountPanel.hidden = false;
 
     // Keep app information and account actions out of the bottom Dashboard/Profile page.
     const info = document.getElementById("appInfoButton");
