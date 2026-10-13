@@ -475,7 +475,8 @@
         if (main) { main.value = select.value; main.dispatchEvent(new Event("change", {bubbles:true})); }
         document.documentElement.lang = select.value; document.documentElement.dir = select.value === "fa" || select.value === "ar" ? "rtl" : "ltr";
         showSheet("settings");
-        const status = panel.querySelector("#msStatus"); if (status) status.textContent = t("saved");
+        const status = panel.querySelector("#msStatus");
+        if (status) status.textContent = t("saved");
       };
     } else if (name === "password") {
       content.innerHTML = '<div class="ms-card"><p data-password-info></p><label for="msCurrentPassword" data-current-password-label></label><input id="msCurrentPassword" type="password" autocomplete="current-password" style="display:block;width:100%;padding:12px;border-radius:10px;border:1px solid #514477;background:#0d1426;color:#f8fafc"><label for="msNewPassword" data-new-password-label></label><input id="msNewPassword" type="password" autocomplete="new-password" minlength="8" style="display:block;width:100%;padding:12px;border-radius:10px;border:1px solid #514477;background:#0d1426;color:#f8fafc"><label for="msConfirmPassword" data-confirm-password-label></label><input id="msConfirmPassword" type="password" autocomplete="new-password" minlength="8" style="display:block;width:100%;padding:12px;border-radius:10px;border:1px solid #514477;background:#0d1426;color:#f8fafc"><label style="display:flex;align-items:center;gap:8px"><input id="msShowPassword" type="checkbox" style="width:auto"> <span data-show-password-label></span></label><p class="ms-muted" id="msPasswordRules"></p><div class="ms-actions"><button class="ms-primary" id="msUpdatePassword" type="button"></button></div><div class="ms-status" id="msPasswordStatus" role="status" aria-live="polite"></div><hr style="border-color:#393452;margin:18px 0"><div id="msAdminManagementSlot"></div><div id="msRecoverySlot"></div></div>';
