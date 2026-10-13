@@ -108,6 +108,29 @@ Deno.serve(async (request: Request) => {
       return json({ success: true, email: thread.email, display_name: thread.display_name, messages });
     }
 
+    if (action === "admin_broadcast") {
+      if (!isAdmin) return json({ error: "فقط مدیر اجازه ارسال پیام همگانی را دارد." }, 403);
+      const message = typeof body.message === "string" ? body.message.trim() : "";
+      if (!message || message.length > 4000) return json({ error: "پیام باید بین ۱ تا ۴۰۰۰ نویسه باشد." }, 400);
+      const { data: threads, error: threadsError } = await db.from("support_chat_threads")
+        .select("id").order("created_at", { ascending: true }).limit(5000);
+      if (threadsError) throw threadsError;
+      if (!threads || !threads.length) return json({ success: true, sent_count: 0, message: "هنوز گفتگویی برای ارسال پیام وجود ندارد." });
+      const now = new Date().toISOString();
+      const rows = threads.map((thread) => ({
+        thread_id: thread.id,
+        sender: "admin",
+        message,
+        read_by_user: false,
+        read_by_admin: true
+      }));
+      const { error: insertError } = await db.from("support_chat_messages").insert(rows);
+      if (insertError) throw insertError;
+      const { error: updateError } = await db.from("support_chat_threads").update({ updated_at: now }).in("id", threads.map((thread) => thread.id));
+      if (updateError) throw updateError;
+      return json({ success: true, sent_count: threads.length });
+    }
+
     if (action === "admin_list" || action === "admin_read" || action === "admin_reply") {
       if (!isAdmin) return json({ error: "فقط مدیر اجازه دسترسی به پیام‌ها را دارد." }, 403);
       if (action === "admin_list") {
