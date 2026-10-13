@@ -29,14 +29,9 @@ jobs:
 
       - name: Prepare site files
         run: |
-          touch .nojekyll
           mkdir -p _site
-          cp -a index.html .nojekyll _site/
-          if [ -d assets ]; then cp -a assets _site/; fi
-          if [ -d css ]; then cp -a css _site/; fi
-          if [ -d js ]; then cp -a js _site/; fi
-          if [ -d images ]; then cp -a images _site/; fi
-          if [ -d img ]; then cp -a img _site/; fi
+          rsync -a --exclude='.git' --exclude='.github' --exclude='_site' ./ _site/
+          touch _site/.nojekyll
 
       - name: Upload site artifact
         uses: actions/upload-pages-artifact@v3
