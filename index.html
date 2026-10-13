@@ -1950,15 +1950,15 @@ var supabaseClient = window.supabase.createClient(
         </div>
 
         <div class="calendar-controls" aria-label="کنترل‌های تقویم">
-            <button type="button" class="secondary-button" id="previousWeekButton">
-                هفته قبل ←
-            </button>
-            <button type="button" class="today-button" id="todayButton">
-                امروز
-            </button>
-            <button type="button" class="secondary-button" id="nextWeekButton">
-                → هفته بعد
-            </button>
+            <label for="calendarTypeSelect" style="margin:0;">نوع تقویم</label>
+            <select id="calendarTypeSelect" aria-label="نوع تقویم" style="width:auto;max-width:100%;">
+                <option value="auto">متناسب با زبان</option><option value="gregory">میلادی</option><option value="persian">شمسی</option><option value="islamic-umalqura">قمری</option><option value="japanese">ژاپنی</option>
+            </select>
+            <label for="calendarCountrySelect" style="margin:0;">کشور</label>
+            <select id="calendarCountrySelect" aria-label="کشور تقویم" style="width:auto;max-width:100%;">
+                <option value="IR">ایران</option><option value="US">ایالات متحده</option><option value="SA">عربستان سعودی</option><option value="TR">ترکیه</option><option value="JP">ژاپن</option><option value="GB">بریتانیا</option>
+            </select>
+            <button type="button" class="secondary-button" id="previousWeekButton">هفته قبل ←</button><button type="button" class="today-button" id="todayButton">امروز</button><button type="button" class="secondary-button" id="nextWeekButton">→ هفته بعد</button>
         </div>
     </div>
 
@@ -2084,13 +2084,6 @@ var supabaseClient = window.supabase.createClient(
     
     
     
-    <div class="profile-panel">
-        <button type="button" class="secondary-button" id="appInfoButton" style="width:100%;text-align:right;">ℹ️ اطلاعات برنامه <span style="float:left;">←</span></button>
-        <div id="appInfoDetails" style="display:none;margin-top:16px;">
-            <h3>مسیر</h3><p>برنامه‌ریز شخصی برای مدیریت فعالیت‌ها، پیگیری پیشرفت و بررسی گزارش‌ها.</p>
-            <p>هدف برنامه: کمک به مدیریت بهتر زمان و پیگیری عادت‌های روزانه.</p>
-        </div>
-    </div>
     <div id="profileLogoutArea" style="margin-top:24px;"></div>
 </section>
 
@@ -2215,7 +2208,9 @@ var supabaseClient = window.supabase.createClient(
 </section>
 <section class="card masir-utility-card" id="aboutSection" style="display:none;">
   <h2>💜 درباره مسیر</h2>
-  <p>مسیر، همراهی برای برنامه‌ریزی روزانه، مدیریت زمان و پیگیری پیشرفت شخصی است.</p>
+  <div class="profile-panel"><h3>درباره برنامه</h3><p>مسیر یک برنامه‌ریز شخصی برای مدیریت فعالیت‌های روزانه، تنظیم برنامه، ثبت یادداشت‌ها و پیگیری پیشرفت است. هدف آن کمک به مدیریت بهتر زمان و ساختن عادت‌های مفید است.</p></div>
+  <div class="profile-panel"><h3>برنامه‌نویس</h3><p>رامتین همتای</p></div>
+  <div class="profile-panel"><h3>روش ارتباط با مدیر</h3><p>ایمیل: <a href="mailto:ramtinxasf@gmail.com">ramtinxasf@gmail.com</a></p><p class="help-text">برای پشتیبانی یا گزارش مشکل می‌توانید از این ایمیل استفاده کنید.</p></div>
   <p class="help-text">هر روز یک قدم به زندگی دلخواهت نزدیک‌تر شو. 💜</p>
 </section>
 
@@ -3141,12 +3136,13 @@ function formatCountLabel(label, count) {
 }
 function localizedCalendarLocale() {
     const lang = masirCurrentLanguage();
-    // تقویم متناسب با زبان انتخاب‌شده: شمسی، میلادی، قمری، میلادی ترکی و ژاپنی.
-    if (lang === "fa") return "fa-IR-u-ca-persian";
-    if (lang === "ar") return "ar-SA-u-ca-islamic-umalqura";
-    if (lang === "ja") return "ja-JP-u-ca-japanese";
-    if (lang === "tr") return "tr-TR-u-ca-gregory";
-    return "en-US-u-ca-gregory";
+    const countrySelect = document.getElementById("calendarCountrySelect");
+    const typeSelect = document.getElementById("calendarTypeSelect");
+    const country = countrySelect && countrySelect.value ? countrySelect.value : ({fa:"IR",ar:"SA",tr:"TR",ja:"JP",en:"US"}[lang] || "IR");
+    let calendar = typeSelect && typeSelect.value ? typeSelect.value : "auto";
+    if (calendar === "auto") calendar = ({fa:"persian",ar:"islamic-umalqura",ja:"japanese",en:"gregory",tr:"gregory"}[lang] || "gregory");
+    const locales = {IR:"fa-IR",US:"en-US",SA:"ar-SA",TR:"tr-TR",JP:"ja-JP",GB:"en-GB"};
+    return (locales[country] || "fa-IR") + "-u-ca-" + calendar;
 }
 function localizedDate(date) {
     return new Intl.DateTimeFormat(localizedCalendarLocale(), {
@@ -3157,8 +3153,7 @@ function localizedDayNumber(date) {
     return new Intl.DateTimeFormat(localizedCalendarLocale(), { day: "numeric" }).format(date);
 }
 function localizedWeekday(date) {
-    const lang = masirCurrentLanguage();
-    const locale = lang === "fa" ? "fa-IR" : lang === "ar" ? "ar" : lang === "ja" ? "ja-JP" : lang === "tr" ? "tr-TR" : "en-US";
+    const locale = localizedCalendarLocale().split("-u-")[0];
     return new Intl.DateTimeFormat(locale, { weekday: "long" }).format(date);
 }
 function formatActivityFilterCount(count, all, total) {
@@ -3247,6 +3242,7 @@ function applyMasirLanguage(language) {
     const picker = document.getElementById("appLanguage");
     if (picker && picker.value !== language) picker.value = language;
     try { localStorage.setItem(MASIR_LANGUAGE_KEY, language); } catch (_) {}
+    if (typeof window.masirUpdateCalendarDefaultsForLanguage === "function") window.masirUpdateCalendarDefaultsForLanguage(language);
 }
 (function initMasirLanguage() {
     const picker = document.getElementById("appLanguage");
@@ -3892,15 +3888,12 @@ function parseLocalizedDateInput(value) {
     const year = Number(match[1]), month = Number(match[2]), day = Number(match[3]);
     const lang = masirCurrentLanguage();
 
-    if (lang === "fa") return persianDateToGregorian(normalized);
-
-    // Find the matching date using the calendar selected for the current language.
-    // Japanese calendar years can repeat across eras, so search the modern era range first.
-    const from = lang === "ar" ? 2020 : lang === "ja" ? 2019 : Math.max(1900, year - 1);
-    const to = lang === "ar" ? 2035 : lang === "ja" ? 2035 : Math.min(2200, year + 1);
-    const formatter = new Intl.DateTimeFormat(localizedCalendarLocale(), {
-        year: "numeric", month: "numeric", day: "numeric"
-    });
+    const activeLocale = localizedCalendarLocale();
+    if (activeLocale.includes("ca-persian")) return persianDateToGregorian(normalized);
+    // تاریخ ورودی با تقویم انتخاب‌شده تفسیر می‌شود.
+    const from = activeLocale.includes("islamic") ? 2020 : activeLocale.includes("japanese") ? 2019 : Math.max(1900, year - 1);
+    const to = activeLocale.includes("islamic") || activeLocale.includes("japanese") ? 2035 : Math.min(2200, year + 1);
+    const formatter = new Intl.DateTimeFormat(activeLocale, { year: "numeric", month: "numeric", day: "numeric" });
     for (let timestamp = Date.UTC(from, 0, 1, 12); timestamp <= Date.UTC(to, 11, 31, 12); timestamp += 86400000) {
         const candidate = new Date(timestamp);
         const parts = Object.fromEntries(formatter.formatToParts(candidate).filter(part => part.type !== "literal").map(part => [part.type, Number(part.value)]));
@@ -4616,6 +4609,36 @@ function persianDateToGregorian(value) {
     return null;
 }
 
+(function initCalendarPreferences(){
+    const typeSelect = document.getElementById("calendarTypeSelect");
+    const countrySelect = document.getElementById("calendarCountrySelect");
+    const lang = masirCurrentLanguage();
+    const defaults = {fa:{country:"IR"},ar:{country:"SA"},tr:{country:"TR"},ja:{country:"JP"},en:{country:"US"}};
+    let savedType = "auto", savedCountry = (defaults[lang] || defaults.fa).country;
+    try { savedType = localStorage.getItem("masir_calendar_type") || "auto"; savedCountry = localStorage.getItem("masir_calendar_country") || savedCountry; } catch (_) {}
+    if (typeSelect) typeSelect.value = savedType;
+    if (countrySelect) countrySelect.value = savedCountry;
+    const countryLabels = {fa:{IR:"ایران",US:"ایالات متحده",SA:"عربستان سعودی",TR:"ترکیه",JP:"ژاپن",GB:"بریتانیا"},en:{IR:"Iran",US:"United States",SA:"Saudi Arabia",TR:"Türkiye",JP:"Japan",GB:"United Kingdom"},ar:{IR:"إيران",US:"الولايات المتحدة",SA:"السعودية",TR:"تركيا",JP:"اليابان",GB:"المملكة المتحدة"},tr:{IR:"İran",US:"Amerika Birleşik Devletleri",SA:"Suudi Arabistan",TR:"Türkiye",JP:"Japonya",GB:"Birleşik Krallık"},ja:{IR:"イラン",US:"アメリカ合衆国",SA:"サウジアラビア",TR:"トルコ",JP:"日本",GB:"イギリス"}};
+    const typeLabels = {fa:{auto:"متناسب با زبان",gregory:"میلادی",persian:"شمسی","islamic-umalqura":"قمری",japanese:"ژاپنی"},en:{auto:"Match app language",gregory:"Gregorian",persian:"Persian","islamic-umalqura":"Islamic (Hijri)",japanese:"Japanese"},ar:{auto:"حسب لغة التطبيق",gregory:"ميلادي",persian:"فارسي","islamic-umalqura":"هجري قمري",japanese:"ياباني"},tr:{auto:"Uygulama diline göre",gregory:"Miladi",persian:"Pers","islamic-umalqura":"Hicri",japanese:"Japon"},ja:{auto:"アプリの言語に合わせる",gregory:"西暦",persian:"ペルシャ暦","islamic-umalqura":"イスラム暦",japanese:"和暦"}};
+    function updateLabels(language) {
+        if (countrySelect) [...countrySelect.options].forEach(o => o.textContent = (countryLabels[language] || countryLabels.fa)[o.value] || o.value);
+        if (typeSelect) [...typeSelect.options].forEach(o => o.textContent = (typeLabels[language] || typeLabels.fa)[o.value] || o.value);
+    }
+    function persistAndRender() {
+        try { localStorage.setItem("masir_calendar_type", typeSelect.value); localStorage.setItem("masir_calendar_country", countrySelect.value); } catch (_) {}
+        renderAll();
+    }
+    if (typeSelect) typeSelect.addEventListener("change", persistAndRender);
+    if (countrySelect) countrySelect.addEventListener("change", persistAndRender);
+    window.masirUpdateCalendarDefaultsForLanguage = function(language) {
+        const preferred = defaults[language] || defaults.fa;
+        if (countrySelect) countrySelect.value = preferred.country;
+        if (typeSelect) typeSelect.value = "auto";
+        try { localStorage.setItem("masir_calendar_country", preferred.country); localStorage.setItem("masir_calendar_type", "auto"); } catch (_) {}
+        updateLabels(language);
+    };
+    updateLabels(lang);
+})();
 document.getElementById("calendarDateJump").addEventListener("change", event => {
     const date = parseLocalizedDateInput(event.target.value);
     if (!date) {
