@@ -570,6 +570,135 @@ input[type="email"], input[type="password"], input[type="tel"] {
 
 
 
+
+/* Profile and account settings: polished, accessible panels */
+#profileSection {
+    position: relative;
+    overflow: hidden;
+    border-color: rgba(216,184,117,.16);
+    background:
+      radial-gradient(ellipse at 100% 0%, rgba(196,167,255,.075), transparent 38%),
+      linear-gradient(150deg, rgba(34,28,42,.98), rgba(23,20,29,.99));
+    box-shadow: 0 16px 38px rgba(0,0,0,.16), inset 0 1px 0 rgba(255,255,255,.035);
+}
+#profileSection > h2 {
+    letter-spacing: -.02em;
+    text-shadow: 0 0 22px rgba(196,167,255,.12);
+}
+#profileSection > .help-text {
+    line-height: 1.9;
+    max-width: 62ch;
+}
+#profileSection .profile-panel {
+    position: relative;
+    overflow: hidden;
+    margin-top: 14px;
+    padding: 19px;
+    border-radius: 17px;
+    border: 1px solid rgba(196,167,255,.13);
+    background:
+      linear-gradient(145deg, rgba(47,38,57,.86), rgba(27,24,34,.97));
+    box-shadow: 0 10px 24px rgba(0,0,0,.12), inset 0 1px 0 rgba(255,255,255,.035);
+}
+#profileSection .profile-panel h3 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+    color: #e3cc96;
+    letter-spacing: -.012em;
+}
+#profileSection .profile-account-line {
+    padding: 12px 0;
+    border-bottom-color: rgba(196,167,255,.12);
+    line-height: 1.8;
+}
+#profileSection .profile-account-line:last-of-type {
+    margin-bottom: 16px;
+}
+#profileSection .profile-account-line span {
+    color: rgba(239,231,246,.68);
+}
+#profileSection .profile-account-line strong {
+    color: #e8def3;
+}
+#profileSection .form-field label {
+    display: block;
+    margin-bottom: 7px;
+    color: rgba(239,231,246,.84);
+}
+#profileSection input:not([type="checkbox"]):not([type="file"]),
+#profileSection select {
+    min-height: 46px;
+    border: 1px solid rgba(196,167,255,.18);
+    border-radius: 12px;
+    background: rgba(13,11,18,.62);
+    color: #f4eef9;
+    transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+}
+#profileSection input:not([type="checkbox"]):focus,
+#profileSection select:focus {
+    outline: none;
+    border-color: rgba(196,167,255,.65);
+    background: rgba(17,13,23,.9);
+    box-shadow: 0 0 0 3px rgba(196,167,255,.1);
+}
+#profileSection .primary-button {
+    min-height: 48px;
+    border-radius: 12px;
+}
+#profileSection .secondary-button {
+    min-height: 46px;
+    padding: 12px 14px;
+    border: 1px solid rgba(196,167,255,.17);
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(64,49,80,.75), rgba(37,30,46,.94));
+    color: #eee4fa;
+    transition: transform .18s ease, border-color .18s ease, background .18s ease;
+}
+#profileSection .secondary-button:hover {
+    transform: translateY(-1px);
+    border-color: rgba(216,184,117,.34);
+    background: linear-gradient(135deg, rgba(75,57,91,.8), rgba(42,33,49,.96));
+}
+#profileSection #backupStatus {
+    border: 1px solid rgba(196,167,255,.13);
+    background: rgba(18,14,25,.56) !important;
+    color: rgba(239,231,246,.78);
+    border-radius: 12px !important;
+    line-height: 1.9 !important;
+}
+#profileSection #profileSaveMessage,
+#profileSection #profileSecurityMessage,
+#profileSection #adminUserExportMessage {
+    line-height: 1.8;
+}
+#profileSection #profileLogoutArea button {
+    border-radius: 12px !important;
+    transition: filter .18s ease, transform .18s ease;
+}
+#profileSection #profileLogoutArea button:hover {
+    filter: brightness(1.12);
+    transform: translateY(-1px);
+}
+#profileSection #profileLogoutArea button[id*="delete"],
+#profileSection #profileLogoutArea button[style*="color: rgb(251, 113, 133)"] {
+    border-color: rgba(251,113,133,.42) !important;
+}
+@media (max-width: 600px) {
+    #profileSection .profile-panel {
+        padding: 15px;
+        border-radius: 15px;
+    }
+    #profileSection .profile-account-line {
+        gap: 8px;
+        font-size: 12px;
+    }
+    #profileSection .profile-account-line strong {
+        max-width: 64%;
+    }
+}
+
 /* Weekly reports: premium analytics presentation */
 #reportSection {
     position: relative;
