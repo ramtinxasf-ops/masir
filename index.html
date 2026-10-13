@@ -5636,7 +5636,7 @@ function watchUser(){const u=currentUser();if(u){renderReadOnlyProfile();loadEdi
 const langPicker=$("appLanguage");if(langPicker)langPicker.addEventListener("change",()=>{setTimeout(()=>{translateCustom();const l=$("muiLanguage");if(l)l.value=langPicker.value;},0);});
 watchUser();
 hookOriginalLogout();translateCustom();
-window.masirCustomUILanguageChanged=translateCustom;const originalPopulate=window.masirPopulateProfile;if(originalPopulate)window.masirPopulateProfile=function(user){window.masirCurrentUser=user||window.masirCurrentUser;originalPopulate(user);renderReadOnlyProfile();};const profileNav=$("nav-profile");if(profileNav)profileNav.addEventListener("click",renderReadOnlyProfile);})();
+window.masirCustomUILanguageChanged=translateCustom;document.addEventListener("DOMContentLoaded",()=>{const originalPopulate=window.masirPopulateProfile;if(originalPopulate)window.masirPopulateProfile=function(user){window.masirCurrentUser=user||window.masirCurrentUser;originalPopulate(user);renderReadOnlyProfile();};watchUser();});const profileNav=$("nav-profile");if(profileNav)profileNav.addEventListener("click",renderReadOnlyProfile);})();
 </script>
 
 </body>
