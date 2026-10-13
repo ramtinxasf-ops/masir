@@ -2896,6 +2896,26 @@ for (const [language, entries] of Object.entries(MASIR_EXTRA_UI_TRANSLATIONS)) {
   if (MASIR_LANGUAGES[language] && MASIR_LANGUAGES[language].text) Object.assign(MASIR_LANGUAGES[language].text, entries);
 }
 
+
+/* Labels used in dynamically-created controls and accessibility attributes. */
+const MASIR_MORE_UI_TRANSLATIONS = {
+  en: {
+    "زبان برنامه":"App language","تاریخ شمسی برای نمایش در تقویم":"Jalali date to display on the calendar","پاسخ مدیر...":"Administrator reply…","پاسخ مدیر":"Administrator reply","ارسال پاسخ":"Send reply","گفتگو خصوصی است":"Private conversation","ایمیل حساب شما":"Your account email","پیامت را بنویس...":"Write your message…","پیام بنویس...":"Write a message…","پیام جدید":"New message","ارسال پیام":"Send message","پیام ناخوانده":"Unread message","برای ادامه گفتگو از همین دستگاه استفاده کن.":"Continue the conversation from this device.","پیام را بنویس.":"Write a message.","آخرین فعالیت ·":"Last activity ·"
+  },
+  ar: {
+    "زبان برنامه":"لغة التطبيق","تاریخ شمسی برای نمایش در تقویم":"تاريخ جلالي لعرضه في التقويم","پاسخ مدیر...":"رد المسؤول…","پاسخ مدیر":"رد المسؤول","ارسال پاسخ":"إرسال الرد","گفتگو خصوصی است":"محادثة خاصة","ایمیل حساب شما":"البريد الإلكتروني للحساب","پیامت را بنویس...":"اكتب رسالتك…","پیام بنویس...":"اكتب رسالة…","پیام جدید":"رسالة جديدة","ارسال پیام":"إرسال رسالة","پیام ناخوانده":"رسالة غير مقروءة","برای ادامه گفتگو از همین دستگاه استفاده کن.":"تابع المحادثة من هذا الجهاز.","پیام را بنویس.":"اكتب رسالة.","آخرین فعالیت ·":"آخر نشاط ·"
+  },
+  tr: {
+    "زبان برنامه":"Uygulama dili","تاریخ شمسی برای نمایش در تقویم":"Takvimde gösterilecek Celali tarih","پاسخ مدیر...":"Yönetici yanıtı…","پاسخ مدیر":"Yönetici yanıtı","ارسال پاسخ":"Yanıt gönder","گفتگو خصوصی است":"Özel sohbet","ایمیل حساب شما":"Hesap e-posta adresiniz","پیامت را بنویس...":"Mesajını yaz…","پیام بنویس...":"Bir mesaj yaz…","پیام جدید":"Yeni mesaj","ارسال پیام":"Mesaj gönder","پیام ناخوانده":"Okunmamış mesaj","برای ادامه گفتگو از همین دستگاه استفاده کن.":"Sohbete bu cihazdan devam et.","پیام را بنویس.":"Bir mesaj yaz.","آخرین فعالیت ·":"Son etkinlik ·"
+  },
+  ja: {
+    "زبان برنامه":"アプリの言語","تاریخ شمسی برای نمایش در تقویم":"カレンダーに表示するジャラーリー日付","پاسخ مدیر...":"管理者への返信…","پاسخ مدیر":"管理者への返信","ارسال پاسخ":"返信を送信","گفتگو خصوصی است":"プライベートな会話","ایمیل حساب شما":"アカウントのメールアドレス","پیامت را بنویس...":"メッセージを入力…","پیام بنویس...":"メッセージを入力…","پیام جدید":"新しいメッセージ","ارسال پیام":"メッセージを送信","پیام ناخوانده":"未読メッセージ","برای ادامه گفتگو از همین دستگاه استفاده کن.":"この端末から会話を続けてください。","پیام را بنویس.":"メッセージを入力してください。","آخرین فعالیت ·":"最終アクティビティ ·"
+  }
+};
+for (const [language, entries] of Object.entries(MASIR_MORE_UI_TRANSLATIONS)) {
+  if (MASIR_LANGUAGES[language] && MASIR_LANGUAGES[language].text) Object.assign(MASIR_LANGUAGES[language].text, entries);
+}
+
 function masirCurrentLanguage() {
     const picker = document.getElementById("appLanguage");
     if (picker && picker.value) return picker.value;
@@ -5428,6 +5448,15 @@ function chatUiText(key) {
   };
   return labels[key]?.[lang] || labels[key]?.en || key;
 }
+function formatBroadcastSent(count) {
+  const lang = masirCurrentLanguage();
+  const amount = formatNumber(Number(count) || 0);
+  if (lang === "en") return "Broadcast sent to " + amount + " conversations.";
+  if (lang === "ar") return "تم إرسال الرسالة العامة إلى " + amount + " محادثة.";
+  if (lang === "tr") return amount + " sohbete toplu mesaj gönderildi.";
+  if (lang === "ja") return amount + "件の会話に一斉送信しました。";
+  return "پیام همگانی برای " + amount + " گفتگو ارسال شد.";
+}
 function chatDateTime(value) {
   const lang = masirCurrentLanguage();
   const locale = lang === "fa" ? "fa-IR" : lang === "ar" ? "ar" : lang === "tr" ? "tr-TR" : lang === "ja" ? "ja-JP" : "en-US";
@@ -5470,7 +5499,7 @@ if($("adminSupportRefreshButton"))$("adminSupportRefreshButton").onclick=refresh
 if($("profileSupportEmail"))$("profileSupportEmail").addEventListener("change",refreshUserUnreadBadge);
 refreshUserUnreadBadge();
 setInterval(refreshUserUnreadBadge,20000);
-if($("adminSupportReplyButton"))$("adminSupportReplyButton").onclick=async()=>{const st=$("adminSupportStatus"),b=$("adminSupportReplyButton"),msg=$("adminSupportReply").value.trim(),broadcast=$("adminSupportBroadcastAll")?.checked;if(!msg){st.textContent="پیام را بنویس.";return;}if(broadcast&&!confirm("این پیام برای همه کاربران دارای گفتگو ارسال شود؟"))return;if(!broadcast&&!chosen){st.textContent="ابتدا گفتگو را انتخاب کن یا گزینه ارسال به همه را فعال کن.";return;}b.disabled=true;try{if(broadcast){const result=await adminApi({action:"admin_broadcast",message:msg});$("adminSupportReply").value="";$("adminSupportBroadcastAll").checked=false;st.style.color="#a7f3d0";st.textContent="پیام همگانی برای "+result.sent_count+" گفتگو ارسال شد.";}else{await adminApi({action:"admin_reply",thread_id:chosen,message:msg});$("adminSupportReply").value="";await readThread();st.style.color="#a7f3d0";st.textContent="پاسخ ارسال شد.";}await refresh();}catch(e){st.style.color="#fb7185";st.textContent=e.message;}finally{b.disabled=false;}};
+if($("adminSupportReplyButton"))$("adminSupportReplyButton").onclick=async()=>{const st=$("adminSupportStatus"),b=$("adminSupportReplyButton"),msg=$("adminSupportReply").value.trim(),broadcast=$("adminSupportBroadcastAll")?.checked;if(!msg){st.textContent="پیام را بنویس.";return;}if(broadcast&&!confirm("این پیام برای همه کاربران دارای گفتگو ارسال شود؟"))return;if(!broadcast&&!chosen){st.textContent="ابتدا گفتگو را انتخاب کن یا گزینه ارسال به همه را فعال کن.";return;}b.disabled=true;try{if(broadcast){const result=await adminApi({action:"admin_broadcast",message:msg});$("adminSupportReply").value="";$("adminSupportBroadcastAll").checked=false;st.style.color="#a7f3d0";st.textContent=formatBroadcastSent(result.sent_count);}else{await adminApi({action:"admin_reply",thread_id:chosen,message:msg});$("adminSupportReply").value="";await readThread();st.style.color="#a7f3d0";st.textContent="پاسخ ارسال شد.";}await refresh();}catch(e){st.style.color="#fb7185";st.textContent=e.message;}finally{b.disabled=false;}};
 })();
 </script>
 <script src="./masir-sheets.js" defer></script>
