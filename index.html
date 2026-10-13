@@ -2978,7 +2978,7 @@ function applyMasirLanguage(language) {
     try { language = localStorage.getItem(MASIR_LANGUAGE_KEY) || "fa"; } catch (_) {}
     if (picker) {
         picker.value = language;
-        picker.addEventListener("change", () => applyMasirLanguage(picker.value));
+        picker.addEventListener("change", () => { applyMasirLanguage(picker.value); if (typeof renderAll === "function") renderAll(); });
     }
     applyMasirLanguage(language);
     const observer = new MutationObserver(() => {
@@ -3579,18 +3579,12 @@ function getPersianDayNumber(date) {
 function renderCalendarMonth() {
     const dates = getWeekDates(selectedDate);
 
-    const first = new Intl.DateTimeFormat("fa-IR-u-ca-persian", {
-        month: "long",
-        year: "numeric"
-    }).format(dates[0]);
-
-    const last = new Intl.DateTimeFormat("fa-IR-u-ca-persian", {
-        month: "long",
-        year: "numeric"
-    }).format(dates[6]);
-
-    document.getElementById("calendarMonth").textContent =
-        first === last ? first : `${first} تا ${last}`;
+    const lang = masirCurrentLanguage();
+    const locale = lang === "fa" ? "fa-IR-u-ca-persian" : lang === "ar" ? "ar" : lang === "ja" ? "ja-JP" : lang === "tr" ? "tr-TR" : "en-US";
+    const first = new Intl.DateTimeFormat(locale, { month: "long", year: "numeric" }).format(dates[0]);
+    const last = new Intl.DateTimeFormat(locale, { month: "long", year: "numeric" }).format(dates[6]);
+    const rangeWord = lang === "fa" ? " تا " : lang === "ar" ? " إلى " : lang === "ja" ? "〜" : lang === "tr" ? " - " : " to ";
+    document.getElementById("calendarMonth").textContent = first === last ? first : `${first}${rangeWord}${last}`;
 }
 
 function getPersianDateInputValue(date) {
@@ -3661,7 +3655,9 @@ function renderActivities() {
     list.innerHTML = "";
 
     document.getElementById("selectedDateTitle").textContent =
-        `فعالیت‌های ${getPersianWeekday(selectedDate)}، ${getPersianDate(selectedDate)}`;
+        masirCurrentLanguage() === "fa"
+            ? `فعالیت‌های ${getPersianWeekday(selectedDate)}، ${getPersianDate(selectedDate)}`
+            : `${masirTranslate("فعالیت‌های")} ${localizedWeekday(selectedDate)}, ${localizedDate(selectedDate)}`;
 
     const allDayActivities = getActivitiesForDate(selectedDate);
     const dayActivities = selectedCategoryFilter === "all"
@@ -3739,10 +3735,18 @@ function renderActivities() {
         priority.className = "activity-priority";
         priority.setAttribute("aria-label", "اولویت فعالیت");
 
+        const priorityLabels = {
+            fa: ["🔴 اولویت زیاد", "🟡 اولویت متوسط", "🟢 اولویت کم"],
+            en: ["🔴 High priority", "🟡 Medium priority", "🟢 Low priority"],
+            ar: ["🔴 أولوية عالية", "🟡 أولوية متوسطة", "🟢 أولوية منخفضة"],
+            tr: ["🔴 Yüksek öncelik", "🟡 Orta öncelik", "🟢 Düşük öncelik"],
+            ja: ["🔴 高優先度", "🟡 中優先度", "🟢 低優先度"]
+        };
+        const labels = priorityLabels[masirCurrentLanguage()] || priorityLabels.fa;
         const priorityOptions = [
-            { value: "high", label: "🔴 اولویت زیاد" },
-            { value: "medium", label: "🟡 اولویت متوسط" },
-            { value: "low", label: "🟢 اولویت کم" }
+            { value: "high", label: labels[0] },
+            { value: "medium", label: labels[1] },
+            { value: "low", label: labels[2] }
         ];
 
         priorityOptions.forEach(optionData => {
@@ -4047,9 +4051,15 @@ function renderBestDay(reports) {
     box.innerHTML = "";
 
     const title = document.createElement("strong");
-    title.textContent = bestDays.length > 1
-        ? masirTranslate("🏆 بهترین روزها: ")
-        : masirTranslate("🏆 بهترین روز: ");
+    const lang = masirCurrentLanguage();
+    const bestTitle = {
+        fa: bestDays.length > 1 ? "🏆 بهترین روزها: " : "🏆 بهترین روز: ",
+        en: bestDays.length > 1 ? "🏆 Best days: " : "🏆 Best day: ",
+        ar: bestDays.length > 1 ? "🏆 أفضل الأيام: " : "🏆 أفضل يوم: ",
+        tr: bestDays.length > 1 ? "🏆 En iyi günler: " : "🏆 En iyi gün: ",
+        ja: "🏆 最も良い日: "
+    };
+    title.textContent = bestTitle[lang] || bestTitle.fa;
 
     const description = document.createElement("span");
     description.textContent =
