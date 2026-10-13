@@ -101,8 +101,8 @@
           const name = [document.getElementById("profileFirstName")?.value, document.getElementById("profileLastName")?.value].filter(Boolean).join(" ").trim() || "—";
           const user = window.masirCurrentUser || {};
           const rows = [[t("userName"), name], [t("emailLabel"), email], [t("phoneLabel"), phone], ["User ID", user.id || "—"], ["Exported", new Date().toISOString()]];
-          const body = rows.map(([label, value]) => label + ": " + String(value || "—")).join("\\n");
-          const blob = new Blob(["\\uFEFF", body], {type:"text/plain;charset=utf-8"});
+          const body = rows.map(([label, value]) => label + ": " + String(value || "—")).join("\n");
+          const blob = new Blob(["\uFEFF", body], {type:"text/plain;charset=utf-8"});
           const url = URL.createObjectURL(blob); const a = document.createElement("a");
           a.href = url; a.download = "masir-account-info.txt"; document.body.appendChild(a); a.click(); a.remove();
           setTimeout(() => URL.revokeObjectURL(url), 1000); status.textContent = t("userInfoDownloaded");
