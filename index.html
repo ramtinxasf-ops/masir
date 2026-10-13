@@ -1934,7 +1934,14 @@ html[dir="ltr"] .language-picker { justify-content: flex-end; }
         <p id="adminUserExportMessage" class="help-text" role="status" aria-live="polite"></p>
         <form id="adminResetPasswordForm" style="margin-top:16px;">
             <div class="form-field"><label for="adminTargetEmail">ایمیل کاربر</label><input type="email" id="adminTargetEmail" autocomplete="off" required placeholder="user@example.com"></div>
-            <div class="form-field"><label for="adminNewPassword">رمز عبور جدید (حداقل ۸ کاراکتر)</label><input type="password" id="adminNewPassword" minlength="8" autocomplete="new-password" required></div>
+            <div class="form-field"><label for="adminNewPassword">رمز عبور جدید</label><input type="password" id="adminNewPassword" autocomplete="new-password" required aria-describedby="adminPasswordRules"></div>
+            <div id="adminPasswordRules" class="help-text" style="font-size:12px;margin-top:-6px;">
+                رمز باید هر ۴ شرط را داشته باشد:
+                <div data-admin-rule="length">○ حداقل ۸ کاراکتر</div>
+                <div data-admin-rule="upper">○ حداقل یک حرف بزرگ انگلیسی (A-Z)</div>
+                <div data-admin-rule="lower">○ حداقل یک حرف کوچک انگلیسی (a-z)</div>
+                <div data-admin-rule="number">○ حداقل یک عدد انگلیسی (0-9)</div>
+            </div>
             <button type="submit" class="primary-button" id="adminResetPasswordButton" style="width:100%;margin-top:10px;">🔐 تنظیم رمز جدید کاربر</button>
             <p id="adminResetPasswordMessage" class="help-text" role="status" aria-live="polite"></p>
         </form>
@@ -4257,6 +4264,30 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
         }
     });
 
+    const adminNewPasswordInput = document.getElementById("adminNewPassword");
+    function validateAdminPassword(password) {
+        const rules = {
+            length: password.length >= 8,
+            upper: /[A-Z]/.test(password),
+            lower: /[a-z]/.test(password),
+            number: /[0-9]/.test(password)
+        };
+        Object.entries(rules).forEach(([key, valid]) => {
+            const item = document.querySelector('[data-admin-rule="' + key + '"]');
+            if (!item) return;
+            item.style.color = valid ? "#34d399" : "#fca5a5";
+            const labels = {
+                length: "حداقل ۸ کاراکتر",
+                upper: "حداقل یک حرف بزرگ انگلیسی (A-Z)",
+                lower: "حداقل یک حرف کوچک انگلیسی (a-z)",
+                number: "حداقل یک عدد انگلیسی (0-9)"
+            };
+            item.textContent = (valid ? "✓ " : "○ ") + labels[key];
+        });
+        return Object.values(rules).every(Boolean);
+    }
+    if (adminNewPasswordInput) adminNewPasswordInput.addEventListener("input", () => validateAdminPassword(adminNewPasswordInput.value));
+
     const adminResetPasswordForm = document.getElementById("adminResetPasswordForm");
     if (adminResetPasswordForm) adminResetPasswordForm.addEventListener("submit", async function(event) {
         event.preventDefault();
@@ -4271,8 +4302,14 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
             message.style.color = "#fb7185";
             return;
         }
-        if (newPassword.length < 8) {
-            message.textContent = "رمز جدید باید حداقل ۸ کاراکتر داشته باشد.";
+        if (!validateAdminPassword(newPassword)) {
+            const failedRule = [
+                [newPassword.length >= 8, "رمز جدید باید حداقل ۸ کاراکتر داشته باشد."],
+                [/[A-Z]/.test(newPassword), "رمز جدید باید حداقل یک حرف بزرگ انگلیسی (A-Z) داشته باشد."],
+                [/[a-z]/.test(newPassword), "رمز جدید باید حداقل یک حرف کوچک انگلیسی (a-z) داشته باشد."],
+                [/[0-9]/.test(newPassword), "رمز جدید باید حداقل یک عدد انگلیسی (0-9) داشته باشد."]
+            ].find(([valid]) => !valid);
+            message.textContent = failedRule ? failedRule[1] : "رمز جدید شرایط لازم را ندارد.";
             message.style.color = "#fb7185";
             return;
         }
