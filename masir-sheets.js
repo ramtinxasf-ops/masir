@@ -240,10 +240,11 @@
   }
 
   function hideLegacyProfileActions() {
-    // Registered account details are shown read-only in the right-hand Profile sheet.
+    // Registered account details live only in the read-only right-hand Profile sheet.
+    // The dashboard Profile page is reserved for the editable interests and goals list.
     const form = document.getElementById("profileForm");
     const accountPanel = form && form.closest(".profile-panel");
-    if (accountPanel) accountPanel.hidden = false;
+    if (accountPanel) accountPanel.hidden = true;
 
     // Keep app information and account actions out of the bottom Dashboard/Profile page.
     const info = document.getElementById("appInfoButton");
@@ -400,11 +401,12 @@
         lastName: metadata.last_name || metadata.lastName || valueOf("profileLastName") || "",
         email: user.email || document.getElementById("profileEmail")?.textContent?.trim() || "",
         phone: user.phone || metadata.phone || valueOf("profilePhoneInput") || "",
-        birthDate: metadata.birth_date || metadata.birthDate || valueOf("profileBirthDate") || ""
+        birthDate: metadata.birth_date || metadata.birthDate || valueOf("profileBirthDate") || "",
+        userId: user.id || ""
       };
-      content.innerHTML = '<div class="ms-card"><h3 id="msRegisteredInfoTitle"></h3><div class="ms-profile-row"><span class="ms-profile-label" data-field="firstName"></span><span class="ms-profile-value" id="msRegisteredFirstName"></span></div><div class="ms-profile-row"><span class="ms-profile-label" data-field="lastName"></span><span class="ms-profile-value" id="msRegisteredLastName"></span></div><div class="ms-profile-row"><span class="ms-profile-label" data-field="email"></span><span class="ms-profile-value" id="msRegisteredEmail" dir="auto"></span></div><div class="ms-profile-row"><span class="ms-profile-label" data-field="phone"></span><span class="ms-profile-value" id="msRegisteredPhone" dir="auto"></span></div><div class="ms-profile-row"><span class="ms-profile-label" data-field="birthDate"></span><span class="ms-profile-value" id="msRegisteredBirthDate"></span></div><div class="ms-actions"><button class="ms-primary" id="msOpenInterestsGoals" type="button"></button><button id="msDownloadInfo" type="button"></button></div><div class="ms-status" id="msProfileStatus" role="status" aria-live="polite"></div></div>';
+      content.innerHTML = '<div class="ms-card"><h3 id="msRegisteredInfoTitle"></h3><div class="ms-profile-row"><span class="ms-profile-label" data-field="firstName"></span><span class="ms-profile-value" id="msRegisteredFirstName"></span></div><div class="ms-profile-row"><span class="ms-profile-label" data-field="lastName"></span><span class="ms-profile-value" id="msRegisteredLastName"></span></div><div class="ms-profile-row"><span class="ms-profile-label" data-field="email"></span><span class="ms-profile-value" id="msRegisteredEmail" dir="auto"></span></div><div class="ms-profile-row"><span class="ms-profile-label" data-field="phone"></span><span class="ms-profile-value" id="msRegisteredPhone" dir="auto"></span></div><div class="ms-profile-row"><span class="ms-profile-label" data-field="birthDate"></span><span class="ms-profile-value" id="msRegisteredBirthDate"></span></div><div class="ms-profile-row"><span class="ms-profile-label" data-field="userId"></span><span class="ms-profile-value" id="msRegisteredUserId" dir="ltr"></span></div><div class="ms-actions"><button class="ms-primary" id="msOpenInterestsGoals" type="button"></button><button id="msDownloadInfo" type="button"></button></div><div class="ms-status" id="msProfileStatus" role="status" aria-live="polite"></div></div>';
       content.querySelector("#msRegisteredInfoTitle").textContent = t("registeredInfo");
-      [["firstName","msRegisteredFirstName"],["lastName","msRegisteredLastName"],["email","msRegisteredEmail"],["phone","msRegisteredPhone"],["birthDate","msRegisteredBirthDate"]].forEach(([key,id]) => {
+      [["firstName","msRegisteredFirstName"],["lastName","msRegisteredLastName"],["email","msRegisteredEmail"],["phone","msRegisteredPhone"],["birthDate","msRegisteredBirthDate"],["userId","msRegisteredUserId"]].forEach(([key,id]) => {
         content.querySelector('[data-field="' + key + '"]').textContent = t(key === "email" ? "accountEmail" : key === "phone" ? "accountPhone" : key);
         content.querySelector("#" + id).textContent = registered[key] || t("notRegistered");
       });
@@ -423,7 +425,7 @@
             [t("accountEmail"), registered.email || t("notRegistered")],
             [t("accountPhone"), registered.phone || t("notRegistered")],
             [t("birthDate"), registered.birthDate || t("notRegistered")],
-            [t("userId"), user.id || "—"]
+            [t("userId"), registered.userId || t("notRegistered")]
           ];
           const body = rows.map(([label, val]) => label + ": " + String(val || "—")).join("\n");
           const blob = new Blob(["\uFEFF", body], {type:"text/plain;charset=utf-8"});
