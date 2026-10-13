@@ -45,6 +45,23 @@
     security:"アカウントのセキュリティ", interestsTitle:"一般的な興味", interestPlaceholder:"芸術、スポーツ、テクノロジーなどを入力", addInterest:"興味を追加", removeInterest:"興味を削除", goalsTitle:"目標", goalsPlaceholder:"個人または仕事の目標を入力…", saveGoals:"目標を保存", profileDataSaved:"保存しました。", interestEmpty:"先に興味を入力してください。", interestDuplicate:"この興味はすでに一覧にあります。", interestLimit:"興味はいくつでも追加できます。", interestsEmpty:"興味はまだ追加されていません。", profileLocalHint:"興味と目標はこの端末のこのアカウント用に保存されます。", adminManagementTitle:"ユーザー管理", backupTitle:"バックアップと復元", adminOnlyHint:"この項目は管理者のみ利用できます。"
   });
 
+
+  Object.assign(dict.fa, {
+    registeredInfo:"اطلاعات ثبت‌شده", firstName:"نام", lastName:"نام خانوادگی", birthDate:"تاریخ تولد", accountEmail:"ایمیل حساب", accountPhone:"شماره تلفن", notRegistered:"ثبت نشده", openInterestsGoals:"رفتن به علایق و اهداف", accountActions:"مدیریت حساب", calendarPrevious:"ماه قبل", calendarNext:"ماه بعد", calendarToday:"امروز", calendarSelected:"تاریخ انتخاب‌شده", calendarSaved:"تنظیمات تقویم ذخیره شد.", userId:"شناسه کاربر", adminOnlyHint:"این بخش فقط برای مدیر فعال است."
+  });
+  Object.assign(dict.en, {
+    registeredInfo:"Registered information", firstName:"First name", lastName:"Last name", birthDate:"Date of birth", accountEmail:"Account email", accountPhone:"Phone number", notRegistered:"Not provided", openInterestsGoals:"Open interests and goals", accountActions:"Account management", calendarPrevious:"Previous month", calendarNext:"Next month", calendarToday:"Today", calendarSelected:"Selected date", calendarSaved:"Calendar preferences saved.", userId:"User ID", adminOnlyHint:"This section is available to the administrator only."
+  });
+  Object.assign(dict.ar, {
+    registeredInfo:"المعلومات المسجلة", firstName:"الاسم", lastName:"اسم العائلة", birthDate:"تاريخ الميلاد", accountEmail:"البريد الإلكتروني للحساب", accountPhone:"رقم الهاتف", notRegistered:"غير مسجل", openInterestsGoals:"فتح الاهتمامات والأهداف", accountActions:"إدارة الحساب", calendarPrevious:"الشهر السابق", calendarNext:"الشهر التالي", calendarToday:"اليوم", calendarSelected:"التاريخ المحدد", calendarSaved:"تم حفظ إعدادات التقويم.", userId:"معرّف المستخدم", adminOnlyHint:"هذا القسم متاح للمدير فقط."
+  });
+  Object.assign(dict.tr, {
+    registeredInfo:"Kayıtlı bilgiler", firstName:"Ad", lastName:"Soyad", birthDate:"Doğum tarihi", accountEmail:"Hesap e-postası", accountPhone:"Telefon numarası", notRegistered:"Belirtilmedi", openInterestsGoals:"İlgi alanları ve hedefleri aç", accountActions:"Hesap yönetimi", calendarPrevious:"Önceki ay", calendarNext:"Sonraki ay", calendarToday:"Bugün", calendarSelected:"Seçilen tarih", calendarSaved:"Takvim tercihleri kaydedildi.", userId:"Kullanıcı kimliği", adminOnlyHint:"Bu bölüm yalnızca yöneticiye açıktır."
+  });
+  Object.assign(dict.ja, {
+    registeredInfo:"登録情報", firstName:"名", lastName:"姓", birthDate:"生年月日", accountEmail:"アカウントのメール", accountPhone:"電話番号", notRegistered:"未登録", openInterestsGoals:"興味と目標を開く", accountActions:"アカウント管理", calendarPrevious:"前の月", calendarNext:"次の月", calendarToday:"今日", calendarSelected:"選択した日付", calendarSaved:"カレンダー設定を保存しました。", userId:"ユーザーID", adminOnlyHint:"このセクションは管理者のみ利用できます。"
+  });
+
   const getLang = () => {
     try { const el = document.getElementById("appLanguage"); const v = el && el.value; if (dict[v]) return v; const saved = localStorage.getItem(LANG_KEY); return dict[saved] ? saved : "fa"; }
     catch (_) { return "fa"; }
@@ -87,6 +104,21 @@
     #masirProfileGoalsCard .ms-interest-list li button{padding:5px 8px;color:#fecaca;border-color:#7f1d1d}
     #masirProfileGoalsCard textarea{min-height:110px}
     #masirSheetsPanel #adminUserExportPanel,#masirSheetsPanel #profileSecurityPanel,#masirSheetsPanel #profileBackupPanel{margin:12px 0}
+    #masirSheetsPanel .ms-profile-row{padding:10px 0;border-bottom:1px solid #393452}
+    #masirSheetsPanel .ms-profile-row:last-child{border-bottom:0}
+    #masirSheetsPanel .ms-profile-label{display:block;color:#c4b5fd;font-size:12px}
+    #masirSheetsPanel .ms-profile-value{display:block;overflow-wrap:anywhere;white-space:pre-wrap}
+    #masirSheetsPanel .ms-calendar-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+    #masirSheetsPanel .ms-calendar-head button{padding:8px 10px}
+    #masirSheetsPanel .ms-calendar-title{text-align:center;font-weight:700;color:#ddd6fe;flex:1}
+    #masirSheetsPanel .ms-calendar-weekdays,#masirSheetsPanel .ms-calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;margin-top:8px}
+    #masirSheetsPanel .ms-calendar-weekday{text-align:center;font-size:11px;color:#a5b4cc;padding:5px 0}
+    #masirSheetsPanel .ms-calendar-day{min-width:0;padding:8px 0!important;text-align:center!important;border-radius:9px!important;background:#0d1426!important}
+    #masirSheetsPanel .ms-calendar-day.is-outside{opacity:.42}
+    #masirSheetsPanel .ms-calendar-day.is-today{border-color:#c4b5fd!important}
+    #masirSheetsPanel .ms-calendar-day.is-selected{background:#6d28d9!important;border-color:#c4b5fd!important;color:#fff!important}
+    #masirSheetsPanel .ms-danger{background:#3b1c2b!important;color:#fecaca!important;border-color:#7f1d1d!important}
+    #masirSheetsPanel .ms-calendar-day:focus-visible{outline:2px solid #c4b5fd;outline-offset:1px}
   `;
 
   document.head.appendChild(style);
@@ -195,18 +227,64 @@
     return email === "ramtinxasf@gmail.com";
   }
 
+  function hideLegacyProfileActions() {
+    const info = document.getElementById("appInfoButton");
+    const infoPanel = info && info.closest(".profile-panel");
+    if (infoPanel) infoPanel.hidden = true;
+    const logoutArea = document.getElementById("profileLogoutArea");
+    if (logoutArea) logoutArea.hidden = true;
+  }
+
+  function moveAccountActionsToSettings(slotId) {
+    const slot = document.getElementById(slotId);
+    const home = document.getElementById("profileLogoutArea");
+    const card = slot && slot.closest("#msAccountActionsCard");
+    if (!slot || !home) return;
+    if (!window.masirCurrentUser) { if (card) card.hidden = true; return; }
+    if (card) card.hidden = false;
+    let buttons = Array.from(home.querySelectorAll("button"));
+    const existingSignOut = document.getElementById("msSignOutAccountButton");
+    const existingDelete = document.getElementById("msDeleteAccountButton");
+    if (existingSignOut && !buttons.includes(existingSignOut)) buttons.unshift(existingSignOut);
+    if (existingDelete && !buttons.includes(existingDelete)) buttons.push(existingDelete);
+    buttons = [...new Set(buttons)].slice(0, 2);
+    if (!buttons.length) return;
+    const labels = {
+      fa:["خروج از حساب","حذف دائمی حساب"],
+      en:["Sign out","Delete account permanently"],
+      ar:["تسجيل الخروج","حذف الحساب نهائيًا"],
+      tr:["Çıkış yap","Hesabı kalıcı olarak sil"],
+      ja:["ログアウト","アカウントを完全に削除"]
+    }[getLang()] || ["Sign out","Delete account permanently"];
+    buttons.forEach((btn, index) => {
+      btn.id = index === 0 ? "msSignOutAccountButton" : "msDeleteAccountButton";
+      btn.textContent = labels[index];
+      btn.classList.add("ms-account-action");
+      btn.style.width = "100%";
+      btn.style.marginTop = index ? "10px" : "0";
+      if (index === 1) btn.classList.add("ms-danger");
+      slot.appendChild(btn);
+    });
+    home.hidden = true;
+  }
+
   function movePrivilegedPanel(id, slotId, headingKey) {
     const panelEl = document.getElementById(id);
     const slot = document.getElementById(slotId);
     if (!panelEl || !slot) return;
     slot.replaceChildren();
-    const adminOnly = ["adminUserExportPanel", "profileSecurityPanel", "profileBackupPanel"].includes(id);
+    const adminOnly = ["adminUserExportPanel", "profileSecurityPanel"].includes(id);
+    if (id === "profileBackupPanel" && !window.masirCurrentUser) {
+      panelEl.style.display = "none";
+      if (legacyPanelParking && !legacyPanelParking.contains(panelEl)) legacyPanelParking.appendChild(panelEl);
+      return;
+    }
     if (adminOnly && !isMasirAdmin()) {
       panelEl.style.display = "none";
       if (legacyPanelParking && !legacyPanelParking.contains(panelEl)) legacyPanelParking.appendChild(panelEl);
       return;
     }
-    if (adminOnly) panelEl.style.display = "block";
+    panelEl.style.display = "block";
     const heading = panelEl.querySelector("h3");
     if (heading && headingKey) heading.textContent = t(headingKey);
     slot.appendChild(panelEl);
@@ -232,6 +310,8 @@
   document.body.append(button, shade, panel);
 
   let activeSheet = "";
+  let calendarAnchor = new Date();
+  let calendarSelectedDate = new Date();
   function closePanel() { shade.hidden = true; panel.hidden = true; activeSheet = ""; document.body.style.overflow = ""; }
   function openPanel() { shade.hidden = false; panel.hidden = false; document.body.style.overflow = "hidden"; showMenu(); }
   function showMenu() {
@@ -244,47 +324,71 @@
     activeSheet = name; panel.querySelector("#msMenu").hidden = true; panel.querySelector("#msPage").hidden = false;
     panel.querySelector("#msTitle").textContent = t(name);
     const content = panel.querySelector("#msContent");
+    const actionHome = document.getElementById("profileLogoutArea");
+    ["msSignOutAccountButton","msDeleteAccountButton"].forEach(id => { const btn=document.getElementById(id); if(btn && actionHome && !actionHome.contains(btn)) actionHome.appendChild(btn); });
+    hideLegacyProfileActions();
     // Preserve privileged panel nodes when switching sheets; innerHTML replacement would otherwise detach them.
     ["adminUserExportPanel","profileSecurityPanel","profileBackupPanel"].forEach(id => { const el=document.getElementById(id); if(el && legacyPanelParking && !legacyPanelParking.contains(el)) legacyPanelParking.appendChild(el); });
     if (name === "profile") {
-      const email = document.getElementById("profileEmail")?.textContent?.trim() || "—";
-      const phone = document.getElementById("profilePhone")?.textContent?.trim() || "—";
-      content.innerHTML = '<div class="ms-card"><p><strong data-email-label></strong><br><span id="msProfileEmail"></span></p><p><strong data-phone-label></strong><br><span id="msProfilePhone"></span></p><p class="ms-muted" data-profile-info></p><div class="ms-actions"><button class="ms-primary" id="msManageProfile" type="button"></button><button id="msDownloadInfo" type="button"></button><button id="msSignOut" type="button"></button><button id="msDeleteAccount" type="button"></button></div><div class="ms-status" id="msProfileStatus" role="status" aria-live="polite"></div><p class="ms-muted" data-delete-hint></p></div>';
-      content.querySelector("#msProfileEmail").textContent = email; content.querySelector("#msProfilePhone").textContent = phone;
-      content.querySelector("[data-email-label]").textContent = t("emailLabel"); content.querySelector("[data-phone-label]").textContent = t("phoneLabel");
-      content.querySelector("[data-profile-info]").textContent = t("accountInfo"); content.querySelector("#msManageProfile").textContent = t("manageProfile");
+      const user = window.masirCurrentUser || {};
+      const metadata = user.user_metadata || {};
+      const valueOf = (id) => {
+        const el = document.getElementById(id);
+        return el && typeof el.value === "string" ? el.value.trim() : "";
+      };
+      const registered = {
+        firstName: valueOf("profileFirstName") || metadata.first_name || metadata.firstName || "",
+        lastName: valueOf("profileLastName") || metadata.last_name || metadata.lastName || "",
+        email: user.email || document.getElementById("profileEmail")?.textContent?.trim() || "",
+        phone: user.phone || metadata.phone || valueOf("profilePhoneInput") || "",
+        birthDate: valueOf("profileBirthDate") || metadata.birth_date || metadata.birthDate || ""
+      };
+      content.innerHTML = '<div class="ms-card"><h3 id="msRegisteredInfoTitle"></h3><div class="ms-profile-row"><span class="ms-profile-label" data-field="firstName"></span><span class="ms-profile-value" id="msRegisteredFirstName"></span></div><div class="ms-profile-row"><span class="ms-profile-label" data-field="lastName"></span><span class="ms-profile-value" id="msRegisteredLastName"></span></div><div class="ms-profile-row"><span class="ms-profile-label" data-field="email"></span><span class="ms-profile-value" id="msRegisteredEmail" dir="auto"></span></div><div class="ms-profile-row"><span class="ms-profile-label" data-field="phone"></span><span class="ms-profile-value" id="msRegisteredPhone" dir="auto"></span></div><div class="ms-profile-row"><span class="ms-profile-label" data-field="birthDate"></span><span class="ms-profile-value" id="msRegisteredBirthDate"></span></div><div class="ms-actions"><button class="ms-primary" id="msOpenInterestsGoals" type="button"></button><button id="msDownloadInfo" type="button"></button></div><div class="ms-status" id="msProfileStatus" role="status" aria-live="polite"></div></div>';
+      content.querySelector("#msRegisteredInfoTitle").textContent = t("registeredInfo");
+      [["firstName","msRegisteredFirstName"],["lastName","msRegisteredLastName"],["email","msRegisteredEmail"],["phone","msRegisteredPhone"],["birthDate","msRegisteredBirthDate"]].forEach(([key,id]) => {
+        content.querySelector('[data-field="' + key + '"]').textContent = t(key === "email" ? "accountEmail" : key === "phone" ? "accountPhone" : key);
+        content.querySelector("#" + id).textContent = registered[key] || t("notRegistered");
+      });
+      content.querySelector("#msOpenInterestsGoals").textContent = t("openInterestsGoals");
       content.querySelector("#msDownloadInfo").textContent = t("downloadUserInfo");
+      content.querySelector("#msOpenInterestsGoals").onclick = () => {
+        closePanel();
+        if (typeof window.showPage === "function") window.showPage("profile");
+      };
       content.querySelector("#msDownloadInfo").onclick = () => {
         const status = content.querySelector("#msProfileStatus");
         try {
-          const name = [document.getElementById("profileFirstName")?.value, document.getElementById("profileLastName")?.value].filter(Boolean).join(" ").trim() || "—";
-          const user = window.masirCurrentUser || {};
-          const rows = [[t("userName"), name], [t("emailLabel"), email], [t("phoneLabel"), phone], ["User ID", user.id || "—"], ["Exported", new Date().toISOString()]];
-          const body = rows.map(([label, value]) => label + ": " + String(value || "—")).join("\n");
+          const rows = [
+            [t("firstName"), registered.firstName || t("notRegistered")],
+            [t("lastName"), registered.lastName || t("notRegistered")],
+            [t("accountEmail"), registered.email || t("notRegistered")],
+            [t("accountPhone"), registered.phone || t("notRegistered")],
+            [t("birthDate"), registered.birthDate || t("notRegistered")],
+            [t("userId"), user.id || "—"]
+          ];
+          const body = rows.map(([label, val]) => label + ": " + String(val || "—")).join("\n");
           const blob = new Blob(["\uFEFF", body], {type:"text/plain;charset=utf-8"});
-          const url = URL.createObjectURL(blob); const a = document.createElement("a");
-          a.href = url; a.download = "masir-account-info.txt"; document.body.appendChild(a); a.click(); a.remove();
-          setTimeout(() => URL.revokeObjectURL(url), 1000); status.textContent = t("userInfoDownloaded");
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a"); a.href = url; a.download = "masir-account-info.txt";
+          document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+          status.textContent = t("userInfoDownloaded");
         } catch (_) { status.textContent = t("downloadFailed"); }
       };
-      content.querySelector("#msSignOut").textContent = t("signOut"); content.querySelector("#msDeleteAccount").textContent = t("deleteAccount");
-      content.querySelector("[data-delete-hint]").textContent = t("deleteHint");
-      const openProfile = () => { closePanel(); if (typeof window.showPage === "function") window.showPage("profile"); };
-      content.querySelector("#msManageProfile").onclick = openProfile;
-      content.querySelector("#msSignOut").onclick = () => { openProfile(); setTimeout(() => { const area=document.getElementById("profileLogoutArea"); const btn=area?.querySelector("button"); if(btn) btn.click(); },150); };
-      content.querySelector("#msDeleteAccount").onclick = () => { openProfile(); setTimeout(() => { const area=document.getElementById("profileLogoutArea"); const buttons=area ? Array.from(area.querySelectorAll("button")) : []; const btn=buttons.length > 1 ? buttons[buttons.length - 1] : null; if(btn) btn.click(); },150); };
     } else if (name === "settings") {
-      content.innerHTML = '<div class="ms-card"><label for="msLanguage"></label><select id="msLanguage"><option value="fa">فارسی</option><option value="en">English</option><option value="ar">العربية</option><option value="tr">Türkçe</option><option value="ja">日本語</option></select><p class="ms-muted" data-hint></p><div class="ms-status" id="msStatus" role="status"></div></div>';
+      content.innerHTML = '<div class="ms-card"><label for="msLanguage"></label><select id="msLanguage"><option value="fa">فارسی</option><option value="en">English</option><option value="ar">العربية</option><option value="tr">Türkçe</option><option value="ja">日本語</option></select><p class="ms-muted" data-hint></p><div class="ms-status" id="msStatus" role="status"></div></div><div class="ms-card" id="msAccountActionsCard"><h3 id="msAccountActionsTitle"></h3><div id="msAccountActionsSlot"></div></div>';
       content.querySelector("label").textContent = t("language"); content.querySelector("[data-hint]").textContent = t("languageHint");
+      content.querySelector("#msAccountActionsTitle").textContent = t("accountActions");
       const backupSlot = document.createElement("div"); backupSlot.id = "msBackupSlot"; content.appendChild(backupSlot);
       movePrivilegedPanel("profileBackupPanel","msBackupSlot","backupTitle");
+      moveAccountActionsToSettings("msAccountActionsSlot");
       const select = content.querySelector("#msLanguage"); select.value = getLang();
       select.onchange = () => {
         try { localStorage.setItem(LANG_KEY, select.value); } catch (_) {}
         const main = document.getElementById("appLanguage");
         if (main) { main.value = select.value; main.dispatchEvent(new Event("change", {bubbles:true})); }
         document.documentElement.lang = select.value; document.documentElement.dir = select.value === "fa" || select.value === "ar" ? "rtl" : "ltr";
-        showSheet("settings"); const status = panel.querySelector("#msStatus"); if (status) status.textContent = t("saved");
+        showSheet("settings");
+        const status = panel.querySelector("#msStatus"); if (status) status.textContent = t("saved");
       };
     } else if (name === "password") {
       content.innerHTML = '<div class="ms-card"><p data-password-info></p><label for="msNewPassword" data-new-password-label></label><input id="msNewPassword" type="password" autocomplete="new-password" minlength="8" style="display:block;width:100%;padding:12px;border-radius:10px;border:1px solid #514477;background:#0d1426;color:#f8fafc"><label for="msConfirmPassword" data-confirm-password-label></label><input id="msConfirmPassword" type="password" autocomplete="new-password" minlength="8" style="display:block;width:100%;padding:12px;border-radius:10px;border:1px solid #514477;background:#0d1426;color:#f8fafc"><label style="display:flex;align-items:center;gap:8px"><input id="msShowPassword" type="checkbox" style="width:auto"> <span data-show-password-label></span></label><p class="ms-muted" id="msPasswordRules"></p><div class="ms-actions"><button class="ms-primary" id="msUpdatePassword" type="button"></button></div><div class="ms-status" id="msPasswordStatus" role="status" aria-live="polite"></div><hr style="border-color:#393452;margin:18px 0"><div id="msAdminManagementSlot"></div><div id="msRecoverySlot"></div></div>';
@@ -337,13 +441,88 @@
       content.querySelector("#msSaveNote").onclick = () => { clearTimeout(noteTimer); const ok = safeWrite(NOTES_KEY, content.querySelector("#msNote").value); content.querySelector("#msStatus").textContent = ok ? t("saved") : "Could not save on this device."; };
     } else if (name === "calendar") {
       const prefs = safeRead(CALENDAR_KEY, {type:"jalali",country:"iran"});
-      content.innerHTML = '<div class="ms-card"><label for="msCalendarType"></label><select id="msCalendarType"><option value="gregorian"></option><option value="jalali"></option><option value="hijri"></option><option value="japanese"></option></select><label for="msCountry"></label><select id="msCountry"><option value="iran"></option><option value="azerbaijan"></option><option value="turkey"></option><option value="japan"></option><option value="other"></option></select><p class="ms-muted" data-hint></p><div class="ms-actions"><button class="ms-primary" id="msSaveCalendar" type="button"></button></div><div class="ms-status" id="msStatus" role="status"></div></div>';
-      content.querySelector('label[for="msCalendarType"]').textContent = t("calendarType"); content.querySelector('label[for="msCountry"]').textContent = t("country");
-      [["gregorian","gregorian"],["jalali","jalali"],["hijri","hijri"],["japanese","japanese"]].forEach(([v,k])=>content.querySelector('#msCalendarType option[value="'+v+'"]').textContent=t(k));
-      [["iran","iran"],["azerbaijan","azerbaijan"],["turkey","turkey"],["japan","japan"],["other","other"]].forEach(([v,k])=>content.querySelector('#msCountry option[value="'+v+'"]').textContent=t(k));
-      content.querySelector("#msCalendarType").value = prefs.type || "jalali"; content.querySelector("#msCountry").value = prefs.country || "iran";
-      content.querySelector("[data-hint]").textContent = t("calendarHint"); content.querySelector("#msSaveCalendar").textContent = t("save");
-      content.querySelector("#msSaveCalendar").onclick = () => { const value={type:content.querySelector("#msCalendarType").value,country:content.querySelector("#msCountry").value}; const ok=safeWrite(CALENDAR_KEY,value); if(ok){ try { window.dispatchEvent(new CustomEvent("masir:calendar-preferences-changed",{detail:value})); } catch(_){} } content.querySelector("#msStatus").textContent = ok ? t("saved") : "Could not save on this device."; };
+      content.innerHTML = '<div class="ms-card"><label for="msCalendarType"></label><select id="msCalendarType"><option value="gregorian"></option><option value="jalali"></option><option value="hijri"></option><option value="japanese"></option></select><label for="msCountry"></label><select id="msCountry"><option value="iran"></option><option value="azerbaijan"></option><option value="turkey"></option><option value="japan"></option><option value="other"></option></select><div class="ms-calendar-head"><button type="button" id="msCalendarPrev" aria-label="Previous month">‹</button><div class="ms-calendar-title" id="msCalendarTitle"></div><button type="button" id="msCalendarNext" aria-label="Next month">›</button></div><div class="ms-calendar-weekdays" id="msCalendarWeekdays"></div><div class="ms-calendar-grid" id="msCalendarGrid"></div><div class="ms-actions"><button type="button" id="msCalendarToday"></button></div><p class="ms-muted" id="msCalendarSelected"></p><p class="ms-muted" data-hint></p><div class="ms-status" id="msStatus" role="status" aria-live="polite"></div></div>';
+      content.querySelector('label[for="msCalendarType"]').textContent = t("calendarType");
+      content.querySelector('label[for="msCountry"]').textContent = t("country");
+      [["gregorian","gregorian"],["jalali","jalali"],["hijri","hijri"],["japanese","japanese"]].forEach(([v,k]) => { content.querySelector('#msCalendarType option[value="' + v + '"]').textContent = t(k); });
+      [["iran","iran"],["azerbaijan","azerbaijan"],["turkey","turkey"],["japan","japan"],["other","other"]].forEach(([v,k]) => { content.querySelector('#msCountry option[value="' + v + '"]').textContent = t(k); });
+      content.querySelector("#msCalendarType").value = prefs.type || "jalali";
+      content.querySelector("#msCountry").value = prefs.country || "iran";
+      content.querySelector("#msCalendarToday").textContent = t("calendarToday");
+      content.querySelector("[data-hint]").textContent = t("calendarHint");
+
+      const languageLocales = {fa:"fa",en:"en",ar:"ar",tr:"tr",ja:"ja"};
+      const countryRegions = {iran:"IR",azerbaijan:"AZ",turkey:"TR",japan:"JP",other:"GB"};
+      const calendarIds = {gregorian:"gregory",jalali:"persian",hijri:"islamic-umalqura",japanese:"japanese"};
+      const makeLocale = () => (languageLocales[getLang()] || "en") + "-" + (countryRegions[content.querySelector("#msCountry").value] || "GB");
+      const calendarId = () => calendarIds[content.querySelector("#msCalendarType").value] || "persian";
+      const dateAtNoon = (date) => new Date(date.getFullYear(),date.getMonth(),date.getDate(),12,0,0,0);
+      const addDays = (date,amount) => { const next = dateAtNoon(date); next.setDate(next.getDate()+amount); return next; };
+      const partsFor = (date, locale, calendar) => {
+        let parts;
+        try { parts = new Intl.DateTimeFormat(locale,{calendar:calendar,year:"numeric",month:"numeric",era:"short"}).formatToParts(date); }
+        catch (_) { parts = new Intl.DateTimeFormat("en-US",{calendar:calendar,year:"numeric",month:"numeric",era:"short"}).formatToParts(date); }
+        const pick = type => (parts.find(part => part.type === type) || {}).value || "";
+        return {year:pick("year"),month:pick("month"),era:pick("era"),key:[pick("era"),pick("year"),pick("month")].join("|")};
+      };
+      const monthRange = (anchor, locale, calendar) => {
+        let start = dateAtNoon(anchor), end = dateAtNoon(anchor);
+        const key = partsFor(anchor,locale,calendar).key;
+        for (let i=0;i<40;i++) { const prev=addDays(start,-1); if(partsFor(prev,locale,calendar).key!==key) break; start=prev; }
+        for (let i=0;i<40;i++) { const next=addDays(end,1); if(partsFor(next,locale,calendar).key!==key) break; end=next; }
+        return {start:start,end:end,key:key};
+      };
+      const weekStartForCountry = () => content.querySelector("#msCountry").value === "iran" ? 6 : content.querySelector("#msCountry").value === "japan" ? 0 : 1;
+      const formatDate = (date, options) => {
+        try { return new Intl.DateTimeFormat(makeLocale(),Object.assign({calendar:calendarId()},options)).format(date); }
+        catch (_) { return new Intl.DateTimeFormat("en-US",Object.assign({calendar:calendarId()},options)).format(date); }
+      };
+      const renderCalendar = () => {
+        const locale = makeLocale(), calendar = calendarId();
+        const range = monthRange(calendarAnchor,locale,calendar);
+        content.querySelector("#msCalendarTitle").textContent = formatDate(calendarAnchor,{month:"long",year:"numeric"});
+        content.querySelector("#msCalendarTitle").dir = getLang() === "fa" || getLang() === "ar" ? "rtl" : "ltr";
+        const weekdays = content.querySelector("#msCalendarWeekdays"); weekdays.replaceChildren();
+        const weekStart = weekStartForCountry();
+        for(let i=0;i<7;i++){
+          const date = new Date(2024,0,7+((weekStart+i)%7),12);
+          const item = document.createElement("div"); item.className="ms-calendar-weekday";
+          try { item.textContent = new Intl.DateTimeFormat(locale,{weekday:"short"}).format(date); }
+          catch (_) { item.textContent = new Intl.DateTimeFormat("en-US",{weekday:"short"}).format(date); }
+          weekdays.appendChild(item);
+        }
+        const grid = content.querySelector("#msCalendarGrid"); grid.replaceChildren();
+        const padding = (range.start.getDay()-weekStart+7)%7;
+        const total = Math.ceil((padding+Math.round((range.end-range.start)/86400000)+1)/7)*7;
+        const today = dateAtNoon(new Date());
+        for(let i=0;i<total;i++){
+          const date = addDays(range.start,i-padding);
+          const key = partsFor(date,locale,calendar).key;
+          const inMonth = key === range.key;
+          const day = document.createElement("button"); day.type="button"; day.className="ms-calendar-day";
+          if(!inMonth) day.classList.add("is-outside");
+          if(date.getFullYear()===today.getFullYear() && date.getMonth()===today.getMonth() && date.getDate()===today.getDate()) day.classList.add("is-today");
+          if(date.getFullYear()===calendarSelectedDate.getFullYear() && date.getMonth()===calendarSelectedDate.getMonth() && date.getDate()===calendarSelectedDate.getDate()) day.classList.add("is-selected");
+          day.textContent = formatDate(date,{day:"numeric"});
+          day.setAttribute("aria-label",formatDate(date,{year:"numeric",month:"long",day:"numeric"}));
+          day.addEventListener("click",()=>{calendarSelectedDate=dateAtNoon(date);calendarAnchor=dateAtNoon(date);renderCalendar();});
+          grid.appendChild(day);
+        }
+        content.querySelector("#msCalendarSelected").textContent = t("calendarSelected") + ": " + formatDate(calendarSelectedDate,{year:"numeric",month:"long",day:"numeric"});
+      };
+      const saveCalendarPrefs = () => {
+        const value={type:content.querySelector("#msCalendarType").value,country:content.querySelector("#msCountry").value};
+        const ok=safeWrite(CALENDAR_KEY,value);
+        if(ok){try{window.dispatchEvent(new CustomEvent("masir:calendar-preferences-changed",{detail:value}));}catch(_){}}
+        content.querySelector("#msStatus").textContent=ok?t("calendarSaved"):t("downloadFailed");
+        return ok;
+      };
+      content.querySelector("#msCalendarPrev").addEventListener("click",()=>{const range=monthRange(calendarAnchor,makeLocale(),calendarId());calendarAnchor=addDays(range.start,-1);calendarSelectedDate=dateAtNoon(calendarAnchor);renderCalendar();});
+      content.querySelector("#msCalendarNext").addEventListener("click",()=>{const range=monthRange(calendarAnchor,makeLocale(),calendarId());calendarAnchor=addDays(range.end,1);calendarSelectedDate=dateAtNoon(calendarAnchor);renderCalendar();});
+      content.querySelector("#msCalendarToday").addEventListener("click",()=>{calendarAnchor=new Date();calendarSelectedDate=new Date();renderCalendar();});
+      content.querySelector("#msCalendarType").addEventListener("change",()=>{saveCalendarPrefs();renderCalendar();});
+      content.querySelector("#msCountry").addEventListener("change",()=>{saveCalendarPrefs();renderCalendar();});
+      renderCalendar();
     } else if (name === "about") {
       content.innerHTML = '<div class="ms-card" style="text-align:center"><div style="font-size:38px">💜</div><h3 style="color:#d8b4fe">مسیر</h3><p data-about-text></p><hr style="border-color:#393452"><p><strong data-developer-label></strong><br><span>رامتین همتای</span></p><p><strong data-email-label></strong><br><span dir="ltr">ramtinxasf@gmail.com</span></p></div>';
       content.querySelector("[data-about-text]").textContent = t("aboutText"); content.querySelector("[data-developer-label]").textContent = t("developer"); content.querySelector("[data-email-label]").textContent = t("email");
