@@ -4314,10 +4314,12 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
         if (userChat) userChat.style.display = user && !isAdmin ? "block" : "none";
         if (chatNotice) chatNotice.style.display = user ? "none" : "block";
         window.masirConfigureChatPage = function() {
-            if (adminChat && isAdmin && !adminChat.dataset.loaded) {
-                adminChat.dataset.loaded = "yes";
+            if (adminChat && isAdmin) {
                 const refreshButton = document.getElementById("adminSupportRefreshButton");
                 if (refreshButton) refreshButton.click();
+            } else if (user && !isAdmin) {
+                const contact = document.getElementById("userAdminChatContact");
+                if (contact) contact.click();
             }
         };
     }
