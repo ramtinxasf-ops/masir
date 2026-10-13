@@ -2073,7 +2073,7 @@ html[dir="ltr"] .language-picker { justify-content: flex-end; }
 
 <nav id="bottomNav">
     <button type="button" id="nav-home" onclick="showPage('home')">🏠 خانه</button>
-    <button type="button" id="nav-chat" onclick="showPage('chat')">💬 چت</button>
+    <button type="button" id="nav-chat" onclick="showPage('chat')">💬 چت <span id="navChatUnreadBadge" aria-label="پیام ناخوانده" style="display:none;background:#ef4444;color:white;border-radius:999px;min-width:20px;height:20px;padding:0 6px;align-items:center;justify-content:center;font-size:11px;font-weight:800;margin-inline-start:5px;">0</span></button>
     <button type="button" id="nav-planning" onclick="showPage('planning')">📅 برنامه‌ریزی</button>
     <button type="button" id="nav-daily" onclick="showPage('daily')">🗓️ برنامهٔ روز</button>
     <button type="button" id="nav-reports" onclick="showPage('reports')">📊 گزارش‌ها</button>
@@ -4870,12 +4870,44 @@ const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&
 const key=email=>"masir_support_ticket_v1:"+String(email||"").trim().toLowerCase();
 async function api(body,admin=false){const headers={"Content-Type":"application/json","apikey":KEY};if(admin){const {data,error}=await supabaseClient.auth.getSession();if(error)throw error;if(!data.session?.access_token)throw Error("نشست مدیر پیدا نشد؛ دوباره وارد شو.");headers.Authorization="Bearer "+data.session.access_token;}const r=await fetch(URL,{method:"POST",headers,body:JSON.stringify(body)});const d=await r.json().catch(()=>({}));if(!r.ok||!d.success)throw Error(d.error||"ارتباط با مدیر ناموفق بود.");return d;}
 function draw(el,msgs){el.innerHTML=(msgs||[]).map(m=>'<div style="padding:10px 13px;margin:8px 0;border:1px solid #35324b;border-radius:14px;background:'+(m.sender==="admin"?'rgba(167,139,250,.18);margin-inline-end:auto':'rgba(71,85,105,.3);margin-inline-start:auto')+'"><small style="color:#c4b5fd">'+(m.sender==="admin"?"مدیر":"شما")+' · '+esc(new Date(m.created_at).toLocaleString("fa-IR"))+'</small><div style="white-space:pre-wrap;overflow-wrap:anywhere;margin-top:5px">'+esc(m.message)+'</div></div>').join("")||'<p>هنوز پیامی وجود ندارد.</p>';el.scrollTop=el.scrollHeight;}
-async function create(email,msg){if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))throw Error("ایمیل معتبر وارد کن.");if(!msg.trim())throw Error("پیامت را بنویس.");const d=await api({action:"create",email,message:msg.trim()});localStorage.setItem(key(email),JSON.stringify({thread_id:d.thread_id,ticket:d.ticket}));return d;}
+function currentDisplayName() {
+  const first = ( $("profileFirstName")?.value || "" ).trim();
+  const last = ( $("profileLastName")?.value || "" ).trim();
+  const profileName = [first, last].filter(Boolean).join(" ");
+  if (profileName) return profileName;
+  const meta = window.masirCurrentUser?.user_metadata || {};
+  return String(meta.full_name || meta.name || [meta.first_name || meta.firstName, meta.last_name || meta.lastName].filter(Boolean).join(" ") || "").trim();
+}
+function updateChatBadge(count) {
+  const badge = $("navChatUnreadBadge");
+  if (!badge) return;
+  const n = Math.max(0, Number(count) || 0);
+  badge.textContent = n > 99 ? "99+" : String(n);
+  badge.style.display = n ? "inline-flex" : "none";
+}
+async function refreshUserUnreadBadge() {
+  const email = ($("profileSupportEmail")?.value || $("masir-support-email")?.value || $("profileEmail")?.textContent || "").trim().toLowerCase();
+  if (!email) return;
+  const ticket = JSON.parse(localStorage.getItem(key(email)) || "null");
+  if (!ticket) { updateChatBadge(0); return; }
+  try {
+    const d = await api({action:"user_status", ...ticket});
+    updateChatBadge(d.unread_count || 0);
+  } catch (_) {}
+}
+async function create(email,msg) {
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw Error("ایمیل معتبر وارد کن.");
+  if (!msg.trim()) throw Error("پیامت را بنویس.");
+  const d = await api({action:"create",email,display_name:currentDisplayName(),message:msg.trim()});
+  localStorage.setItem(key(email),JSON.stringify({thread_id:d.thread_id,ticket:d.ticket}));
+  updateChatBadge(0);
+  return d;
+}
 async function userRead(email,el){const t=JSON.parse(localStorage.getItem(key(email))||"null");if(!t)return false;const d=await api({action:"user_read",...t});draw(el,d.messages);return true;}
 async function userSend(email,msg,el){const t=JSON.parse(localStorage.getItem(key(email))||"null");if(!t)throw Error("گفتگوی ذخیره‌شده‌ای برای این ایمیل پیدا نشد.");const d=await api({action:"user_send",...t,message:msg});draw(el,d.messages);}
 const contact=$("masir-contact-admin");if(contact)contact.onclick=()=>{const p=$("masir-support-start");p.style.display=p.style.display==="none"?"block":"none";if($("masir-email").value.trim())$("masir-support-email").value=$("masir-email").value.trim();};
 if($("masir-support-start-button"))$("masir-support-start-button").onclick=async()=>{const b=$("masir-support-start-button"),st=$("masir-support-status");b.disabled=true;try{const email=$("masir-support-email").value.trim(),d=await create(email,$("masir-support-first-message").value);st.style.color="#a7f3d0";st.textContent=d.message+" برای ادامه گفتگو از همین دستگاه استفاده کن.";$("masir-support-first-message").value="";}catch(e){st.style.color="#ff8b8b";st.textContent=e.message;}finally{b.disabled=false;}};
-if($("profileSupportStartButton"))$("profileSupportStartButton").onclick=async()=>{const b=$("profileSupportStartButton"),st=$("profileSupportStatus");b.disabled=true;try{const email=$("profileSupportEmail").value.trim(),d=await create(email,$("profileSupportFirstMessage").value);$("profileSupportStart").style.display="none";$("profileSupportConversation").style.display="flex";draw($("profileSupportMessages"),[{sender:"user",message:$("profileSupportFirstMessage").value,created_at:new Date().toISOString()}]);$("profileSupportFirstMessage").value="";st.textContent=d.message;}catch(e){st.style.color="#fb7185";st.textContent=e.message;}finally{b.disabled=false;}};
+if($("profileSupportStartButton"))$("profileSupportStartButton").onclick=async()=>{const b=$("profileSupportStartButton"),st=$("profileSupportStatus");b.disabled=true;try{const email=$("profileSupportEmail").value.trim(),d=await create(email,$("profileSupportFirstMessage").value);$("profileSupportStart").style.display="none";$("profileSupportConversation").style.display="flex";draw($("profileSupportMessages"),d.messages || []);$("profileSupportFirstMessage").value="";st.textContent=d.message;}catch(e){st.style.color="#fb7185";st.textContent=e.message;}finally{b.disabled=false;}};
 if($("profileSupportReplyButton"))$("profileSupportReplyButton").onclick=async()=>{const b=$("profileSupportReplyButton"),st=$("profileSupportStatus"),msg=$("profileSupportReply").value.trim();if(!msg){st.textContent="پیامت را بنویس.";return;}b.disabled=true;try{await userSend($("profileSupportEmail").value.trim(),msg,$("profileSupportMessages"));$("profileSupportReply").value="";st.textContent="پیام ارسال شد.";}catch(e){st.style.color="#fb7185";st.textContent=e.message;}finally{b.disabled=false;}};
 if($("profileSupportNewButton"))$("profileSupportNewButton").onclick=()=>{localStorage.removeItem(key($("profileSupportEmail").value.trim()));$("profileSupportConversation").style.display="none";$("profileSupportStart").style.display="block";$("profileSupportStatus").textContent="گفتگوی جدید را آغاز کن.";};
 if($("userAdminChatContact"))$("userAdminChatContact").onclick=()=>{const start=$("profileSupportStart"),conv=$("profileSupportConversation");if(start&&conv){const email=$("profileSupportEmail").value.trim();if(email){userRead(email,$("profileSupportMessages")).then(ok=>{start.style.display=ok?"none":"block";conv.style.display=ok?"flex":"none";}).catch(()=>{});}}};
