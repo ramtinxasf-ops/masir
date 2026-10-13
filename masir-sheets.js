@@ -337,11 +337,11 @@
         return el && typeof el.value === "string" ? el.value.trim() : "";
       };
       const registered = {
-        firstName: valueOf("profileFirstName") || metadata.first_name || metadata.firstName || "",
-        lastName: valueOf("profileLastName") || metadata.last_name || metadata.lastName || "",
+        firstName: metadata.first_name || metadata.firstName || valueOf("profileFirstName") || "",
+        lastName: metadata.last_name || metadata.lastName || valueOf("profileLastName") || "",
         email: user.email || document.getElementById("profileEmail")?.textContent?.trim() || "",
         phone: user.phone || metadata.phone || valueOf("profilePhoneInput") || "",
-        birthDate: valueOf("profileBirthDate") || metadata.birth_date || metadata.birthDate || ""
+        birthDate: metadata.birth_date || metadata.birthDate || valueOf("profileBirthDate") || ""
       };
       content.innerHTML = '<div class="ms-card"><h3 id="msRegisteredInfoTitle"></h3><div class="ms-profile-row"><span class="ms-profile-label" data-field="firstName"></span><span class="ms-profile-value" id="msRegisteredFirstName"></span></div><div class="ms-profile-row"><span class="ms-profile-label" data-field="lastName"></span><span class="ms-profile-value" id="msRegisteredLastName"></span></div><div class="ms-profile-row"><span class="ms-profile-label" data-field="email"></span><span class="ms-profile-value" id="msRegisteredEmail" dir="auto"></span></div><div class="ms-profile-row"><span class="ms-profile-label" data-field="phone"></span><span class="ms-profile-value" id="msRegisteredPhone" dir="auto"></span></div><div class="ms-profile-row"><span class="ms-profile-label" data-field="birthDate"></span><span class="ms-profile-value" id="msRegisteredBirthDate"></span></div><div class="ms-actions"><button class="ms-primary" id="msOpenInterestsGoals" type="button"></button><button id="msDownloadInfo" type="button"></button></div><div class="ms-status" id="msProfileStatus" role="status" aria-live="polite"></div></div>';
       content.querySelector("#msRegisteredInfoTitle").textContent = t("registeredInfo");
@@ -458,10 +458,20 @@
       const calendarId = () => calendarIds[content.querySelector("#msCalendarType").value] || "persian";
       const dateAtNoon = (date) => new Date(date.getFullYear(),date.getMonth(),date.getDate(),12,0,0,0);
       const addDays = (date,amount) => { const next = dateAtNoon(date); next.setDate(next.getDate()+amount); return next; };
+      const makeDateFormatter = (locale, options) => {
+        const calendar = calendarId();
+        const candidates = [calendar, ...(calendar === "islamic-umalqura" ? ["islamic"] : []), null];
+        for (const candidate of candidates) {
+          try {
+            const opts = Object.assign({}, options);
+            if (candidate) opts.calendar = candidate;
+            return new Intl.DateTimeFormat(locale, opts);
+          } catch (_) {}
+        }
+        return new Intl.DateTimeFormat("en-US", options);
+      };
       const partsFor = (date, locale, calendar) => {
-        let parts;
-        try { parts = new Intl.DateTimeFormat(locale,{calendar:calendar,year:"numeric",month:"numeric",era:"short"}).formatToParts(date); }
-        catch (_) { parts = new Intl.DateTimeFormat("en-US",{calendar:calendar,year:"numeric",month:"numeric",era:"short"}).formatToParts(date); }
+        const parts = makeDateFormatter(locale,{year:"numeric",month:"numeric",era:"short"}).formatToParts(date);
         const pick = type => (parts.find(part => part.type === type) || {}).value || "";
         return {year:pick("year"),month:pick("month"),era:pick("era"),key:[pick("era"),pick("year"),pick("month")].join("|")};
       };
@@ -473,15 +483,14 @@
         return {start:start,end:end,key:key};
       };
       const weekStartForCountry = () => content.querySelector("#msCountry").value === "iran" ? 6 : content.querySelector("#msCountry").value === "japan" ? 0 : 1;
-      const formatDate = (date, options) => {
-        try { return new Intl.DateTimeFormat(makeLocale(),Object.assign({calendar:calendarId()},options)).format(date); }
-        catch (_) { return new Intl.DateTimeFormat("en-US",Object.assign({calendar:calendarId()},options)).format(date); }
-      };
+      const formatDate = (date, options) => makeDateFormatter(makeLocale(), options).format(date);
       const renderCalendar = () => {
         const locale = makeLocale(), calendar = calendarId();
         const range = monthRange(calendarAnchor,locale,calendar);
         content.querySelector("#msCalendarTitle").textContent = formatDate(calendarAnchor,{month:"long",year:"numeric"});
         content.querySelector("#msCalendarTitle").dir = getLang() === "fa" || getLang() === "ar" ? "rtl" : "ltr";
+        content.querySelector("#msCalendarPrev").setAttribute("aria-label", t("calendarPrevious"));
+        content.querySelector("#msCalendarNext").setAttribute("aria-label", t("calendarNext"));
         const weekdays = content.querySelector("#msCalendarWeekdays"); weekdays.replaceChildren();
         const weekStart = weekStartForCountry();
         for(let i=0;i<7;i++){
