@@ -2472,8 +2472,6 @@ function applyMasirLanguage(language) {
             if (original && dict[original]) el.setAttribute(attr, dict[original]);
         }
     });
-    const pageTitle = "مسیر | برنامه‌ریز شخصی";
-    document.title = dict[pageTitle] || pageTitle;
     document.querySelectorAll("[data-masir-original]").forEach(el => {
         const original = el.getAttribute("data-masir-original");
         if (el.matches("input,textarea")) {
