@@ -69,6 +69,11 @@
   Object.assign(dict.tr, {appName:"Masir", developerName:"Ramtin Hemmatay"});
   Object.assign(dict.ja, {appName:"Masir", developerName:"ラームティン・ヘンマタイ"});
 
+  Object.assign(dict.fa, {openMenu:"باز کردن منوی مسیر",saveFailed:"ذخیره در این دستگاه ممکن نشد."});
+  Object.assign(dict.en, {openMenu:"Open Masir menu",saveFailed:t("saveFailed")});
+  Object.assign(dict.ar, {openMenu:"فتح قائمة مسير",saveFailed:"تعذر الحفظ على هذا الجهاز."});
+  Object.assign(dict.tr, {openMenu:"Masir menüsünü aç",saveFailed:"Bu cihaza kaydedilemedi."});
+  Object.assign(dict.ja, {openMenu:"Masir メニューを開く",saveFailed:"この端末に保存できませんでした。"});
   const getLang = () => {
     try { const el = document.getElementById("appLanguage"); const v = el && el.value; if (dict[v]) return v; const saved = localStorage.getItem(LANG_KEY); return dict[saved] ? saved : "fa"; }
     catch (_) { return "fa"; }
@@ -344,10 +349,10 @@
 
   const button = document.createElement("button");
   button.type = "button"; button.id = "masirSheetsOpen"; button.textContent = "☰";
-  button.setAttribute("aria-label", "Open Masir menu"); button.title = "Masir";
+  button.setAttribute("aria-label", t("openMenu")); button.title = t("appName");
   const shade = document.createElement("div"); shade.id = "masirSheetsShade"; shade.hidden = true;
   const panel = document.createElement("aside"); panel.id = "masirSheetsPanel"; panel.hidden = true;
-  panel.setAttribute("aria-label", "Masir menu");
+  panel.setAttribute("aria-label", t("menu"));
   panel.innerHTML = `
     <div class="ms-head"><h2 class="ms-title" id="msTitle"></h2><button type="button" id="msClose" aria-label="Close">×</button></div>
     <section id="msMenu">
@@ -371,6 +376,8 @@
     panel.querySelector("#msTitle").textContent = t("menu");
     panel.querySelectorAll("[data-label]").forEach(el => { el.textContent = t(el.dataset.label); });
     panel.querySelector("#msClose").setAttribute("aria-label", t("close"));
+    button.setAttribute("aria-label", t("openMenu")); button.title = t("appName");
+    panel.setAttribute("aria-label", t("menu"));
   }
   function showSheet(name) {
     activeSheet = name; panel.querySelector("#msMenu").hidden = true; panel.querySelector("#msPage").hidden = false;
