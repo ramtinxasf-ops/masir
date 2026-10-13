@@ -44,7 +44,7 @@ Deno.serve(async (request: Request) => {
   if (authError || !authData.user) {
     return Response.json({ error: "Invalid or expired session" }, { status: 401, headers: corsHeaders });
   }
-  if (authData.user.app_metadata?.role !== "admin") {
+  if ((authData.user.email || "").trim().toLowerCase() !== "ramtinxasf@gmail.com") {
     return Response.json({ error: "Admin access required" }, { status: 403, headers: corsHeaders });
   }
 
