@@ -2875,10 +2875,22 @@ function formatCountLabel(label, count) {
     const labels = { en: {"مجموع فعالیت‌ها":"Total activities","انجام‌شده":"Completed","باقی‌مانده":"Remaining"}, ar: {"مجموع فعالیت‌ها":"إجمالي الأنشطة","انجام‌شده":"مكتمل","باقی‌مانده":"متبقٍ"}, tr: {"مجموع فعالیت‌ها":"Toplam etkinlik","انجام‌شده":"Tamamlandı","باقی‌مانده":"Kalan"}, ja: {"مجموع فعالیت‌ها":"活動の合計","انجام‌شده":"完了","باقی‌مانده":"残り"} };
     return lang === "fa" ? `${label}: ${formatNumber(count)}` : `${labels[lang]?.[label] || label}: ${formatNumber(count)}`;
 }
-function localizedDate(date) {
+function localizedCalendarLocale() {
     const lang = masirCurrentLanguage();
-    const locale = lang === "fa" ? "fa-IR-u-ca-persian" : lang === "ar" ? "ar" : lang === "ja" ? "ja-JP" : lang === "tr" ? "tr-TR" : "en-US";
-    return new Intl.DateTimeFormat(locale, { year: "numeric", month: "long", day: "numeric" }).format(date);
+    // تقویم متناسب با زبان انتخاب‌شده: شمسی، میلادی، قمری، میلادی ترکی و ژاپنی.
+    if (lang === "fa") return "fa-IR-u-ca-persian";
+    if (lang === "ar") return "ar-SA-u-ca-islamic-umalqura";
+    if (lang === "ja") return "ja-JP-u-ca-japanese";
+    if (lang === "tr") return "tr-TR-u-ca-gregory";
+    return "en-US-u-ca-gregory";
+}
+function localizedDate(date) {
+    return new Intl.DateTimeFormat(localizedCalendarLocale(), {
+        year: "numeric", month: "long", day: "numeric"
+    }).format(date);
+}
+function localizedDayNumber(date) {
+    return new Intl.DateTimeFormat(localizedCalendarLocale(), { day: "numeric" }).format(date);
 }
 function localizedWeekday(date) {
     const lang = masirCurrentLanguage();
@@ -3580,7 +3592,7 @@ function renderCalendarMonth() {
     const dates = getWeekDates(selectedDate);
 
     const lang = masirCurrentLanguage();
-    const locale = lang === "fa" ? "fa-IR-u-ca-persian" : lang === "ar" ? "ar" : lang === "ja" ? "ja-JP" : lang === "tr" ? "tr-TR" : "en-US";
+    const locale = localizedCalendarLocale();
     const first = new Intl.DateTimeFormat(locale, { month: "long", year: "numeric" }).format(dates[0]);
     const last = new Intl.DateTimeFormat(locale, { month: "long", year: "numeric" }).format(dates[6]);
     const rangeWord = lang === "fa" ? " تا " : lang === "ar" ? " إلى " : lang === "ja" ? "〜" : lang === "tr" ? " - " : " to ";
@@ -3630,12 +3642,12 @@ function renderCalendar() {
 
         const number = document.createElement("div");
         number.className = "day-number";
-        number.textContent = getPersianDayNumber(date);
+        number.textContent = localizedDayNumber(date);
 
         const count = document.createElement("div");
         count.className = "day-count";
         count.textContent =
-            `${toPersianNumber(completedCount)}/${toPersianNumber(dayActivities.length)}`;
+            `${formatNumber(completedCount)}/${formatNumber(dayActivities.length)}`;
 
         button.append(name, number, count);
 
