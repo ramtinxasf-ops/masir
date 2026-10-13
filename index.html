@@ -5088,32 +5088,22 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
         event.preventDefault();
         const user = window.masirCurrentUser;
         if (!user) return showProfileMessage("ابتدا وارد حساب شو.", true);
-        const firstName = document.getElementById("profileFirstName").value.trim();
-        const lastName = document.getElementById("profileLastName").value.trim();
-        const email = document.getElementById("profileEmailInput").value.trim();
-        const phone = document.getElementById("profilePhoneInput").value.trim();
-        const birthDate = document.getElementById("profileBirthDate").value;
-        if (!firstName || !lastName) return showProfileMessage("نام و نام خانوادگی را وارد کن.", true);
-        if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showProfileMessage("ایمیل معتبر وارد کن.", true);
         const button = document.getElementById("saveProfileButton");
+        const goals = document.getElementById("profileGoalsInput")?.value || "";
         button.disabled = true;
         showProfileMessage("در حال ذخیره اطلاعات...");
         try {
-            const updatePayload = {
-                data: { ...(user.user_metadata || {}), first_name: firstName, last_name: lastName, phone, birth_date: birthDate, interests: profileInterests.slice(), goals: document.getElementById("profileGoalsInput")?.value || "" }
-            };
-            const emailChanged = email.toLowerCase() !== String(user.email || "").trim().toLowerCase();
-            if (emailChanged) updatePayload.email = email;
-            const { data, error } = await supabaseClient.auth.updateUser(updatePayload);
+            // The dashboard Profile page edits only interests and goals.
+            // Account identity fields are read-only and shown in the right-side Profile sheet.
+            const metadata = { ...(user.user_metadata || {}), interests: profileInterests.slice(), goals };
+            const { data, error } = await supabaseClient.auth.updateUser({ data: metadata });
             if (error) throw error;
-            window.masirCurrentUser = data && data.user ? data.user : {
-                ...user, user_metadata: { ...(user.user_metadata || {}), first_name: firstName, last_name: lastName, phone, birth_date: birthDate, interests: profileInterests.slice(), goals: document.getElementById("profileGoalsInput")?.value || "" }
-            };
+            window.masirCurrentUser = data && data.user ? data.user : { ...user, user_metadata: metadata };
             populateProfile(window.masirCurrentUser);
-            if (emailChanged) document.getElementById("profileEmailInput").value = email;
-            showProfileMessage(emailChanged ? "اطلاعات ذخیره شد. برای تأیید ایمیل جدید، صندوق ورودی آن را بررسی کن." : "اطلاعات پروفایل ذخیره شد.");
+            showProfileMessage("اطلاعات پروفایل ذخیره شد.");
+            window.dispatchEvent(new CustomEvent("masir:profile-changed"));
         } catch (error) {
-            console.error("ذخیره پروفایل ناموفق بود:", error);
+            console.error("ذخیره علایق و اهداف ناموفق بود:", error);
             showProfileMessage("ذخیره اطلاعات انجام نشد. اتصال حساب را بررسی کن.", true);
         } finally {
             button.disabled = false;
