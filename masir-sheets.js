@@ -21,11 +21,18 @@
     tr: {emailLabel:"Hesap e-postası",phoneLabel:"Telefon numarası",passwordInfo:"Yeni parolayı girip onayla. En az 8 karakter; büyük harf, küçük harf ve rakam içermelidir.",newPassword:"Yeni parola",confirmPassword:"Yeni parolayı onayla",showPassword:"Parolaları göster",ruleLength:"En az 8 karakter",ruleUpper:"Büyük İngilizce harf (A-Z)",ruleLower:"Küçük İngilizce harf (a-z)",ruleNumber:"Rakam (0-9)",passwordRulesError:"Parola tüm koşulları karşılamıyor.",passwordMismatch:"Parolalar eşleşmiyor.",passwordUnavailable:"Parola hizmeti kullanılamıyor. Yeniden giriş yapıp deneyin.",passwordUpdating:"Parola değiştiriliyor…",passwordUpdated:"Parola başarıyla değiştirildi.",passwordFailed:"Parola değiştirilemedi.",downloadUserInfo:"Hesap bilgilerini indir",userInfoDownloaded:"Hesap bilgileri dosyası hazır.",userName:"Ad",downloadFailed:"Dosya oluşturulamadı."},
     ja: {emailLabel:"アカウントのメール",phoneLabel:"電話番号",passwordInfo:"新しいパスワードを入力して確認してください。8文字以上で、大文字・小文字・数字を含めてください。",newPassword:"新しいパスワード",confirmPassword:"新しいパスワードを確認",showPassword:"パスワードを表示",ruleLength:"8文字以上",ruleUpper:"英大文字 (A-Z)",ruleLower:"英小文字 (a-z)",ruleNumber:"数字 (0-9)",passwordRulesError:"パスワードがすべての条件を満たしていません。",passwordMismatch:"パスワードが一致しません。",passwordUnavailable:"パスワードサービスを利用できません。再ログインしてお試しください。",passwordUpdating:"パスワードを変更中…",passwordUpdated:"パスワードを変更しました。",passwordFailed:"パスワードを変更できませんでした。",downloadUserInfo:"アカウント情報をダウンロード",userInfoDownloaded:"アカウント情報ファイルを作成しました。",userName:"名前",downloadFailed:"ファイルを作成できませんでした。"}
   };
+  const commonLabels = {
+    fa:{accountInfo:"برای مدیریت حساب از گزینه‌های زیر استفاده کن.",manageProfile:"رفتن به پروفایل اصلی",managePassword:"باز کردن تنظیمات امنیت حساب",openSecurity:"باز کردن بخش امنیت حساب",openBackup:"باز کردن پشتیبان‌گیری",signOut:"خروج از حساب",deleteAccount:"حذف حساب",deleteHint:"حذف حساب برگشت‌ناپذیر است و از تأیید خود برنامه استفاده می‌کند."},
+    en:{accountInfo:"Manage your account using the actions below.",manageProfile:"Open main profile",managePassword:"Open account security",openSecurity:"Open account security",openBackup:"Open backup tools",signOut:"Sign out",deleteAccount:"Delete account",deleteHint:"Account deletion cannot be undone and requires confirmation."},
+    ar:{accountInfo:"أدر حسابك باستخدام الخيارات أدناه.",manageProfile:"فتح الملف الشخصي",managePassword:"فتح أمان الحساب",openSecurity:"فتح أمان الحساب",openBackup:"فتح النسخ الاحتياطي",signOut:"تسجيل الخروج",deleteAccount:"حذف الحساب",deleteHint:"لا يمكن التراجع عن حذف الحساب ويتطلب تأكيدًا."},
+    tr:{accountInfo:"Hesabını aşağıdaki seçeneklerle yönet.",manageProfile:"Ana profili aç",managePassword:"Hesap güvenliğini aç",openSecurity:"Hesap güvenliğini aç",openBackup:"Yedekleme araçlarını aç",signOut:"Çıkış yap",deleteAccount:"Hesabı sil",deleteHint:"Hesap silme işlemi geri alınamaz ve onay gerektirir."},
+    ja:{accountInfo:"以下の操作からアカウントを管理できます。",manageProfile:"メインプロフィールを開く",managePassword:"アカウントのセキュリティを開く",openSecurity:"アカウントのセキュリティを開く",openBackup:"バックアップを開く",signOut:"ログアウト",deleteAccount:"アカウントを削除",deleteHint:"アカウントの削除は取り消せず、確認が必要です。"}
+  };
   const getLang = () => {
     try { const el = document.getElementById("appLanguage"); const v = el && el.value; if (dict[v]) return v; const saved = localStorage.getItem(LANG_KEY); return dict[saved] ? saved : "fa"; }
     catch (_) { return "fa"; }
   };
-  const t = key => extraDict[getLang()]?.[key] || dict[getLang()]?.[key] || extraDict.fa[key] || dict.fa[key] || key;
+  const t = key => extraDict[getLang()]?.[key] || commonLabels[getLang()]?.[key] || dict[getLang()]?.[key] || extraDict.fa[key] || commonLabels.fa[key] || dict.fa[key] || key;
   const safeRead = (key, fallback) => { try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; } catch (_) { return fallback; } };
   const safeWrite = (key, value) => { try { localStorage.setItem(key, JSON.stringify(value)); return true; } catch (_) { return false; } };
 
