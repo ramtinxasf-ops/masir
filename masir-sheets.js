@@ -417,8 +417,13 @@
         email: user.email || document.getElementById("profileEmail")?.textContent?.trim() || "",
         phone: user.phone || metadata.phone || valueOf("profilePhoneInput") || "",
         birthDate: metadata.birth_date || metadata.birthDate || valueOf("profileBirthDate") || "",
-        interests: Array.isArray(metadata.interests) ? metadata.interests.filter(item => typeof item === "string" && item.trim()) : [],
-        goals: typeof metadata.goals === "string" ? metadata.goals : "",
+        interests: Array.isArray(metadata.interests) && metadata.interests.length
+          ? metadata.interests.filter(item => typeof item === "string" && item.trim())
+          : Array.from(document.querySelectorAll("#profileInterestsList li span"))
+              .map(item => item.textContent.trim()).filter(Boolean),
+        goals: typeof metadata.goals === "string" && metadata.goals.length
+          ? metadata.goals
+          : (document.getElementById("profileGoalsInput")?.value || ""),
         userId: user.id || ""
       };
       content.innerHTML = '<div class="ms-card"><h3 id="msRegisteredInfoTitle"></h3><div class="ms-profile-row"><span class="ms-profile-label" data-field="firstName"></span><span class="ms-profile-value" id="msRegisteredFirstName"></span></div><div class="ms-profile-row"><span class="ms-profile-label" data-field="lastName"></span><span class="ms-profile-value" id="msRegisteredLastName"></span></div><div class="ms-profile-row"><span class="ms-profile-label" data-field="email"></span><span class="ms-profile-value" id="msRegisteredEmail" dir="auto"></span></div><div class="ms-profile-row"><span class="ms-profile-label" data-field="phone"></span><span class="ms-profile-value" id="msRegisteredPhone" dir="auto"></span></div><div class="ms-profile-row"><span class="ms-profile-label" data-field="birthDate"></span><span class="ms-profile-value" id="msRegisteredBirthDate"></span></div><div class="ms-profile-row"><span class="ms-profile-label" id="msRegisteredInterestsLabel"></span><span class="ms-profile-value" id="msRegisteredInterests"></span></div><div class="ms-profile-row"><span class="ms-profile-label" id="msRegisteredGoalsLabel"></span><span class="ms-profile-value" id="msRegisteredGoals" style="white-space:pre-wrap"></span></div><div class="ms-profile-row"><span class="ms-profile-label" data-field="userId"></span><span class="ms-profile-value" id="msRegisteredUserId" dir="ltr"></span></div><div class="ms-actions"><button class="ms-primary" id="msOpenInterestsGoals" type="button"></button><button id="msDownloadInfo" type="button"></button></div><div class="ms-status" id="msProfileStatus" role="status" aria-live="polite"></div></div>';
