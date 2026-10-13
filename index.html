@@ -795,6 +795,134 @@ body {
 }
 
 .masir-password-wrap{position:relative;width:100%}.masir-password-toggle{position:absolute;left:7px;top:50%;transform:translateY(-50%);display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;padding:5px;border:0;border-radius:6px;background:transparent;color:#c4b5fd;cursor:pointer}.masir-password-toggle:hover{background:rgba(196,181,253,.12)}.masir-password-toggle:focus-visible{outline:2px solid #a78bfa;outline-offset:2px}.masir-password-toggle svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.masir-password-toggle.is-visible svg{stroke:#a78bfa}
+
+/* طراحی پریمیوم مسیر — فقط لایهٔ ظاهری */
+:root {
+    --background: #100f14;
+    --card: #1b1922;
+    --card-light: #262230;
+    --purple: #c4a7ff;
+    --purple-dark: #7852b8;
+    --text: #f7f2e9;
+    --muted: #b9b1c5;
+    --green: #72d6ae;
+    --red: #ff8797;
+    --border: #403649;
+    --gold: #d8b875;
+    --gold-soft: rgba(216,184,117,.14);
+}
+body {
+    background:
+      radial-gradient(ellipse at 85% 0%, rgba(120,82,184,.16), transparent 36%),
+      radial-gradient(ellipse at 5% 15%, rgba(216,184,117,.07), transparent 30%),
+      var(--background);
+    color: var(--text);
+}
+header { padding: 14px 0 8px; }
+header h1 {
+    color: var(--gold);
+    letter-spacing: .2px;
+    text-shadow: 0 0 28px rgba(216,184,117,.13);
+}
+header p { color: var(--muted); }
+.card {
+    background: linear-gradient(145deg, rgba(35,31,43,.98), rgba(25,23,32,.98));
+    border: 1px solid rgba(216,184,117,.18);
+    border-radius: 20px;
+    box-shadow: 0 14px 34px rgba(0,0,0,.22);
+}
+h2 { color: #f2e6cf; }
+h3 { color: #e7d8f8; }
+.stat-card, .report-stat {
+    background: linear-gradient(145deg, #2a2533, #211e29);
+    border: 1px solid rgba(196,167,255,.14);
+    border-radius: 16px;
+}
+.stat-number, .report-stat strong { color: var(--gold); }
+.stat-label, .report-stat span, label { color: var(--muted); }
+.progress-track, .mini-track { background: #38313f; }
+.progress-fill, .chart-bar {
+    background: linear-gradient(90deg, #7852b8, #c4a7ff);
+}
+input[type="text"], input[type="time"], input[type="date"],
+input[type="email"], input[type="password"], input[type="tel"],
+.activity-category, .activity-priority {
+    background: #15131b;
+    color: var(--text);
+    border-color: #494052;
+    border-radius: 12px;
+}
+input:focus, .activity-category:focus, .activity-priority:focus {
+    outline: 2px solid rgba(196,167,255,.55);
+    border-color: var(--gold);
+}
+button { border-radius: 12px; transition: transform .18s ease, filter .18s ease, background .18s ease; }
+button:hover { opacity: 1; filter: brightness(1.1); }
+button:active { transform: scale(.98); }
+.primary-button {
+    background: linear-gradient(135deg, #b99a61, #8f6c36);
+    color: #17121b;
+    font-weight: 700;
+    box-shadow: 0 5px 16px rgba(216,184,117,.12);
+}
+.secondary-button {
+    background: #2b2634;
+    color: var(--text);
+    border: 1px solid #51445d;
+}
+.today-button { background: #30263d; color: #e4d1ff; border: 1px solid #5c456f; }
+.calendar-jump-row, .activity-filter-row {
+    background: #1a1721;
+    border-color: #413748;
+    border-radius: 15px;
+}
+.calendar-day, .activity-item, .daily-report, .empty-message {
+    background: #17151d;
+    border-color: #3d3545;
+    border-radius: 14px;
+}
+.calendar-day.selected {
+    background: linear-gradient(145deg, #382b49, #292130);
+    border: 1px solid var(--gold);
+    box-shadow: inset 0 0 0 1px rgba(216,184,117,.12);
+}
+.calendar-day.today { box-shadow: inset 0 0 0 1px var(--green); }
+.calendar-month, .selected-date-title, .day-count, .daily-report-percent { color: var(--gold); }
+.activity-schedule { color: #d4b7ff; }
+.activity-item.done { background: #152720; border-color: #356e59; }
+.activity-item.priority-high { border-right-color: #ff8797; }
+.activity-item.priority-medium { border-right-color: var(--gold); }
+.activity-item.priority-low { border-right-color: var(--green); }
+.delete-button { background: #3b202b; color: #ff9bab; }
+.profile-panel {
+    background: #191620;
+    border-color: #463a4d;
+    border-radius: 16px;
+}
+.profile-panel h3 { color: var(--gold); }
+.best-day-box { background: #172820; border-color: #356e59; border-radius: 14px; }
+#bottomNav {
+    background: rgba(24,20,31,.96);
+    border-top: 1px solid rgba(216,184,117,.28);
+    box-shadow: 0 -8px 28px rgba(0,0,0,.22);
+    backdrop-filter: blur(14px);
+    padding: 10px 8px calc(10px + env(safe-area-inset-bottom));
+}
+#bottomNav button { color: #d8d0e0; border-radius: 12px; }
+#bottomNav button:hover, #bottomNav button:focus-visible {
+    background: rgba(196,167,255,.13);
+    color: #f1ddad;
+    outline: 1px solid rgba(216,184,117,.22);
+}
+.masir-password-toggle { color: #d4b7ff; }
+.masir-password-toggle.is-visible svg { stroke: var(--gold); }
+@media (max-width: 600px) {
+    header { padding-top: 8px; }
+    .card { border-radius: 17px; }
+    #bottomNav { gap: 3px; }
+    #bottomNav button { padding: 11px 3px; font-size: 12px; }
+}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
