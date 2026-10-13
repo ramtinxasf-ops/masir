@@ -4447,6 +4447,7 @@ async function loadUserActivities(user) {
         setBusy(true);
         showMessage("در حال ورود...");
 
+        let signedInUser = null;
         try {
             const { data, error } = await supabaseClient.auth.signInWithPassword({
                 email,
@@ -4454,12 +4455,22 @@ async function loadUserActivities(user) {
             });
 
             if (error) throw error;
-
+            signedInUser = data.user;
             saveRememberedEmail();
-            await loadUserActivities(data.user);
         } catch (error) {
-            console.error(error);
-            showMessage("ورود انجام نشد. ایمیل و رمز عبور یا اتصال را بررسی کن.", true);
+            console.error("خطای ورود:", error);
+            const detail = error && (error.message || error.error_description);
+            showMessage("ورود انجام نشد: " + (detail || "خطای نامشخص؛ اتصال را بررسی کن."), true);
+            setBusy(false);
+            return;
+        }
+
+        try {
+            await loadUserActivities(signedInUser);
+        } catch (error) {
+            console.error("ورود موفق بود، اما بارگذاری فعالیت‌ها خطا داشت:", error);
+            const detail = error && (error.message || error.error_description);
+            showMessage("وارد حساب شدی، اما بارگذاری فعالیت‌ها انجام نشد: " + (detail || "خطای نامشخص"), true);
         } finally {
             setBusy(false);
         }
