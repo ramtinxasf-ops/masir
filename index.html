@@ -4903,7 +4903,7 @@ async function create(email,msg) {
   updateChatBadge(0);
   return d;
 }
-async function userRead(email,el){const t=JSON.parse(localStorage.getItem(key(email))||"null");if(!t)return false;const d=await api({action:"user_read",...t});draw(el,d.messages);return true;}
+async function userRead(email,el){const t=JSON.parse(localStorage.getItem(key(email))||"null");if(!t)return false;const d=await api({action:"user_read",...t});draw(el,d.messages);updateChatBadge(0);return true;}
 async function userSend(email,msg,el){const t=JSON.parse(localStorage.getItem(key(email))||"null");if(!t)throw Error("گفتگوی ذخیره‌شده‌ای برای این ایمیل پیدا نشد.");const d=await api({action:"user_send",...t,message:msg});draw(el,d.messages);}
 const contact=$("masir-contact-admin");if(contact)contact.onclick=()=>{const p=$("masir-support-start");p.style.display=p.style.display==="none"?"block":"none";if($("masir-email").value.trim())$("masir-support-email").value=$("masir-email").value.trim();};
 if($("masir-support-start-button"))$("masir-support-start-button").onclick=async()=>{const b=$("masir-support-start-button"),st=$("masir-support-status");b.disabled=true;try{const email=$("masir-support-email").value.trim(),d=await create(email,$("masir-support-first-message").value);st.style.color="#a7f3d0";st.textContent=d.message+" برای ادامه گفتگو از همین دستگاه استفاده کن.";$("masir-support-first-message").value="";}catch(e){st.style.color="#ff8b8b";st.textContent=e.message;}finally{b.disabled=false;}};
