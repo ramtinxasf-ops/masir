@@ -2081,27 +2081,9 @@ var supabaseClient = window.supabase.createClient(
         <p class="help-text">برای پشتیبانی یا ارسال پیام خصوصی به مدیر وارد صفحهٔ چت شو.</p>
         <button type="button" class="primary-button" id="openPrivateChatFromProfile" style="width:100%;">💬 چت خصوصی با مدیر</button>
     </div>
-    <div class="profile-panel" id="adminUserExportPanel" style="display:none;">
-        <h3>مدیریت کاربران</h3>
-        <p class="help-text">این بخش فقط برای حساب مدیریتی مجاز فعال است. رمز قبلی کاربران نمایش داده نمی‌شود؛ می‌توانی رمز جدید تنظیم کنی.</p>
-        <button type="button" class="secondary-button" id="exportUsersCsvButton" style="width:100%;text-align:right;">📄 دریافت فهرست کاربران (متن مرتب)</button>
-        <p id="adminUserExportMessage" class="help-text" role="status" aria-live="polite"></p>
-
-        
-    </div>
-    <div class="profile-panel" id="profileSecurityPanel" style="display:none;">
-        <h3>امنیت حساب</h3>
-        <p class="help-text">برای تغییر رمز، لینک بازیابی به ایمیل حسابت ارسال می‌شود.</p>
-        <button type="button" class="secondary-button" id="profileResetPasswordButton" style="width:100%;text-align:right;">🔐 بازیابی رمز عبور</button>
-        <p id="profileSecurityMessage" class="help-text" role="status" aria-live="polite"></p>
-    </div>
-    <div class="profile-panel" id="profileBackupPanel" style="display:none;">
-        <h3>پشتیبان‌گیری و بازیابی</h3>
-        <button type="button" class="secondary-button" id="exportBackupButton" style="width:100%;text-align:right;">💾 دریافت نسخه پشتیبان <span style="float:left;">↓</span></button>
-        <div id="backupStatus" style="margin-top:10px;padding:12px;background:#211b38;border-radius:10px;font-size:13px;line-height:1.8;">وضعیت پشتیبان‌گیری هنوز بررسی نشده است.</div>
-        <button type="button" class="secondary-button" id="importBackupButton" style="width:100%;margin-top:12px;text-align:right;">📂 بازیابی از فایل پشتیبان <span style="float:left;">↑</span></button>
-        <input type="file" id="backupFileInput" accept=".json,application/json" style="display:none;">
-    </div>
+    
+    
+    
     <div class="profile-panel">
         <button type="button" class="secondary-button" id="appInfoButton" style="width:100%;text-align:right;">ℹ️ اطلاعات برنامه <span style="float:left;">←</span></button>
         <div id="appInfoDetails" style="display:none;margin-top:16px;">
@@ -2155,6 +2137,24 @@ var supabaseClient = window.supabase.createClient(
     </select>
     <p class="help-text">زبان انتخابی برای تمام بخش‌های رابط کاربری اعمال می‌شود. متن یادداشت‌های شخصی شما ترجمه نمی‌شود.</p>
   </div>
+  
+  <div id="adminSettingsTools" style="display:none;">
+<div class="profile-panel" id="adminUserExportPanel" style="display:none;">
+        <h3>مدیریت کاربران</h3>
+        <p class="help-text">این بخش فقط برای حساب مدیریتی مجاز فعال است. رمز قبلی کاربران نمایش داده نمی‌شود؛ می‌توانی رمز جدید تنظیم کنی.</p>
+        <button type="button" class="secondary-button" id="exportUsersCsvButton" style="width:100%;text-align:right;">📄 دریافت فهرست کاربران (متن مرتب)</button>
+        <p id="adminUserExportMessage" class="help-text" role="status" aria-live="polite"></p>
+
+        
+    </div>
+<div class="profile-panel" id="profileBackupPanel" style="display:none;">
+        <h3>پشتیبان‌گیری و بازیابی</h3>
+        <button type="button" class="secondary-button" id="exportBackupButton" style="width:100%;text-align:right;">💾 دریافت نسخه پشتیبان <span style="float:left;">↓</span></button>
+        <div id="backupStatus" style="margin-top:10px;padding:12px;background:#211b38;border-radius:10px;font-size:13px;line-height:1.8;">وضعیت پشتیبان‌گیری هنوز بررسی نشده است.</div>
+        <button type="button" class="secondary-button" id="importBackupButton" style="width:100%;margin-top:12px;text-align:right;">📂 بازیابی از فایل پشتیبان <span style="float:left;">↑</span></button>
+        <input type="file" id="backupFileInput" accept=".json,application/json" style="display:none;">
+    </div>
+  </div>
   <div class="profile-panel" id="settingsAccountActions">
     <h3>مدیریت حساب</h3>
     <p class="help-text">از این بخش می‌توانی از حساب خارج شوی یا آن را برای همیشه حذف کنی.</p>
@@ -2175,6 +2175,12 @@ var supabaseClient = window.supabase.createClient(
     <p class="help-text" role="status" aria-live="polite" id="masirChangePasswordStatus"></p>
   </form>
 
+  <div class="profile-panel" id="profileSecurityPanel" style="display:none;">
+        <h3>امنیت حساب</h3>
+        <p class="help-text">برای تغییر رمز، لینک بازیابی به ایمیل حسابت ارسال می‌شود.</p>
+        <button type="button" class="secondary-button" id="profileResetPasswordButton" style="width:100%;text-align:right;">🔐 بازیابی رمز عبور</button>
+        <p id="profileSecurityMessage" class="help-text" role="status" aria-live="polite"></p>
+    </div>
   <div id="adminUserPasswordSection" style="display:none;margin-top:22px;">
     <p class="help-text">این بخش فقط برای مدیر نمایش داده می‌شود.</p>
     <form id="adminResetPasswordForm" style="margin-top:16px;padding:14px;border:1px solid rgba(167,139,250,.35);border-radius:12px;background:rgba(139,92,246,.06);">
@@ -4994,7 +5000,9 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
         const panel = document.getElementById("adminUserExportPanel");
         const securityPanel = document.getElementById("profileSecurityPanel");
         const backupPanel = document.getElementById("profileBackupPanel");
+        const adminSettingsTools = document.getElementById("adminSettingsTools");
         const profileChatLink = document.getElementById("profilePrivateChatLinkPanel");
+        if (adminSettingsTools) adminSettingsTools.style.display = isAdmin ? "block" : "none";
         if (panel) panel.style.display = isAdmin ? "block" : "none";
         const adminUserPasswordSection = document.getElementById("adminUserPasswordSection");
         if (adminUserPasswordSection) adminUserPasswordSection.style.display = isAdmin ? "block" : "none";
