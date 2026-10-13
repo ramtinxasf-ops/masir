@@ -4924,7 +4924,7 @@ function showAdminMessagePopup(messages) {
   adminMessagePopupOpen = true;
 }
 async function refreshUserUnreadBadge() {
-  const email = ($("profileSupportEmail")?.value || $("masir-support-email")?.value || $("profileEmail")?.textContent || "").trim().toLowerCase();
+  const email = ($("masir-email")?.value || $("profileSupportEmail")?.value || $("masir-support-email")?.value || $("profileEmail")?.textContent || "").trim().toLowerCase();
   if (!email) return;
   const ticket = JSON.parse(localStorage.getItem(key(email)) || "null");
   if (!ticket) { updateChatBadge(0); return; }
