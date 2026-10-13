@@ -5326,10 +5326,24 @@ if($("profileSupportNewButton"))$("profileSupportNewButton").onclick=()=>{localS
 if($("userAdminChatContact"))$("userAdminChatContact").onclick=()=>{const start=$("profileSupportStart"),conv=$("profileSupportConversation");if(start&&conv){const email=$("profileSupportEmail").value.trim();if(email){userRead(email,$("profileSupportMessages")).then(ok=>{start.style.display=ok?"none":"block";conv.style.display=ok?"flex":"none";}).catch(()=>{});}}};
 const pe=$("profileEmail");if(pe&&$("profileSupportEmail")){const sync=()=>{const v=(pe.textContent||"").trim();if(v&&v!=="—")$("profileSupportEmail").value=v;};sync();new MutationObserver(sync).observe(pe,{childList:true,subtree:true,characterData:true});$("profileSupportEmail").addEventListener("change",async()=>{try{const ok=await userRead($("profileSupportEmail").value.trim(),$("profileSupportMessages"));$("profileSupportStart").style.display=ok?"none":"block";$("profileSupportConversation").style.display=ok?"block":"none";}catch(e){$("profileSupportStatus").textContent="گفتگو بارگذاری نشد؛ اگر دستگاه عوض شده، گفتگوی تازه بساز.";}});}
 async function adminApi(body){return api(body,true);}
+function chatUiText(key) {
+  const lang = masirCurrentLanguage();
+  const labels = {
+    loading: { fa: "در حال بارگذاری گفتگوها...", en: "Loading conversations...", ar: "جارٍ تحميل المحادثات...", tr: "Sohbetler yükleniyor...", ja: "会話を読み込み中..." },
+    user: { fa: "کاربر", en: "User", ar: "المستخدم", tr: "Kullanıcı", ja: "ユーザー" },
+    lastActivity: { fa: "آخرین فعالیت", en: "Last activity", ar: "آخر نشاط", tr: "Son etkinlik", ja: "最終アクティビティ" }
+  };
+  return labels[key]?.[lang] || labels[key]?.en || key;
+}
+function chatDateTime(value) {
+  const lang = masirCurrentLanguage();
+  const locale = lang === "fa" ? "fa-IR" : lang === "ar" ? "ar" : lang === "tr" ? "tr-TR" : lang === "ja" ? "ja-JP" : "en-US";
+  return new Date(value).toLocaleString(locale);
+}
 async function refresh() {
   const list = $("adminSupportThreads");
   if (!list) return;
-  list.innerHTML = "<p>در حال بارگذاری گفتگوها...</p>";
+  list.innerHTML = "<p>" + esc(chatUiText("loading")) + "</p>";
   try {
     const d = await adminApi({action:"admin_list"});
     const unreadTotal = (d.threads || []).reduce((sum, t) => sum + (Number(t.unread_count) || 0), 0);
@@ -5338,7 +5352,7 @@ async function refresh() {
       const name = String(t.display_name || "").trim();
       const unread = Number(t.unread_count) || 0;
       return '<button type="button" data-id="' + esc(t.id) + '" data-email="' + esc(t.email) + '" style="text-align:right;width:100%;padding:12px;border:1px solid #35324b;border-radius:10px;margin:4px 0;background:' + (unread ? 'rgba(239,68,68,.10)' : 'transparent') + '">'
-        + '<span style="display:flex;align-items:center;gap:8px;justify-content:space-between"><strong>👤 ' + esc(name || "کاربر") + '</strong>' + (unread ? '<span style="display:inline-flex;background:#ef4444;color:white;border-radius:999px;min-width:20px;height:20px;padding:0 6px;align-items:center;justify-content:center;font-size:11px;font-weight:800">' + (unread > 99 ? "99+" : unread) + '</span>' : '') + '</span>'
+        + '<span style="display:flex;align-items:center;gap:8px;justify-content:space-between"><strong>👤 ' + esc(name || chatUiText("user")) + '</strong>' + (unread ? '<span style="display:inline-flex;background:#ef4444;color:white;border-radius:999px;min-width:20px;height:20px;padding:0 6px;align-items:center;justify-content:center;font-size:11px;font-weight:800">' + (unread > 99 ? "99+" : unread) + '</span>' : '') + '</span>'
         + '<div style="font-size:12px;color:#c4b5fd;margin-top:4px;overflow-wrap:anywhere">' + esc(t.email) + '</div>'
         + '<div style="font-size:11px;color:#a5b4cc;margin-top:4px">آخرین فعالیت · ' + esc(new Date(t.updated_at).toLocaleString("fa-IR")) + '</div></button>';
     }).join("") || "<p class='help-text'>هنوز گفتگویی وجود ندارد.</p>";
@@ -5353,7 +5367,7 @@ async function openThread(id,email) {
   $("adminSupportConversation").style.flexDirection = "column";
   $("adminSupportEmpty").style.display = "none";
   const selected = Array.from(document.querySelectorAll("#adminSupportThreads [data-id]")).find(b => b.dataset.id === id);
-  const displayName = selected?.querySelector("strong")?.textContent || "کاربر";
+  const displayName = selected?.querySelector("strong")?.textContent || chatUiText("user");
   $("adminSupportSelectedEmail").textContent = displayName + " · " + email;
   await readThread();
   await refresh();
