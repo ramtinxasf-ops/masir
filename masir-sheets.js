@@ -14,11 +14,18 @@
     tr: {menu:"Masir menüsü",profile:"Profilim",settings:"Ayarlar",password:"Şifreyi değiştir",notes:"Notlar",calendar:"Takvim",about:"Masir hakkında",back:"Geri",close:"Kapat",language:"Uygulama dili",save:"Kaydet",saved:"Kaydedildi.",notePlaceholder:"Notunu buraya yaz…",calendarType:"Takvim türü",country:"Ülke",gregorian:"Miladi",jalali:"Celali",hijri:"Hicri",japanese:"Japon",selectCountry:"Ülke seç",iran:"İran",azerbaijan:"Azerbaycan",turkey:"Türkiye",japan:"Japonya",other:"Diğer",accountInfo:"Hesap bilgileri, çıkış veya hesap silme işlemleri için ana profil bölümünü kullan.",manageProfile:"Ana profili aç",managePassword:"Hesap güvenliği ayarlarını aç",aboutText:"Masir; etkinlikleri düzenlemek, ilerlemeyi izlemek ve günlük alışkanlıklar oluşturmak için kişisel bir planlayıcıdır.",developer:"Geliştirici",email:"Yönetici e-postası",languageHint:"Seçilen dil bu sayfalar için kaydedilir ve ana uygulama diline aktarılır.",calendarHint:"Seçilen takvim türü ana takvime uygulanır. Tarihe gitme alanı şu anda Celali tarih kabul eder."},
     ja: {menu:"Masir メニュー",profile:"プロフィール",settings:"設定",password:"パスワード変更",notes:"メモ",calendar:"カレンダー",about:"Masir について",back:"戻る",close:"閉じる",language:"アプリの言語",save:"保存",saved:"保存しました。",notePlaceholder:"ここにメモを入力…",calendarType:"カレンダーの種類",country:"国",gregorian:"西暦",jalali:"ジャラーリー",hijri:"ヒジュラ暦",japanese:"和暦",selectCountry:"国を選択",iran:"イラン",azerbaijan:"アゼルバイジャン",turkey:"トルコ",japan:"日本",other:"その他",accountInfo:"アカウント情報、ログアウト、削除はメインのプロフィール画面から操作してください。",manageProfile:"プロフィールを開く",managePassword:"アカウントセキュリティを開く",aboutText:"Masir は、活動の整理、進捗の確認、毎日の習慣づくりを支援する個人用プランナーです。",developer:"開発者",email:"管理者メール",languageHint:"選択した言語を保存し、メインアプリの言語設定にも同期します。",calendarHint:"選択した暦はメインカレンダーに反映されます。日付移動欄は現在ジャラーリー暦の日付を受け付けます。"}
   };
+  const extraDict = {
+    fa: {emailLabel:"ایمیل حساب",phoneLabel:"شماره تلفن",passwordInfo:"رمز جدید را وارد و دوباره تأیید کن. رمز باید حداقل ۸ نویسه و شامل حرف بزرگ، حرف کوچک و عدد انگلیسی باشد.",newPassword:"رمز عبور جدید",confirmPassword:"تکرار رمز عبور جدید",showPassword:"نمایش رمزها",ruleLength:"حداقل ۸ نویسه",ruleUpper:"یک حرف بزرگ انگلیسی (A-Z)",ruleLower:"یک حرف کوچک انگلیسی (a-z)",ruleNumber:"یک عدد انگلیسی (0-9)",passwordRulesError:"رمز هنوز همه شرایط را ندارد.",passwordMismatch:"دو رمز واردشده یکسان نیستند.",passwordUnavailable:"سرویس تغییر رمز در دسترس نیست؛ دوباره وارد حساب شو و تلاش کن.",passwordUpdating:"در حال تغییر رمز…",passwordUpdated:"رمز عبور با موفقیت تغییر کرد.",passwordFailed:"تغییر رمز انجام نشد.",downloadUserInfo:"دریافت اطلاعات حساب",userInfoDownloaded:"فایل اطلاعات حساب آماده شد.",userName:"نام",downloadFailed:"ساخت فایل ممکن نشد."},
+    en: {emailLabel:"Account email",phoneLabel:"Phone number",passwordInfo:"Enter and confirm a new password. Use at least 8 characters with an uppercase letter, a lowercase letter, and a number.",newPassword:"New password",confirmPassword:"Confirm new password",showPassword:"Show passwords",ruleLength:"At least 8 characters",ruleUpper:"An uppercase English letter (A-Z)",ruleLower:"A lowercase English letter (a-z)",ruleNumber:"A number (0-9)",passwordRulesError:"The password does not meet all requirements.",passwordMismatch:"The passwords do not match.",passwordUnavailable:"Password service is unavailable. Sign in again and retry.",passwordUpdating:"Changing password…",passwordUpdated:"Password changed successfully.",passwordFailed:"Password could not be changed.",downloadUserInfo:"Download account information",userInfoDownloaded:"Account information file is ready.",userName:"Name",downloadFailed:"Could not create the file."},
+    ar: {emailLabel:"البريد الإلكتروني للحساب",phoneLabel:"رقم الهاتف",passwordInfo:"أدخل كلمة مرور جديدة وأكدها. يجب أن تتكون من ٨ أحرف على الأقل، مع حرف كبير وصغير ورقم باللغة الإنجليزية.",newPassword:"كلمة المرور الجديدة",confirmPassword:"تأكيد كلمة المرور الجديدة",showPassword:"إظهار كلمات المرور",ruleLength:"٨ أحرف على الأقل",ruleUpper:"حرف إنجليزي كبير (A-Z)",ruleLower:"حرف إنجليزي صغير (a-z)",ruleNumber:"رقم (0-9)",passwordRulesError:"كلمة المرور لا تستوفي جميع الشروط.",passwordMismatch:"كلمتا المرور غير متطابقتين.",passwordUnavailable:"خدمة تغيير كلمة المرور غير متاحة. سجّل الدخول مجددًا وحاول.",passwordUpdating:"جارٍ تغيير كلمة المرور…",passwordUpdated:"تم تغيير كلمة المرور بنجاح.",passwordFailed:"تعذر تغيير كلمة المرور.",downloadUserInfo:"تنزيل معلومات الحساب",userInfoDownloaded:"ملف معلومات الحساب جاهز.",userName:"الاسم",downloadFailed:"تعذر إنشاء الملف."},
+    tr: {emailLabel:"Hesap e-postası",phoneLabel:"Telefon numarası",passwordInfo:"Yeni parolayı girip onayla. En az 8 karakter; büyük harf, küçük harf ve rakam içermelidir.",newPassword:"Yeni parola",confirmPassword:"Yeni parolayı onayla",showPassword:"Parolaları göster",ruleLength:"En az 8 karakter",ruleUpper:"Büyük İngilizce harf (A-Z)",ruleLower:"Küçük İngilizce harf (a-z)",ruleNumber:"Rakam (0-9)",passwordRulesError:"Parola tüm koşulları karşılamıyor.",passwordMismatch:"Parolalar eşleşmiyor.",passwordUnavailable:"Parola hizmeti kullanılamıyor. Yeniden giriş yapıp deneyin.",passwordUpdating:"Parola değiştiriliyor…",passwordUpdated:"Parola başarıyla değiştirildi.",passwordFailed:"Parola değiştirilemedi.",downloadUserInfo:"Hesap bilgilerini indir",userInfoDownloaded:"Hesap bilgileri dosyası hazır.",userName:"Ad",downloadFailed:"Dosya oluşturulamadı."},
+    ja: {emailLabel:"アカウントのメール",phoneLabel:"電話番号",passwordInfo:"新しいパスワードを入力して確認してください。8文字以上で、大文字・小文字・数字を含めてください。",newPassword:"新しいパスワード",confirmPassword:"新しいパスワードを確認",showPassword:"パスワードを表示",ruleLength:"8文字以上",ruleUpper:"英大文字 (A-Z)",ruleLower:"英小文字 (a-z)",ruleNumber:"数字 (0-9)",passwordRulesError:"パスワードがすべての条件を満たしていません。",passwordMismatch:"パスワードが一致しません。",passwordUnavailable:"パスワードサービスを利用できません。再ログインしてお試しください。",passwordUpdating:"パスワードを変更中…",passwordUpdated:"パスワードを変更しました。",passwordFailed:"パスワードを変更できませんでした。",downloadUserInfo:"アカウント情報をダウンロード",userInfoDownloaded:"アカウント情報ファイルを作成しました。",userName:"名前",downloadFailed:"ファイルを作成できませんでした。"}
+  };
   const getLang = () => {
     try { const el = document.getElementById("appLanguage"); const v = el && el.value; if (dict[v]) return v; const saved = localStorage.getItem(LANG_KEY); return dict[saved] ? saved : "fa"; }
     catch (_) { return "fa"; }
   };
-  const t = key => dict[getLang()]?.[key] || dict.fa[key] || key;
+  const t = key => extraDict[getLang()]?.[key] || dict[getLang()]?.[key] || extraDict.fa[key] || dict.fa[key] || key;
   const safeRead = (key, fallback) => { try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; } catch (_) { return fallback; } };
   const safeWrite = (key, value) => { try { localStorage.setItem(key, JSON.stringify(value)); return true; } catch (_) { return false; } };
 
@@ -83,10 +90,24 @@
     if (name === "profile") {
       const email = document.getElementById("profileEmail")?.textContent?.trim() || "—";
       const phone = document.getElementById("profilePhone")?.textContent?.trim() || "—";
-      content.innerHTML = '<div class="ms-card"><p><strong data-email-label></strong><br><span id="msProfileEmail"></span></p><p><strong data-phone-label></strong><br><span id="msProfilePhone"></span></p><p class="ms-muted" data-profile-info></p><div class="ms-actions"><button class="ms-primary" id="msManageProfile" type="button"></button><button id="msOpenSecurity" type="button"></button><button id="msOpenBackup" type="button"></button><button id="msSignOut" type="button"></button><button id="msDeleteAccount" type="button"></button></div><p class="ms-muted" data-delete-hint></p></div>';
+      content.innerHTML = '<div class="ms-card"><p><strong data-email-label></strong><br><span id="msProfileEmail"></span></p><p><strong data-phone-label></strong><br><span id="msProfilePhone"></span></p><p class="ms-muted" data-profile-info></p><div class="ms-actions"><button class="ms-primary" id="msManageProfile" type="button"></button><button id="msDownloadInfo" type="button"></button><button id="msOpenSecurity" type="button"></button><button id="msOpenBackup" type="button"></button><button id="msSignOut" type="button"></button><button id="msDeleteAccount" type="button"></button></div><div class="ms-status" id="msProfileStatus" role="status" aria-live="polite"></div><p class="ms-muted" data-delete-hint></p></div>';
       content.querySelector("#msProfileEmail").textContent = email; content.querySelector("#msProfilePhone").textContent = phone;
       content.querySelector("[data-email-label]").textContent = t("emailLabel"); content.querySelector("[data-phone-label]").textContent = t("phoneLabel");
       content.querySelector("[data-profile-info]").textContent = t("accountInfo"); content.querySelector("#msManageProfile").textContent = t("manageProfile");
+      content.querySelector("#msDownloadInfo").textContent = t("downloadUserInfo");
+      content.querySelector("#msDownloadInfo").onclick = () => {
+        const status = content.querySelector("#msProfileStatus");
+        try {
+          const name = [document.getElementById("profileFirstName")?.value, document.getElementById("profileLastName")?.value].filter(Boolean).join(" ").trim() || "—";
+          const user = window.masirCurrentUser || {};
+          const rows = [[t("userName"), name], [t("emailLabel"), email], [t("phoneLabel"), phone], ["User ID", user.id || "—"], ["Exported", new Date().toISOString()]];
+          const body = rows.map(([label, value]) => label + ": " + String(value || "—")).join("\\n");
+          const blob = new Blob(["\\uFEFF", body], {type:"text/plain;charset=utf-8"});
+          const url = URL.createObjectURL(blob); const a = document.createElement("a");
+          a.href = url; a.download = "masir-account-info.txt"; document.body.appendChild(a); a.click(); a.remove();
+          setTimeout(() => URL.revokeObjectURL(url), 1000); status.textContent = t("userInfoDownloaded");
+        } catch (_) { status.textContent = t("downloadFailed"); }
+      };
       content.querySelector("#msOpenSecurity").textContent = t("openSecurity"); content.querySelector("#msOpenBackup").textContent = t("openBackup");
       content.querySelector("#msSignOut").textContent = t("signOut"); content.querySelector("#msDeleteAccount").textContent = t("deleteAccount");
       content.querySelector("[data-delete-hint]").textContent = t("deleteHint");
@@ -94,8 +115,8 @@
       content.querySelector("#msManageProfile").onclick = openProfile;
       content.querySelector("#msOpenSecurity").onclick = () => { openProfile(); setTimeout(() => { const el=document.getElementById("profileSecurityPanel"); if(el) { el.style.display="block"; el.scrollIntoView({behavior:"smooth",block:"start"}); } }, 150); };
       content.querySelector("#msOpenBackup").onclick = () => { openProfile(); setTimeout(() => { const el=document.getElementById("profileBackupPanel"); if(el) { el.style.display="block"; el.scrollIntoView({behavior:"smooth",block:"start"}); } }, 150); };
-      content.querySelector("#msSignOut").onclick = () => { openProfile(); setTimeout(() => { const area=document.getElementById("profileLogoutArea"); const btn=area && Array.from(area.querySelectorAll("button")).find(b=>/خروج از حساب|sign out|log out/i.test(b.textContent)); if(btn) btn.click(); },150); };
-      content.querySelector("#msDeleteAccount").onclick = () => { openProfile(); setTimeout(() => { const area=document.getElementById("profileLogoutArea"); const btn=area && Array.from(area.querySelectorAll("button")).find(b=>/حذف دائمی حساب|delete account/i.test(b.textContent)); if(btn) btn.click(); },150); };
+      content.querySelector("#msSignOut").onclick = () => { openProfile(); setTimeout(() => { const area=document.getElementById("profileLogoutArea"); const btn=area?.querySelector("button"); if(btn) btn.click(); },150); };
+      content.querySelector("#msDeleteAccount").onclick = () => { openProfile(); setTimeout(() => { const area=document.getElementById("profileLogoutArea"); const buttons=area ? Array.from(area.querySelectorAll("button")) : []; const btn=buttons.length > 1 ? buttons[buttons.length - 1] : null; if(btn) btn.click(); },150); };
     } else if (name === "settings") {
       content.innerHTML = '<div class="ms-card"><label for="msLanguage"></label><select id="msLanguage"><option value="fa">فارسی</option><option value="en">English</option><option value="ar">العربية</option><option value="tr">Türkçe</option><option value="ja">日本語</option></select><p class="ms-muted" data-hint></p><div class="ms-status" id="msStatus" role="status"></div></div>';
       content.querySelector("label").textContent = t("language"); content.querySelector("[data-hint]").textContent = t("languageHint");
@@ -108,9 +129,45 @@
         showSheet("settings"); const status = panel.querySelector("#msStatus"); if (status) status.textContent = t("saved");
       };
     } else if (name === "password") {
-      content.innerHTML = '<div class="ms-card"><p data-password-info></p><div class="ms-actions"><button class="ms-primary" id="msManagePassword" type="button"></button></div></div>';
-      content.querySelector("[data-password-info]").textContent = t("accountInfo"); content.querySelector("#msManagePassword").textContent = t("managePassword");
-      content.querySelector("#msManagePassword").onclick = () => { closePanel(); if (typeof window.showPage === "function") window.showPage("profile"); setTimeout(() => { const sec=document.getElementById("profileSecurityPanel"); if(sec) { sec.style.display="block"; sec.scrollIntoView({behavior:"smooth",block:"start"}); const reset=document.getElementById("profileResetPasswordButton"); if(reset) reset.focus({preventScroll:true}); } else { const form=document.getElementById("profileForm"); if(form) form.scrollIntoView({behavior:"smooth",block:"start"}); } }, 150); };
+      content.innerHTML = '<div class="ms-card"><p data-password-info></p><label for="msNewPassword" data-new-password-label></label><input id="msNewPassword" type="password" autocomplete="new-password" minlength="8" style="display:block;width:100%;padding:12px;border-radius:10px;border:1px solid #514477;background:#0d1426;color:#f8fafc"><label for="msConfirmPassword" data-confirm-password-label></label><input id="msConfirmPassword" type="password" autocomplete="new-password" minlength="8" style="display:block;width:100%;padding:12px;border-radius:10px;border:1px solid #514477;background:#0d1426;color:#f8fafc"><label style="display:flex;align-items:center;gap:8px"><input id="msShowPassword" type="checkbox" style="width:auto"> <span data-show-password-label></span></label><p class="ms-muted" id="msPasswordRules"></p><div class="ms-actions"><button class="ms-primary" id="msUpdatePassword" type="button"></button></div><div class="ms-status" id="msPasswordStatus" role="status" aria-live="polite"></div></div>';
+      content.querySelector("[data-password-info]").textContent = t("passwordInfo");
+      content.querySelector("[data-new-password-label]").textContent = t("newPassword");
+      content.querySelector("[data-confirm-password-label]").textContent = t("confirmPassword");
+      content.querySelector("[data-show-password-label]").textContent = t("showPassword");
+      content.querySelector("#msUpdatePassword").textContent = t("save");
+      const passwordInput = content.querySelector("#msNewPassword");
+      const confirmInput = content.querySelector("#msConfirmPassword");
+      const status = content.querySelector("#msPasswordStatus");
+      const rulesText = content.querySelector("#msPasswordRules");
+      content.querySelector("#msShowPassword").addEventListener("change", e => {
+        const type = e.target.checked ? "text" : "password";
+        passwordInput.type = type; confirmInput.type = type;
+      });
+      const validate = () => {
+        const p = passwordInput.value;
+        const checks = [[p.length >= 8,t("ruleLength")],[/[A-Z]/.test(p),t("ruleUpper")],[/[a-z]/.test(p),t("ruleLower")],[/[0-9]/.test(p),t("ruleNumber")]];
+        rulesText.textContent = checks.map(([ok,label]) => (ok ? "✓ " : "○ ") + label).join(" · ");
+        return checks.every(([ok]) => ok);
+      };
+      passwordInput.addEventListener("input", validate);
+      content.querySelector("#msUpdatePassword").onclick = async () => {
+        status.style.color = "#fca5a5";
+        if (!validate()) { status.textContent = t("passwordRulesError"); return; }
+        if (passwordInput.value !== confirmInput.value) { status.textContent = t("passwordMismatch"); return; }
+        const client = window.supabaseClient;
+        if (!window.masirCurrentUser || !client || !client.auth || typeof client.auth.updateUser !== "function") { status.textContent = t("passwordUnavailable"); return; }
+        const saveButton = content.querySelector("#msUpdatePassword");
+        saveButton.disabled = true; status.textContent = t("passwordUpdating");
+        try {
+          const { error } = await client.auth.updateUser({ password: passwordInput.value });
+          if (error) throw error;
+          passwordInput.value = ""; confirmInput.value = ""; rulesText.textContent = "";
+          status.style.color = "#a7f3d0"; status.textContent = t("passwordUpdated");
+        } catch (error) {
+          status.style.color = "#fca5a5";
+          status.textContent = (error && error.message) ? error.message : t("passwordFailed");
+        } finally { saveButton.disabled = false; }
+      };
     } else if (name === "notes") {
       const saved = safeRead(NOTES_KEY, "");
       content.innerHTML = '<div class="ms-card"><label for="msNote"></label><textarea id="msNote" maxlength="20000"></textarea><div class="ms-actions"><button class="ms-primary" id="msSaveNote" type="button"></button></div><div class="ms-status" id="msStatus" role="status"></div></div>';
