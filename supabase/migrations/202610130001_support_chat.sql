@@ -21,3 +21,15 @@ revoke all on public.support_chat_threads from anon, authenticated;
 revoke all on public.support_chat_messages from anon, authenticated;
 grant all on public.support_chat_threads to service_role;
 grant all on public.support_chat_messages to service_role;
+
+
+-- Add profile labels and per-recipient read state to existing chat installations.
+alter table public.support_chat_threads
+  add column if not exists display_name text;
+alter table public.support_chat_messages
+  add column if not exists read_by_admin boolean not null default false,
+  add column if not exists read_by_user boolean not null default true;
+create index if not exists support_chat_messages_admin_unread_idx
+  on public.support_chat_messages(thread_id, read_by_admin) where sender = 'user' and read_by_admin = false;
+create index if not exists support_chat_messages_user_unread_idx
+  on public.support_chat_messages(thread_id, read_by_user) where sender = 'admin' and read_by_user = false;
