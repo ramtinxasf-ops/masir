@@ -1736,6 +1736,57 @@ html[dir="ltr"] .language-picker { justify-content: flex-end; }
   #bottomNav button { font-size:11px; padding:8px 5px; }
 }
 
+
+/* Masir side menu and localized personal pages */
+.masir-menu-toggle{position:absolute;top:16px;right:16px;z-index:40;width:44px;height:44px;padding:0;border:1px solid var(--border);background:#211b38;color:#e9d5ff;font-size:25px;border-radius:12px}
+header{position:relative;padding-top:48px}
+.masir-drawer-shade{position:fixed;inset:0;background:rgba(3,6,18,.68);backdrop-filter:blur(3px);z-index:9990}
+.masir-drawer{position:fixed;z-index:9991;top:0;right:0;height:100dvh;width:33.333vw;min-width:270px;max-width:430px;padding:18px 14px;background:linear-gradient(160deg,#1d1830,#0d1426);border-left:1px solid #514477;box-shadow:-20px 0 55px #0007;transform:translateX(105%);transition:transform .24s ease;overflow-y:auto}
+.masir-drawer.open{transform:translateX(0)}
+.masir-drawer-head{display:flex;align-items:center;justify-content:space-between;padding:6px 5px 18px;margin-bottom:10px;border-bottom:1px solid var(--border);color:#d8b4fe;font-size:18px}
+.masir-drawer-head button{font-size:25px;padding:3px 10px;background:#302541;color:#fff}
+.masir-menu-item{display:flex;align-items:center;gap:10px;width:100%;text-align:start;margin:6px 0;padding:13px 12px;background:#151c30;border:1px solid #303b57;color:#f3f4f6;border-radius:13px}
+.masir-menu-item span:nth-child(2){flex:1}
+.masir-menu-chevron{font-size:23px;color:#c4b5fd}
+.masir-custom-page{max-width:1000px;margin:0 auto 24px;position:relative;z-index:2}
+.masir-custom-page[hidden],.masir-drawer-shade[hidden],[data-custom-page][hidden]{display:none!important}
+.masir-custom-heading{display:flex;align-items:center;gap:12px;margin:8px 0 16px}
+.masir-custom-heading h2{margin:0;color:#c4b5fd}
+.masir-custom-heading button{white-space:nowrap}
+.masir-panel{padding:18px;margin:12px 0;background:linear-gradient(145deg,#171d31,#211a32);border:1px solid #393452;border-radius:16px}
+.masir-panel h3{color:#d8b4fe;margin:0 0 14px}
+.masir-panel label{margin-top:12px}
+.masir-panel input,.masir-panel select,.masir-panel textarea{width:100%;padding:12px;background:#0d1426;color:var(--text);border:1px solid var(--border);border-radius:10px;font:inherit}
+.masir-panel select[multiple]{min-height:170px}
+.masir-panel textarea{resize:vertical;line-height:1.8}
+.masir-wide{width:100%;margin-top:14px}
+.masir-inline{display:flex;gap:8px}
+.masir-inline button{flex-shrink:0}
+.masir-chip-list{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}
+.masir-chip{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:99px;background:#34264c;color:#e9d5ff;font-size:13px}
+.masir-muted{color:var(--muted);font-size:12px;line-height:1.8}
+.masir-status{min-height:1.6em;color:#a7f3d0;font-size:13px;line-height:1.8}
+.masir-password-wrap{display:flex;gap:6px}
+.masir-password-wrap input{flex:1;min-width:0}
+.masir-password-wrap button{background:#302541;color:#e9d5ff;min-width:44px}
+.masir-rules{font-size:12px;color:var(--muted);line-height:2;margin:8px 0}
+.danger-button{background:#4a1e2d;color:#fecdd3;border:1px solid #9f354e}
+.masir-calendar-toolbar{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin:15px 0}
+.masir-calendar-toolbar strong{flex:1;text-align:center;color:#e9d5ff}
+.masir-calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
+.masir-calendar-cell{min-width:0;min-height:52px;padding:5px 2px;background:#0d1426;color:#f3f4f6;border:1px solid var(--border);border-radius:9px;text-align:center;font-size:13px}
+.masir-calendar-cell.weekday{background:transparent;border:0;color:var(--muted);min-height:auto;font-size:11px}
+.masir-calendar-cell.selected{border:2px solid #c4b5fd;background:#34264c}
+.masir-calendar-cell.today{box-shadow:inset 0 0 0 1px #34d399}
+.masir-calendar-cell.has-event:after{content:"•";display:block;color:#fbbf24;line-height:9px}
+.masir-holiday-panel{margin-top:18px;background:#10182b}
+.masir-holiday-panel ul{padding-inline-start:22px}
+.masir-about-mark{font-size:34px;color:#d8b4fe;text-align:center;margin:8px}
+.masir-about{text-align:start;line-height:1.9}
+#profileSection #profileForm{display:none!important}
+#profileSection #profilePrivateChatLinkPanel,#profileSection #adminUserExportPanel{margin-top:14px}
+@media(max-width:600px){.masir-menu-toggle{top:10px;right:10px}.masir-drawer{width:82vw;min-width:0;padding:14px 10px}.masir-custom-heading{align-items:flex-start;flex-direction:column}.masir-custom-heading h2{font-size:20px}.masir-panel{padding:14px}.masir-calendar-grid{gap:3px}.masir-calendar-cell{min-height:43px;font-size:12px}}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -1991,6 +2042,7 @@ var supabaseClient = window.supabase.createClient(
     
 <section class="card" id="profileSection" style="display:none;">
     <h2>👤 پروفایل من</h2>
+    <div class="profile-panel" id="masirReadOnlyProfile"><h3>اطلاعات ثبت‌شده</h3><p class="masir-muted">برای نمایش اطلاعات وارد حساب شو.</p></div>
     <p class="help-text">اطلاعات شخصی، امنیت حساب و پشتیبان‌گیری را از این بخش مدیریت کن.</p>
     <div class="profile-panel">
         <h3>اطلاعات حساب</h3>
@@ -2089,6 +2141,66 @@ var supabaseClient = window.supabase.createClient(
       <p id="profileSupportStatus" class="help-text messenger-status" role="status" aria-live="polite"></p></main></div>
     </div>
 </section>
+
+
+<button type="button" id="masirMenuToggle" class="masir-menu-toggle" aria-label="باز کردن منو" title="منو">☰</button>
+<div id="masirDrawerShade" class="masir-drawer-shade" hidden></div>
+<aside id="masirDrawer" class="masir-drawer" aria-label="منوی اصلی" aria-hidden="true">
+  <div class="masir-drawer-head"><strong data-mui="menuTitle">منوی مسیر</strong><button type="button" id="masirMenuClose" aria-label="بستن منو">×</button></div>
+  <button type="button" class="masir-menu-item" data-open="profile-edit"><span>👤</span><span data-mui="myProfile">پروفایل من</span><span class="masir-menu-chevron">‹</span></button>
+  <button type="button" class="masir-menu-item" data-open="settings"><span>⚙️</span><span data-mui="settings">تنظیمات</span><span class="masir-menu-chevron">‹</span></button>
+  <button type="button" class="masir-menu-item" data-open="password"><span>🔐</span><span data-mui="changePassword">تغییر رمز عبور</span><span class="masir-menu-chevron">‹</span></button>
+  <button type="button" class="masir-menu-item" data-open="notes"><span>📝</span><span data-mui="notes">یادداشت</span><span class="masir-menu-chevron">‹</span></button>
+  <button type="button" class="masir-menu-item" data-open="calendar"><span>🗓️</span><span data-mui="calendar">تقویم</span><span class="masir-menu-chevron">‹</span></button>
+  <button type="button" class="masir-menu-item" data-open="about"><span>ℹ️</span><span data-mui="about">درباره مسیر</span><span class="masir-menu-chevron">‹</span></button>
+</aside>
+<div id="masirCustomPage" class="masir-custom-page" hidden>
+  <div class="masir-custom-heading"><button type="button" id="masirCustomBack" class="secondary-button">← <span data-mui="back">بازگشت</span></button><h2 id="masirCustomTitle">پروفایل من</h2></div>
+  <section data-custom-page="profile-edit" hidden>
+    <div class="masir-panel">
+      <h3 data-mui="personalInfo">اطلاعات شخصی</h3>
+      <form id="masirProfileEditForm">
+        <label for="muiFirstName" data-mui="firstName">نام</label><input id="muiFirstName" type="text" maxlength="60" autocomplete="given-name" required>
+        <label for="muiLastName" data-mui="lastName">نام خانوادگی</label><input id="muiLastName" type="text" maxlength="80" autocomplete="family-name" required>
+        <label for="muiPhone" data-mui="phone">شماره تلفن</label><input id="muiPhone" type="tel" maxlength="24" autocomplete="tel">
+        <label for="muiBirth" data-mui="birthDate">تاریخ تولد</label><input id="muiBirth" type="date" autocomplete="bday">
+        <label for="muiInterests" data-mui="interests">علایق (چند مورد را انتخاب کن)</label>
+        <select id="muiInterests" multiple size="8" aria-describedby="muiInterestHelp"></select>
+        <p class="masir-muted" id="muiInterestHelp" data-mui="interestHelp">برای انتخاب چند مورد، در رایانه Ctrl یا در گوشی روی چند گزینه بزن.</p>
+        <label for="muiCustomInterest" data-mui="otherInterest">علاقه دلخواه (اختیاری)</label>
+        <div class="masir-inline"><input id="muiCustomInterest" type="text" maxlength="80"><button type="button" id="muiAddInterest" class="secondary-button" data-mui="add">افزودن</button></div>
+        <div id="muiSelectedInterests" class="masir-chip-list"></div>
+        <label for="muiGoals" data-mui="goals">اهداف من</label><textarea id="muiGoals" rows="6" maxlength="10000"></textarea>
+        <button class="primary-button masir-wide" type="submit" id="muiProfileSave" data-mui="save">ذخیره اطلاعات</button><p id="muiProfileMessage" class="masir-status" role="status"></p>
+      </form>
+    </div>
+  </section>
+  <section data-custom-page="settings" hidden>
+    <div class="masir-panel"><h3 data-mui="settings">تنظیمات</h3>
+      <label for="muiLanguage" data-mui="language">زبان برنامه</label><select id="muiLanguage"><option value="fa">فارسی</option><option value="en">English</option><option value="ar">العربية</option><option value="tr">Türkçe</option><option value="ja">日本語</option></select>
+      <button type="button" id="muiLogout" class="secondary-button masir-wide" data-mui="logout">خروج از حساب</button>
+      <button type="button" id="muiDeleteAccount" class="danger-button masir-wide" data-mui="deleteAccount">حذف حساب کاربری</button>
+      <p class="masir-muted" data-mui="deleteWarning">حذف حساب دائمی است و ممکن است اطلاعات مرتبط را پاک کند.</p>
+    </div>
+  </section>
+  <section data-custom-page="password" hidden>
+    <div class="masir-panel"><h3 data-mui="changePassword">تغییر رمز عبور</h3><form id="muiPasswordForm">
+      <label for="muiCurrentPassword" data-mui="currentPassword">رمز عبور فعلی</label><div class="masir-password-wrap"><input id="muiCurrentPassword" type="password" autocomplete="current-password" required><button type="button" data-eye="muiCurrentPassword" aria-label="نمایش رمز">◉</button></div>
+      <label for="muiNewPassword" data-mui="newPassword">رمز عبور جدید</label><div class="masir-password-wrap"><input id="muiNewPassword" type="password" autocomplete="new-password" required><button type="button" data-eye="muiNewPassword" aria-label="نمایش رمز">◉</button></div>
+      <div class="masir-rules"><div data-pw-rule="length">○ حداقل ۸ کاراکتر</div><div data-pw-rule="upper">○ یک حرف بزرگ انگلیسی (A-Z)</div><div data-pw-rule="lower">○ یک حرف کوچک انگلیسی (a-z)</div><div data-pw-rule="number">○ یک عدد انگلیسی (0-9)</div></div>
+      <label for="muiConfirmPassword" data-mui="confirmPassword">تکرار رمز عبور جدید</label><div class="masir-password-wrap"><input id="muiConfirmPassword" type="password" autocomplete="new-password" required><button type="button" data-eye="muiConfirmPassword" aria-label="نمایش رمز">◉</button></div>
+      <p id="muiPasswordMessage" class="masir-status" role="status"></p><button class="primary-button masir-wide" type="submit" id="muiPasswordSave" data-mui="updatePassword">ذخیره و تغییر رمز</button>
+    </form></div>
+  </section>
+  <section data-custom-page="notes" hidden><div class="masir-panel"><h3 data-mui="myNotes">یادداشت‌های من</h3><textarea id="muiNotesText" rows="12" maxlength="20000" data-mui-placeholder="notePlaceholder" placeholder="یادداشتت را اینجا بنویس..."></textarea><button type="button" id="muiNotesSave" class="primary-button masir-wide" data-mui="saveNote">ذخیره یادداشت</button><p id="muiNotesMessage" class="masir-status" role="status"></p></div></section>
+  <section data-custom-page="calendar" hidden><div class="masir-panel"><h3 data-mui="calendar">تقویم</h3>
+    <label for="muiCalendarType" data-mui="calendarType">نوع تقویم</label><select id="muiCalendarType"><option value="persian" data-mui="solar">شمسی</option><option value="gregory" data-mui="gregorian">میلادی</option><option value="islamic-umalqura" data-mui="lunar">قمری</option><option value="japanese" data-mui="japanese">ژاپنی</option></select>
+    <label for="muiCalendarCountry" data-mui="country">کشور / منطقه مناسبت‌ها</label><select id="muiCalendarCountry"><option value="IR">ایران</option><option value="US">آمریکا</option><option value="GB">بریتانیا</option><option value="TR">ترکیه</option><option value="JP">ژاپن</option><option value="AZ">آذربایجان</option><option value="SA">عربستان سعودی</option><option value="AE">امارات متحده عربی</option><option value="IN">هند</option><option value="FR">فرانسه</option></select>
+    <div class="masir-calendar-toolbar"><button type="button" id="muiCalendarPrev" class="secondary-button">‹</button><strong id="muiCalendarMonth"></strong><button type="button" id="muiCalendarNext" class="secondary-button">›</button><button type="button" id="muiCalendarToday" class="secondary-button" data-mui="today">امروز</button></div>
+    <div id="muiCalendarGrid" class="masir-calendar-grid"></div><div class="masir-panel masir-holiday-panel"><strong data-mui="dayEvents">مناسبت‌های روز انتخاب‌شده</strong><p id="muiCalendarSelectedDate"></p><ul id="muiCalendarEvents"></ul><p class="masir-muted" data-mui="holidayNote">فهرست مناسبت‌ها بر پایه مناسبت‌های شناخته‌شده و تعطیلات منتخب است؛ ممکن است همه رویدادهای محلی را پوشش ندهد.</p></div>
+  </div></section>
+  <section data-custom-page="about" hidden><div class="masir-panel masir-about"><div class="masir-about-mark">م 💜</div><h3 data-mui="about">درباره مسیر</h3><p data-mui="aboutDesc">مسیر یک برنامه‌ریز شخصی برای مدیریت فعالیت‌ها، پیگیری اهداف و رشد روزانه است.</p><h4 data-mui="features">امکانات مسیر</h4><ul><li data-mui="feature1">برنامه‌ریزی و پیگیری فعالیت‌ها</li><li data-mui="feature2">ثبت علایق، اهداف و یادداشت‌ها</li><li data-mui="feature3">تقویم چندگانه و مناسبت‌ها</li><li data-mui="feature4">پشتیبانی از پنج زبان</li></ul><h4 data-mui="designer">طراح و توسعه‌دهنده</h4><p>رامتین همتای</p><h4 data-mui="contactEmail">ایمیل تماس</h4><p><a href="mailto:ramtinxasf@gmail.com">ramtinxasf@gmail.com</a></p></div></section>
+</div>
 
 <nav id="bottomNav">
     <button type="button" id="nav-home" onclick="showPage('home')">🏠 خانه</button>
@@ -3147,6 +3259,8 @@ function loadActivities() {
 let activities = [];
 
 function showPage(page) {
+    const customPage = document.getElementById("masirCustomPage");
+    if (customPage && !customPage.hidden) customPage.hidden = true;
     const sections = {
         home: ["homeStats", "homeProgress", "calendarSection"],
         chat: ["chatSection"],
@@ -5434,6 +5548,98 @@ if($("profileSupportEmail"))$("profileSupportEmail").addEventListener("change",r
 refreshUserUnreadBadge();
 setInterval(refreshUserUnreadBadge,20000);
 if($("adminSupportReplyButton"))$("adminSupportReplyButton").onclick=async()=>{const st=$("adminSupportStatus"),b=$("adminSupportReplyButton"),msg=$("adminSupportReply").value.trim(),broadcast=$("adminSupportBroadcastAll")?.checked;if(!msg){st.textContent="پیام را بنویس.";return;}if(broadcast&&!confirm("این پیام برای همه کاربران دارای گفتگو ارسال شود؟"))return;if(!broadcast&&!chosen){st.textContent="ابتدا گفتگو را انتخاب کن یا گزینه ارسال به همه را فعال کن.";return;}b.disabled=true;try{if(broadcast){const result=await adminApi({action:"admin_broadcast",message:msg});$("adminSupportReply").value="";$("adminSupportBroadcastAll").checked=false;st.style.color="#a7f3d0";st.textContent="پیام همگانی برای "+result.sent_count+" گفتگو ارسال شد.";}else{await adminApi({action:"admin_reply",thread_id:chosen,message:msg});$("adminSupportReply").value="";await readThread();st.style.color="#a7f3d0";st.textContent="پاسخ ارسال شد.";}await refresh();}catch(e){st.style.color="#fb7185";st.textContent=e.message;}finally{b.disabled=false;}};
+})();
+</script>
+
+
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const ui={
+fa:{menuTitle:"منوی مسیر",myProfile:"پروفایل من",settings:"تنظیمات",changePassword:"تغییر رمز عبور",notes:"یادداشت",calendar:"تقویم",about:"درباره مسیر",back:"بازگشت",personalInfo:"اطلاعات شخصی",firstName:"نام",lastName:"نام خانوادگی",phone:"شماره تلفن",birthDate:"تاریخ تولد",interests:"علایق (چند مورد را انتخاب کن)",interestHelp:"برای انتخاب چند مورد، در رایانه Ctrl یا در گوشی روی چند گزینه بزن.",otherInterest:"علاقه دلخواه (اختیاری)",add:"افزودن",goals:"اهداف من",save:"ذخیره اطلاعات",language:"زبان برنامه",logout:"خروج از حساب",deleteAccount:"حذف حساب کاربری",deleteWarning:"حذف حساب دائمی است و ممکن است اطلاعات مرتبط را پاک کند.",currentPassword:"رمز عبور فعلی",newPassword:"رمز عبور جدید",confirmPassword:"تکرار رمز عبور جدید",updatePassword:"ذخیره و تغییر رمز",myNotes:"یادداشت‌های من",notePlaceholder:"یادداشتت را اینجا بنویس...",saveNote:"ذخیره یادداشت",calendarType:"نوع تقویم",solar:"شمسی",gregorian:"میلادی",lunar:"قمری",japanese:"ژاپنی",country:"کشور / منطقه مناسبت‌ها",today:"امروز",dayEvents:"مناسبت‌های روز انتخاب‌شده",holidayNote:"فهرست مناسبت‌ها بر پایه مناسبت‌های شناخته‌شده و تعطیلات منتخب است؛ ممکن است همه رویدادهای محلی را پوشش ندهد.",aboutDesc:"مسیر یک برنامه‌ریز شخصی برای مدیریت فعالیت‌ها، پیگیری اهداف و رشد روزانه است.",features:"امکانات مسیر",feature1:"برنامه‌ریزی و پیگیری فعالیت‌ها",feature2:"ثبت علایق، اهداف و یادداشت‌ها",feature3:"تقویم چندگانه و مناسبت‌ها",feature4:"پشتیبانی از پنج زبان",designer:"طراح و توسعه‌دهنده",contactEmail:"ایمیل تماس",needLogin:"برای استفاده از این بخش ابتدا وارد حساب شو.",saved:"اطلاعات ذخیره شد.",saving:"در حال ذخیره...",failed:"ذخیره انجام نشد: ",pwRules:"رمز باید حداقل ۸ کاراکتر و شامل حرف بزرگ، حرف کوچک و عدد انگلیسی باشد.",pwMismatch:"رمز جدید و تکرار آن یکسان نیستند.",currentWrong:"رمز عبور فعلی درست نیست.",pwSuccess:"رمز عبور با موفقیت تغییر کرد.",noteSaved:"یادداشت ذخیره شد.",selectInterest:"علاقه‌ای انتخاب کن یا یک مورد دلخواه اضافه کن.",other:"سایر",noEvents:"مناسبت شناخته‌شده‌ای برای این روز در فهرست فعلی ثبت نشده است.",confirmDelete:"حذف حساب دائمی است. برای ادامه، تأیید می‌کنی؟",calendarDays:["ش","ی","د","س","چ","پ","ج"]},
+en:{menuTitle:"Masir menu",myProfile:"My profile",settings:"Settings",changePassword:"Change password",notes:"Notes",calendar:"Calendar",about:"About Masir",back:"Back",personalInfo:"Personal information",firstName:"First name",lastName:"Last name",phone:"Phone number",birthDate:"Date of birth",interests:"Interests (select any number)",interestHelp:"Select multiple items from the list. On desktop use Ctrl/Command; on mobile tap multiple options.",otherInterest:"Add a custom interest (optional)",add:"Add",goals:"My goals",save:"Save information",language:"App language",logout:"Log out",deleteAccount:"Delete account",deleteWarning:"Account deletion is permanent and may erase associated information.",currentPassword:"Current password",newPassword:"New password",confirmPassword:"Confirm new password",updatePassword:"Save and change password",myNotes:"My notes",notePlaceholder:"Write your note here...",saveNote:"Save note",calendarType:"Calendar system",solar:"Solar Hijri",gregorian:"Gregorian",lunar:"Islamic Hijri",japanese:"Japanese era",country:"Country / holiday region",today:"Today",dayEvents:"Events on selected day",holidayNote:"Events are based on selected and widely recognized holidays; this may not cover every local observance.",aboutDesc:"Masir is a personal planner to organize activities, track goals, and support daily growth.",features:"Masir features",feature1:"Plan and track activities",feature2:"Save interests, goals, and notes",feature3:"Multiple calendar systems and events",feature4:"Five-language interface",designer:"Designed and developed by",contactEmail:"Contact email",needLogin:"Please sign in to use this section.",saved:"Information saved.",saving:"Saving...",failed:"Could not save: ",pwRules:"Password must be at least 8 characters and include an uppercase letter, lowercase letter, and number.",pwMismatch:"New password and confirmation do not match.",currentWrong:"Current password is incorrect.",pwSuccess:"Password changed successfully.",noteSaved:"Note saved.",selectInterest:"Choose an interest or add a custom one.",other:"Other",noEvents:"No recognized event is listed for this date in the current list.",confirmDelete:"Account deletion is permanent. Continue?",calendarDays:["Su","Mo","Tu","We","Th","Fr","Sa"]},
+ar:{menuTitle:"قائمة مسير",myProfile:"ملفي الشخصي",settings:"الإعدادات",changePassword:"تغيير كلمة المرور",notes:"ملاحظات",calendar:"التقويم",about:"حول مسير",back:"رجوع",personalInfo:"المعلومات الشخصية",firstName:"الاسم",lastName:"اسم العائلة",phone:"رقم الهاتف",birthDate:"تاريخ الميلاد",interests:"الاهتمامات (اختر ما تشاء)",interestHelp:"يمكنك اختيار عدة عناصر من القائمة.",otherInterest:"إضافة اهتمام آخر (اختياري)",add:"إضافة",goals:"أهدافي",save:"حفظ المعلومات",language:"لغة التطبيق",logout:"تسجيل الخروج",deleteAccount:"حذف الحساب",deleteWarning:"حذف الحساب نهائي وقد يؤدي إلى حذف البيانات المرتبطة.",currentPassword:"كلمة المرور الحالية",newPassword:"كلمة المرور الجديدة",confirmPassword:"تأكيد كلمة المرور الجديدة",updatePassword:"حفظ وتغيير كلمة المرور",myNotes:"ملاحظاتي",notePlaceholder:"اكتب ملاحظتك هنا...",saveNote:"حفظ الملاحظة",calendarType:"نوع التقويم",solar:"هجري شمسي",gregorian:"ميلادي",lunar:"هجري قمري",japanese:"ياباني",country:"الدولة / منطقة العطلات",today:"اليوم",dayEvents:"مناسبات اليوم المحدد",holidayNote:"تعتمد المناسبات على الأعياد المعروفة والمختارة وقد لا تشمل جميع المناسبات المحلية.",aboutDesc:"مسير مخطط شخصي لتنظيم الأنشطة ومتابعة الأهداف والنمو اليومي.",features:"ميزات مسير",feature1:"تخطيط الأنشطة ومتابعتها",feature2:"حفظ الاهتمامات والأهداف والملاحظات",feature3:"أنظمة تقويم متعددة ومناسبات",feature4:"واجهة بخمس لغات",designer:"التصميم والتطوير",contactEmail:"البريد للتواصل",needLogin:"يرجى تسجيل الدخول لاستخدام هذا القسم.",saved:"تم حفظ المعلومات.",saving:"جارٍ الحفظ...",failed:"تعذر الحفظ: ",pwRules:"يجب أن تتكون كلمة المرور من 8 أحرف على الأقل وتشمل حرفاً كبيراً وصغيراً ورقماً.",pwMismatch:"كلمة المرور الجديدة وتأكيدها غير متطابقين.",currentWrong:"كلمة المرور الحالية غير صحيحة.",pwSuccess:"تم تغيير كلمة المرور بنجاح.",noteSaved:"تم حفظ الملاحظة.",selectInterest:"اختر اهتماماً أو أضف اهتماماً خاصاً.",other:"أخرى",noEvents:"لا توجد مناسبة معروفة لهذا اليوم في القائمة الحالية.",confirmDelete:"حذف الحساب نهائي. هل تريد المتابعة؟",calendarDays:["ح","ن","ث","ر","خ","ج","س"]},
+tr:{menuTitle:"Masir menüsü",myProfile:"Profilim",settings:"Ayarlar",changePassword:"Şifreyi değiştir",notes:"Notlar",calendar:"Takvim",about:"Masir hakkında",back:"Geri",personalInfo:"Kişisel bilgiler",firstName:"Ad",lastName:"Soyadı",phone:"Telefon numarası",birthDate:"Doğum tarihi",interests:"İlgi alanları (istediğin kadar seç)",interestHelp:"Listeden birden fazla seçenek seçebilirsin.",otherInterest:"Özel ilgi alanı ekle (isteğe bağlı)",add:"Ekle",goals:"Hedeflerim",save:"Bilgileri kaydet",language:"Uygulama dili",logout:"Çıkış yap",deleteAccount:"Hesabı sil",deleteWarning:"Hesap silme işlemi kalıcıdır ve ilişkili verileri silebilir.",currentPassword:"Mevcut şifre",newPassword:"Yeni şifre",confirmPassword:"Yeni şifreyi tekrar gir",updatePassword:"Kaydet ve şifreyi değiştir",myNotes:"Notlarım",notePlaceholder:"Notunu buraya yaz...",saveNote:"Notu kaydet",calendarType:"Takvim türü",solar:"Güneş Hicri",gregorian:"Miladi",lunar:"Hicri kameri",japanese:"Japon dönemi",country:"Ülke / tatil bölgesi",today:"Bugün",dayEvents:"Seçilen günün etkinlikleri",holidayNote:"Etkinlikler bilinen ve seçilmiş tatillere dayanır; tüm yerel etkinlikleri kapsamayabilir.",aboutDesc:"Masir; etkinlikleri düzenlemek, hedefleri izlemek ve günlük gelişimi desteklemek için kişisel bir planlayıcıdır.",features:"Masir özellikleri",feature1:"Etkinlikleri planlama ve izleme",feature2:"İlgi alanları, hedefler ve notları kaydetme",feature3:"Birden fazla takvim ve etkinlikler",feature4:"Beş dil desteği",designer:"Tasarımcı ve geliştirici",contactEmail:"İletişim e-postası",needLogin:"Bu bölümü kullanmak için giriş yap.",saved:"Bilgiler kaydedildi.",saving:"Kaydediliyor...",failed:"Kaydedilemedi: ",pwRules:"Şifre en az 8 karakter olmalı; büyük harf, küçük harf ve rakam içermelidir.",pwMismatch:"Yeni şifre ve tekrarı aynı değil.",currentWrong:"Mevcut şifre yanlış.",pwSuccess:"Şifre başarıyla değiştirildi.",noteSaved:"Not kaydedildi.",selectInterest:"Bir ilgi alanı seç veya özel bir tane ekle.",other:"Diğer",noEvents:"Mevcut listede bu tarih için bilinen bir etkinlik yok.",confirmDelete:"Hesap kalıcı olarak silinecek. Devam edilsin mi?",calendarDays:["Pz","Pt","Sa","Ça","Pe","Cu","Ct"]},
+ja:{menuTitle:"Masir メニュー",myProfile:"プロフィール",settings:"設定",changePassword:"パスワード変更",notes:"メモ",calendar:"カレンダー",about:"Masir について",back:"戻る",personalInfo:"個人情報",firstName:"名",lastName:"姓",phone:"電話番号",birthDate:"生年月日",interests:"興味・関心（複数選択可）",interestHelp:"リストから複数の項目を選択できます。",otherInterest:"その他の興味（任意）",add:"追加",goals:"目標",save:"情報を保存",language:"アプリの言語",logout:"ログアウト",deleteAccount:"アカウント削除",deleteWarning:"アカウント削除は取り消せず、関連データも削除される場合があります。",currentPassword:"現在のパスワード",newPassword:"新しいパスワード",confirmPassword:"新しいパスワードの確認",updatePassword:"保存して変更",myNotes:"自分のメモ",notePlaceholder:"ここにメモを入力...",saveNote:"メモを保存",calendarType:"暦の種類",solar:"太陽ヒジュラ暦",gregorian:"グレゴリオ暦",lunar:"イスラム暦",japanese:"和暦",country:"国 / 祝日の地域",today:"今日",dayEvents:"選択日の行事",holidayNote:"行事は広く知られた祝日を中心に表示します。すべての地域行事を網羅するとは限りません。",aboutDesc:"Masir は、活動の整理、目標の追跡、日々の成長を支援する個人用プランナーです。",features:"Masir の機能",feature1:"活動の計画と進捗管理",feature2:"興味・目標・メモの保存",feature3:"複数の暦と行事",feature4:"5 言語に対応",designer:"デザイン・開発",contactEmail:"連絡先メール",needLogin:"この機能を使うにはログインしてください。",saved:"情報を保存しました。",saving:"保存中...",failed:"保存できませんでした: ",pwRules:"パスワードは8文字以上で、大文字・小文字・数字を含めてください。",pwMismatch:"新しいパスワードと確認用パスワードが一致しません。",currentWrong:"現在のパスワードが正しくありません。",pwSuccess:"パスワードを変更しました。",noteSaved:"メモを保存しました。",selectInterest:"興味を選択するか、独自の項目を追加してください。",other:"その他",noEvents:"現在の一覧にこの日の行事はありません。",confirmDelete:"アカウントを完全に削除します。続行しますか？",calendarDays:["日","月","火","水","木","金","土"]}
+};
+const interestGroups={
+"🎨 هنر و خلاقیت":["نقاشی","موسیقی","عکاسی","طراحی","نویسندگی","سینما و تئاتر","صنایع دستی"],
+"⚽ ورزش و تناسب‌اندام":["فوتبال","بدنسازی","پیاده‌روی","شنا","یوگا","دوچرخه‌سواری","ورزش‌های رزمی"],
+"📚 دانش و یادگیری":["کتاب‌خوانی","تاریخ","علوم","روان‌شناسی","یادگیری مهارت","زبان‌آموزی"],
+"💻 فناوری و بازی":["کامپیوتر","هوش مصنوعی","بازی‌های ویدیویی","فناوری‌های جدید","بازی‌های فکری"],
+"💼 شغل و کسب‌وکار":["کارآفرینی","مدیریت","فروش","سرمایه‌گذاری","پیشرفت شغلی"],
+"🌱 رشد فردی":["مدیریت زمان","عادت‌سازی","خودشناسی","تمرکز","بهره‌وری"],
+"🌍 سفر و طبیعت":["سفر","کوهنوردی","طبیعت‌گردی","کمپینگ","فرهنگ‌های جهان"],
+"🍳 زندگی روزمره":["آشپزی","تغذیه","مد و زیبایی","دکوراسیون","باغبانی"],
+"👥 روابط اجتماعی":["خانواده","دوستی","فعالیت اجتماعی","داوطلبی"],
+"🎮 سرگرمی":["فیلم و سریال","بازی‌های رومیزی","پازل","جمع‌آوری کلکسیون"],
+"🐾 حیوانات":["نگهداری حیوانات","حمایت از حیوانات"],
+"🧘 آرامش و معنویت":["مراقبه","آرامش ذهن","معنویت"]
+};
+const interestTranslations={
+en:{"نقاشی":"Drawing","موسیقی":"Music","عکاسی":"Photography","طراحی":"Design","نویسندگی":"Writing","سینما و تئاتر":"Film and theatre","صنایع دستی":"Handicrafts","فوتبال":"Football / soccer","بدنسازی":"Fitness","پیاده‌روی":"Walking","شنا":"Swimming","یوگا":"Yoga","دوچرخه‌سواری":"Cycling","ورزش‌های رزمی":"Martial arts","کتاب‌خوانی":"Reading","تاریخ":"History","علوم":"Science","روان‌شناسی":"Psychology","یادگیری مهارت":"Learning skills","زبان‌آموزی":"Learning languages","کامپیوتر":"Computers","هوش مصنوعی":"Artificial intelligence","بازی‌های ویدیویی":"Video games","فناوری‌های جدید":"New technology","بازی‌های فکری":"Brain games","کارآفرینی":"Entrepreneurship","مدیریت":"Management","فروش":"Sales","سرمایه‌گذاری":"Investing","پیشرفت شغلی":"Career growth","مدیریت زمان":"Time management","عادت‌سازی":"Habit building","خودشناسی":"Self-awareness","تمرکز":"Focus","بهره‌وری":"Productivity","سفر":"Travel","کوهنوردی":"Hiking","طبیعت‌گردی":"Nature walks","کمپینگ":"Camping","فرهنگ‌های جهان":"World cultures","آشپزی":"Cooking","تغذیه":"Nutrition","مد و زیبایی":"Fashion and beauty","دکوراسیون":"Interior design","باغبانی":"Gardening","خانواده":"Family","دوستی":"Friendship","فعالیت اجتماعی":"Community activities","داوطلبی":"Volunteering","فیلم و سریال":"Movies and TV","بازی‌های رومیزی":"Board games","پازل":"Puzzles","جمع‌آوری کلکسیون":"Collecting","نگهداری حیوانات":"Pet care","حمایت از حیوانات":"Animal welfare","مراقبه":"Meditation","آرامش ذهن":"Mindfulness","معنویت":"Spirituality","سایر":"Other"},
+ar:{"نقاشی":"الرسم","موسیقی":"الموسيقى","عکاسی":"التصوير","طراحی":"التصميم","نویسندگی":"الكتابة","سینما و تئاتر":"السينما والمسرح","صنایع دستی":"الحرف اليدوية","فوتبال":"كرة القدم","بدنسازی":"اللياقة البدنية","پیاده‌روی":"المشي","شنا":"السباحة","یوگا":"اليوغا","دوچرخه‌سواری":"ركوب الدراجات","ورزش‌های رزمی":"الفنون القتالية","کتاب‌خوانی":"القراءة","تاریخ":"التاريخ","علوم":"العلوم","روان‌شناسی":"علم النفس","یادگیری مهارت":"تعلم المهارات","زبان‌آموزی":"تعلم اللغات","کامپیوتر":"الحاسوب","هوش مصنوعی":"الذكاء الاصطناعي","بازی‌های ویدیویی":"ألعاب الفيديو","فناوری‌های جدید":"التقنية الحديثة","بازی‌های فکری":"الألعاب الذهنية","کارآفرینی":"ريادة الأعمال","مدیریت":"الإدارة","فروش":"المبيعات","سرمایه‌گذاری":"الاستثمار","پیشرفت شغلی":"التطور المهني","مدیریت زمان":"إدارة الوقت","عادت‌سازی":"بناء العادات","خودشناسی":"معرفة الذات","تمرکز":"التركيز","بهره‌وری":"الإنتاجية","سفر":"السفر","کوهنوردی":"تسلق الجبال","طبیعت‌گردی":"التنزه في الطبيعة","کمپینگ":"التخييم","فرهنگ‌های جهان":"ثقافات العالم","آشپزی":"الطبخ","تغذیه":"التغذية","مد و زیبایی":"الموضة والجمال","دکوراسیون":"الديكور","باغبانی":"البستنة","خانواده":"العائلة","دوستی":"الصداقة","فعالیت اجتماعی":"الأنشطة المجتمعية","داوطلبی":"التطوع","فیلم و سریال":"الأفلام والمسلسلات","بازی‌های رومیزی":"ألعاب الطاولة","پازل":"الألغاز","جمع‌آوری کلکسیون":"جمع المقتنيات","نگهداری حیوانات":"رعاية الحيوانات","حمایت از حیوانات":"الرفق بالحيوان","مراقبه":"التأمل","آرامش ذهن":"اليقظة الذهنية","معنویت":"الروحانية","سایر":"أخرى"},
+tr:{"نقاشی":"Resim","موسیقی":"Müzik","عکاسی":"Fotoğrafçılık","طراحی":"Tasarım","نویسندگی":"Yazarlık","سینما و تئاتر":"Sinema ve tiyatro","صنایع دستی":"El sanatları","فوتبال":"Futbol","بدنسازی":"Fitness","پیاده‌روی":"Yürüyüş","شنا":"Yüzme","یوگا":"Yoga","دوچرخه‌سواری":"Bisiklet","ورزش‌های رزمی":"Dövüş sanatları","کتاب‌خوانی":"Kitap okuma","تاریخ":"Tarih","علوم":"Bilim","روان‌شناسی":"Psikoloji","یادگیری مهارت":"Beceri öğrenme","زبان‌آموزی":"Dil öğrenme","کامپیوتر":"Bilgisayar","هوش مصنوعی":"Yapay zekâ","بازی‌های ویدیویی":"Video oyunları","فناوری‌های جدید":"Yeni teknolojiler","بازی‌های فکری":"Zekâ oyunları","کارآفرینی":"Girişimcilik","مدیریت":"Yönetim","فروش":"Satış","سرمایه‌گذاری":"Yatırım","پیشرفت شغلی":"Kariyer gelişimi","مدیریت زمان":"Zaman yönetimi","عادت‌سازی":"Alışkanlık geliştirme","خودشناسی":"Kendini tanıma","تمرکز":"Odaklanma","بهره‌وری":"Verimlilik","سفر":"Seyahat","کوهنوردی":"Dağ yürüyüşü","طبیعت‌گردی":"Doğa gezileri","کمپینگ":"Kamp","فرهنگ‌های جهان":"Dünya kültürleri","آشپزی":"Yemek pişirme","تغذیه":"Beslenme","مد و زیبایی":"Moda ve güzellik","دکوراسیون":"Dekorasyon","باغبانی":"Bahçecilik","خانواده":"Aile","دوستی":"Arkadaşlık","فعالیت اجتماعی":"Toplumsal faaliyetler","داوطلبی":"Gönüllülük","فیلم و سریال":"Film ve diziler","بازی‌های رومیزی":"Masa oyunları","پازل":"Bulmacalar","جمع‌آوری کلکسیون":"Koleksiyon","نگهداری حیوانات":"Evcil hayvan bakımı","حمایت از حیوانات":"Hayvan hakları","مراقبه":"Meditasyon","آرامش ذهن":"Farkındalık","معنویت":"Maneviyat","سایر":"Diğer"},
+ja:{"نقاشی":"絵画","موسیقی":"音楽","عکاسی":"写真","طراحی":"デザイン","نویسندگی":"執筆","سینما و تئاتر":"映画・演劇","صنایع دستی":"工芸","فوتبال":"サッカー","بدنسازی":"フィットネス","پیاده‌روی":"散歩","شنا":"水泳","یوگا":"ヨガ","دوچرخه‌سواری":"サイクリング","ورزش‌های رزمی":"武道","کتاب‌خوانی":"読書","تاریخ":"歴史","علوم":"科学","روان‌شناسی":"心理学","یادگیری مهارت":"スキル学習","زبان‌آموزی":"語学学習","کامپیوتر":"コンピューター","هوش مصنوعی":"人工知能","بازی‌های ویدیویی":"ビデオゲーム","فناوری‌های جدید":"新しい技術","بازی‌های فکری":"頭脳ゲーム","کارآفرینی":"起業","مدیریت":"経営","فروش":"販売","سرمایه‌گذاری":"投資","پیشرفت شغلی":"キャリア開発","مدیریت زمان":"時間管理","عادت‌سازی":"習慣づくり","خودشناسی":"自己理解","تمرکز":"集中","بهره‌وری":"生産性","سفر":"旅行","کوهنوردی":"登山","طبیعت‌گردی":"自然散策","کمپینگ":"キャンプ","فرهنگ‌های جهان":"世界の文化","آشپزی":"料理","تغذیه":"栄養","مد و زیبایی":"ファッション・美容","دکوراسیون":"インテリア","باغبانی":"園芸","خانواده":"家族","دوستی":"友情","فعالیت اجتماعی":"地域活動","داوطلبی":"ボランティア","فیلم و سریال":"映画・ドラマ","بازی‌های رومیزی":"ボードゲーム","پازل":"パズル","جمع‌آوری کلکسیون":"収集","نگهداری حیوانات":"ペットの世話","حمایت از حیوانات":"動物保護","مراقبه":"瞑想","آرامش ذهن":"マインドフルネス","معنویت":"精神性","سایر":"その他"}
+};
+let selectedInterests=[], calDate=new Date(), calSelected=new Date();
+const lang=()=>ui[window.masirCurrentLanguage?window.masirCurrentLanguage():"fa"]||ui.fa;
+const t=k=>lang()[k]||ui.fa[k]||k;
+const setStatus=(id,msg,bad=false)=>{const e=$(id);if(e){e.textContent=msg;e.style.color=bad?"#fb7185":"#a7f3d0";}};
+function translateCustom(){document.querySelectorAll("[data-mui]").forEach(e=>{const k=e.dataset.mui;if(e.tagName==="OPTION")return;e.textContent=t(k)});document.querySelectorAll("[data-mui-placeholder]").forEach(e=>e.placeholder=t(e.dataset.muiPlaceholder));const title=$("masirCustomTitle");const active=document.querySelector("[data-custom-page]:not([hidden])");if(title&&active){const map={"profile-edit":"myProfile",settings:"settings",password:"changePassword",notes:"notes",calendar:"calendar",about:"about"};title.textContent=t(map[active.dataset.customPage]||"menuTitle");}renderInterestOptions();if(!$("masirCustomPage").hidden&&active&&active.dataset.customPage==="calendar")renderCalendar();}
+function openDrawer(){ $("masirDrawer").classList.add("open");$("masirDrawer").setAttribute("aria-hidden","false");$("masirDrawerShade").hidden=false; }
+function closeDrawer(){ $("masirDrawer").classList.remove("open");$("masirDrawer").setAttribute("aria-hidden","true");$("masirDrawerShade").hidden=true; }
+function openCustomPage(page){closeDrawer();$("masirCustomPage").hidden=false;document.querySelectorAll("[data-custom-page]").forEach(e=>e.hidden=e.dataset.customPage!==page);translateCustom();if(page==="profile-edit")loadEditProfile();if(page==="notes")loadNotes();if(page==="calendar")renderCalendar();window.scrollTo({top:0,behavior:"smooth"});}
+$("masirMenuToggle").addEventListener("click",openDrawer);$("masirMenuClose").addEventListener("click",closeDrawer);$("masirDrawerShade").addEventListener("click",closeDrawer);
+document.querySelectorAll("[data-open]").forEach(b=>b.addEventListener("click",()=>openCustomPage(b.dataset.open)));
+$("masirCustomBack").addEventListener("click",()=>{$("masirCustomPage").hidden=true;document.querySelectorAll("[data-custom-page]").forEach(e=>e.hidden=true);});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeDrawer();if(!$("masirCustomPage").hidden)$("masirCustomPage").hidden=true;}});
+function currentUser(){return window.masirCurrentUser||null;}
+function metadata(){return currentUser()?.user_metadata||{};}
+function requireUser(){if(!currentUser()){setStatus("muiProfileMessage",t("needLogin"),true);return false;}return true;}
+function renderInterestOptions(){const select=$("muiInterests");if(!select)return;const prior=new Set(Array.from(select.selectedOptions).map(o=>o.value));const existing=selectedInterests.slice();select.innerHTML="";const langCode=window.masirCurrentLanguage?window.masirCurrentLanguage():"fa";Object.entries(interestGroups).forEach(([group,items])=>{const og=document.createElement("optgroup");og.label=group.replace(/^[^ ]+ /,"");items.forEach(item=>{const o=document.createElement("option");o.value=item;o.textContent=(interestTranslations[langCode]||{})[item]||item;o.selected=prior.has(item)||existing.includes(item);og.appendChild(o);});select.appendChild(og);});const other=document.createElement("option");other.value="__other__";other.textContent=t("other");other.selected=prior.has("__other__")||existing.includes(t("other"));select.appendChild(other);drawInterestChips();}
+function drawInterestChips(){const box=$("muiSelectedInterests");if(!box)return;box.innerHTML="";selectedInterests.forEach((v,i)=>{const b=document.createElement("button");b.type="button";b.className="masir-chip";b.textContent=v+" ×";b.onclick=()=>{selectedInterests.splice(i,1);renderInterestOptions();};box.appendChild(b);});}
+$("muiInterests").addEventListener("change",()=>{selectedInterests=Array.from($("muiInterests").selectedOptions).filter(o=>o.value!=="__other__").map(o=>o.value);drawInterestChips();});
+$("muiAddInterest").addEventListener("click",()=>{const v=$("muiCustomInterest").value.trim();if(!v)return; if(!selectedInterests.includes(v))selectedInterests.push(v);$("muiCustomInterest").value="";renderInterestOptions();});
+function loadEditProfile(){const u=currentUser();if(!u){setStatus("muiProfileMessage",t("needLogin"),true);return;}const m=metadata();$("muiFirstName").value=m.first_name||m.firstName||"";$("muiLastName").value=m.last_name||m.lastName||"";$("muiPhone").value=m.phone||u.phone||"";$("muiBirth").value=m.birth_date||m.birthDate||"";$("muiGoals").value=m.goals||"";selectedInterests=Array.isArray(m.interests)?m.interests.slice():[];renderInterestOptions();setStatus("muiProfileMessage","");}
+$("masirProfileEditForm").addEventListener("submit",async e=>{e.preventDefault();if(!requireUser())return;const b=$("muiProfileSave"),u=currentUser();b.disabled=true;setStatus("muiProfileMessage",t("saving"));try{const data={...(u.user_metadata||{}),first_name:$("muiFirstName").value.trim(),last_name:$("muiLastName").value.trim(),phone:$("muiPhone").value.trim(),birth_date:$("muiBirth").value,interests:selectedInterests,goals:$("muiGoals").value.trim()};const {data:res,error}=await supabaseClient.auth.updateUser({data});if(error)throw error;window.masirCurrentUser=res.user;setStatus("muiProfileMessage",t("saved"));renderReadOnlyProfile();if(window.masirPopulateProfile)window.masirPopulateProfile(res.user);}catch(err){setStatus("muiProfileMessage",t("failed")+(err.message||""),true);}finally{b.disabled=false;}});
+function renderReadOnlyProfile(){const m=metadata();const box=$("masirReadOnlyProfile");if(!box)return;const rows=[["firstName",[m.first_name,m.last_name].filter(Boolean).join(" ")||"—"],["phone",m.phone||currentUser()?.phone||"—"],["birthDate",m.birth_date||"—"],["interests",(m.interests||[]).join("، ")||"—"],["goals",m.goals||"—"]];box.innerHTML=rows.map(([k,v])=>'<div class="profile-account-line"><span>'+t(k)+'</span><strong style="white-space:pre-wrap">'+escapeHtml(v)+'</strong></div>').join("");const email=$("profileEmail");if(email)email.textContent=currentUser()?.email||"—";}
+function escapeHtml(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function loadNotes(){const m=metadata();$("muiNotesText").value=m.masir_notes||"";setStatus("muiNotesMessage","");}
+$("muiNotesSave").addEventListener("click",async()=>{if(!currentUser()){setStatus("muiNotesMessage",t("needLogin"),true);return;}const b=$("muiNotesSave");b.disabled=true;setStatus("muiNotesMessage",t("saving"));try{const u=currentUser();const {data,error}=await supabaseClient.auth.updateUser({data:{...(u.user_metadata||{}),masir_notes:$("muiNotesText").value}});if(error)throw error;window.masirCurrentUser=data.user;setStatus("muiNotesMessage",t("noteSaved"));}catch(e){setStatus("muiNotesMessage",t("failed")+(e.message||""),true);}finally{b.disabled=false;}});
+$("muiLanguage").value=window.masirCurrentLanguage?window.masirCurrentLanguage():"fa";
+$("muiLanguage").addEventListener("change",e=>{const picker=$("appLanguage");if(picker){picker.value=e.target.value;picker.dispatchEvent(new Event("change",{bubbles:true}));}else if(window.applyMasirLanguage)window.applyMasirLanguage(e.target.value);translateCustom();});
+const pwRules=p=>({length:p.length>=8,upper:/[A-Z]/.test(p),lower:/[a-z]/.test(p),number:/[0-9]/.test(p)});
+function showRules(){const p=$("muiNewPassword").value;Object.entries(pwRules(p)).forEach(([k,ok])=>{const e=document.querySelector('[data-pw-rule="'+k+'"]');if(e){e.style.color=ok?"#34d399":"#fb7185";e.textContent=(ok?"✓ ":"○ ")+({length:"۸ / 8 characters minimum",upper:"A-Z",lower:"a-z",number:"0-9"}[k]);}});}
+["muiNewPassword","muiConfirmPassword"].forEach(id=>$(id).addEventListener("input",showRules));
+document.querySelectorAll("[data-eye]").forEach(b=>b.addEventListener("click",()=>{const input=$(b.dataset.eye);input.type=input.type==="password"?"text":"password";}));
+$("muiPasswordForm").addEventListener("submit",async e=>{e.preventDefault();if(!currentUser()){setStatus("muiPasswordMessage",t("needLogin"),true);return;}const u=currentUser(),old=$("muiCurrentPassword").value,nw=$("muiNewPassword").value,cf=$("muiConfirmPassword").value;const rules=pwRules(nw);if(!Object.values(rules).every(Boolean)){setStatus("muiPasswordMessage",t("pwRules"),true);return;}if(nw!==cf){setStatus("muiPasswordMessage",t("pwMismatch"),true);return;}if(!u.email){setStatus("muiPasswordMessage",t("currentWrong"),true);return;}const b=$("muiPasswordSave");b.disabled=true;try{const {error:re}=await supabaseClient.auth.signInWithPassword({email:u.email,password:old});if(re)throw new Error(t("currentWrong"));const {data,error}=await supabaseClient.auth.updateUser({password:nw});if(error)throw error;window.masirCurrentUser=data.user;$("muiPasswordForm").reset();showRules();setStatus("muiPasswordMessage",t("pwSuccess"));}catch(err){setStatus("muiPasswordMessage",err.message||t("failed"),true);}finally{b.disabled=false;}});
+$("muiLogout").addEventListener("click",async()=>{if(!currentUser())return;const {error}=await supabaseClient.auth.signOut();if(error)alert(error.message);else closeDrawer();});
+$("muiDeleteAccount").addEventListener("click",()=>{const existing=$("profileLogoutArea")?.querySelector("button[id*='delete'],button.danger-button");if(existing){existing.click();return;}if(!confirm(t("confirmDelete")))return;alert(t("deleteWarning"));});
+function calendarLocale(){const type=$("muiCalendarType").value,lg=window.masirCurrentLanguage?window.masirCurrentLanguage():"fa";const loc=lg==="fa"?"fa-IR":lg==="ar"?"ar-SA":lg==="tr"?"tr-TR":lg==="ja"?"ja-JP":"en-US";return loc+"-u-ca-"+type;}
+function calFormat(d,opt){try{return new Intl.DateTimeFormat(calendarLocale(),opt).format(d);}catch(_){return d.toLocaleDateString();}}
+const holidays={
+IR:{"1-1":"نوروز","1-2":"نوروز","1-3":"نوروز","1-4":"نوروز","4-1":"روز جمهوری اسلامی ایران","4-2":"روز طبیعت","12-25":"روز ملی شدن صنعت نفت"},
+US:{"1-1":"New Year's Day","7-4":"Independence Day","11-11":"Veterans Day","12-25":"Christmas Day"},
+GB:{"1-1":"New Year's Day","12-25":"Christmas Day","12-26":"Boxing Day"},
+TR:{"1-1":"Yılbaşı","4-23":"Ulusal Egemenlik ve Çocuk Bayramı","5-19":"Atatürk'ü Anma, Gençlik ve Spor Bayramı","10-29":"Cumhuriyet Bayramı"},
+JP:{"1-1":"元日","2-11":"建国記念の日","2-23":"天皇誕生日","4-29":"昭和の日","5-3":"憲法記念日","5-4":"みどりの日","5-5":"こどもの日","11-3":"文化の日","11-23":"勤労感謝の日"},
+AZ:{"1-1":"Yeni il","3-8":"Qadınlar Günü","5-28":"Müstəqillik Günü","12-31":"Dünya Azərbaycanlılarının Həmrəyliyi Günü"},
+SA:{"9-23":"اليوم الوطني السعودي"},
+AE:{"12-2":"اليوم الوطني الإماراتي"},
+IN:{"1-26":"Republic Day","8-15":"Independence Day","10-2":"Gandhi Jayanti"},
+FR:{"1-1":"Jour de l’An","7-14":"Fête nationale","12-25":"Noël"}
+};
+function eventsFor(d){const c=$("muiCalendarCountry").value,mm=d.getMonth()+1,dd=d.getDate(),events=[];const fixed=(holidays[c]||{})[mm+"-"+dd];if(fixed)events.push(fixed);if($("muiCalendarType").value==="islamic-umalqura"){const lunar=calFormat(d,{month:"numeric",day:"numeric"});const parts=lunar.match(/(\d+)[/.-](\d+)/);if(parts){const month=Number(parts[1]),day=Number(parts[2]);if(month===1&&day===1)events.push("Islamic New Year");if(month===9&&day===1)events.push("Ramadan begins (estimated)");if(month===10&&day===1)events.push("Eid al-Fitr (estimated)");if(month===12&&day===10)events.push("Eid al-Adha (estimated)");}}return events;}
+function renderCalendar(){const grid=$("muiCalendarGrid");if(!grid)return;const locale=calendarLocale();const weekdayFmt=new Intl.DateTimeFormat(locale,{weekday:"short"});const monthFmt=new Intl.DateTimeFormat(locale,{month:"long",year:"numeric"});$("muiCalendarMonth").textContent=monthFmt.format(calDate);grid.innerHTML="";const langCode=window.masirCurrentLanguage?window.masirCurrentLanguage():"fa";const first=new Date(calDate.getFullYear(),calDate.getMonth(),1);const offset=first.getDay();const weekNames=lang().calendarDays;weekNames.forEach(w=>{const d=document.createElement("div");d.className="masir-calendar-cell weekday";d.textContent=w;grid.appendChild(d);});const days=new Date(calDate.getFullYear(),calDate.getMonth()+1,0).getDate();for(let i=0;i<offset;i++){const blank=document.createElement("div");grid.appendChild(blank);}for(let day=1;day<=days;day++){const date=new Date(calDate.getFullYear(),calDate.getMonth(),day);const b=document.createElement("button");b.type="button";b.className="masir-calendar-cell";if(date.toDateString()===calSelected.toDateString())b.classList.add("selected");if(date.toDateString()===new Date().toDateString())b.classList.add("today");if(eventsFor(date).length)b.classList.add("has-event");b.textContent=calFormat(date,{day:"numeric"});b.setAttribute("aria-label",calFormat(date,{dateStyle:"full"}));b.onclick=()=>{calSelected=date;renderCalendar();};grid.appendChild(b);} $("muiCalendarSelectedDate").textContent=calFormat(calSelected,{dateStyle:"full"});const ev=$("muiCalendarEvents");const events=eventsFor(calSelected);ev.innerHTML=events.length?events.map(x=>"<li>"+escapeHtml(x)+"</li>").join(""):"<li>"+escapeHtml(t("noEvents"))+"</li>";}
+["muiCalendarType","muiCalendarCountry"].forEach(id=>$(id).addEventListener("change",renderCalendar));
+$("muiCalendarPrev").onclick=()=>{calDate.setMonth(calDate.getMonth()-1);renderCalendar();};$("muiCalendarNext").onclick=()=>{calDate.setMonth(calDate.getMonth()+1);renderCalendar();};$("muiCalendarToday").onclick=()=>{calDate=new Date();calSelected=new Date();renderCalendar();};
+function hookOriginalLogout(){const area=$("profileLogoutArea");if(!area)return;const observer=new MutationObserver(()=>{const logout=area.querySelector("button");if(logout){logout.style.display="none";$("muiLogout").dataset.originalLogout="ready";}const del=area.querySelectorAll("button");del.forEach(b=>{if(/حذف|delete/i.test(b.textContent)){b.style.display="none";$("muiDeleteAccount").dataset.originalDelete="ready";}});});observer.observe(area,{childList:true,subtree:true});}
+function watchUser(){const u=currentUser();if(u){renderReadOnlyProfile();loadEditProfile();loadNotes();}else{const box=$("masirReadOnlyProfile");if(box)box.innerHTML='<p class="masir-muted">'+escapeHtml(t("needLogin"))+'</p>';}}
+const langPicker=$("appLanguage");if(langPicker)langPicker.addEventListener("change",()=>{setTimeout(()=>{translateCustom();const l=$("muiLanguage");if(l)l.value=langPicker.value;},0);});
+const authObs=new MutationObserver(()=>watchUser());authObs.observe(document.body,{childList:true,subtree:true});
+hookOriginalLogout();translateCustom();
+window.masirCustomUILanguageChanged=translateCustom;
 })();
 </script>
 
