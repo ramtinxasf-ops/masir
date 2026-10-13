@@ -1989,13 +1989,10 @@ html[dir="ltr"] .language-picker { justify-content: flex-end; }
             <button type="submit" class="primary-button" id="saveProfileButton" style="width:100%;margin-top:12px;">ذخیره اطلاعات پروفایل</button>
         </form>
     </div>
-    <div class="profile-panel" id="userSupportChatPanel" style="display:none;">
-      <div class="messenger-topbar"><div class="messenger-avatar">م</div><div><h3>گفتگوی خصوصی با مدیر</h3><p>مسیر · پشتیبانی خصوصی</p></div><span class="messenger-online-dot" title="گفتگو خصوصی است"></span></div>
-      <div class="messenger-body"><aside class="messenger-sidebar"><div class="messenger-sidebar-title">گفتگوها</div><button type="button" class="messenger-contact active" id="userAdminChatContact"><span class="messenger-avatar small">م</span><span class="messenger-contact-copy"><strong>مدیر مسیر</strong><small>پشتیبانی و پاسخ‌گویی</small></span><span class="messenger-contact-arrow">‹</span></button><p class="messenger-privacy-note">🔒 پیام‌های این گفتگو خصوصی هستند.</p></aside>
-      <main class="messenger-thread"><div class="messenger-thread-heading"><span class="messenger-avatar small">م</span><div><strong>مدیر مسیر</strong><small>گفتگوی خصوصی</small></div></div>
-      <div id="profileSupportStart" class="messenger-start"><p>برای شروع گفتگو، ایمیل و پیام خود را وارد کن.</p><div class="form-field"><label for="profileSupportEmail">ایمیل شما</label><input type="email" id="profileSupportEmail" autocomplete="email" placeholder="ایمیل حساب شما"></div><div class="form-field"><label for="profileSupportFirstMessage">پیام اول</label><textarea id="profileSupportFirstMessage" rows="3" maxlength="4000" placeholder="پیامت را بنویس..."></textarea></div><button type="button" class="primary-button" id="profileSupportStartButton">شروع گفتگو</button></div>
-      <div id="profileSupportConversation" class="messenger-active-thread" style="display:none;"><div id="profileSupportMessages" class="messenger-messages"></div><div class="messenger-compose"><textarea id="profileSupportReply" rows="2" maxlength="4000" placeholder="پیام بنویس..." aria-label="پیام جدید"></textarea><button type="button" class="primary-button" id="profileSupportReplyButton" aria-label="ارسال پیام">➤</button></div><button type="button" class="secondary-button messenger-new-chat" id="profileSupportNewButton">شروع گفتگوی جدید</button></div>
-      <p id="profileSupportStatus" class="help-text messenger-status" role="status" aria-live="polite"></p></main></div>
+    <div class="profile-panel" id="profilePrivateChatLinkPanel" style="display:none;">
+        <h3>ارتباط با مدیر</h3>
+        <p class="help-text">برای پشتیبانی یا ارسال پیام خصوصی به مدیر وارد صفحهٔ چت شو.</p>
+        <button type="button" class="primary-button" id="openPrivateChatFromProfile" style="width:100%;">💬 چت خصوصی با مدیر</button>
     </div>
     <div class="profile-panel" id="adminUserExportPanel" style="display:none;">
         <h3>مدیریت کاربران</h3>
@@ -2019,13 +2016,13 @@ html[dir="ltr"] .language-picker { justify-content: flex-end; }
         </form>
         
     </div>
-    <div class="profile-panel">
+    <div class="profile-panel" id="profileSecurityPanel" style="display:none;">
         <h3>امنیت حساب</h3>
         <p class="help-text">برای تغییر رمز، لینک بازیابی به ایمیل حسابت ارسال می‌شود.</p>
         <button type="button" class="secondary-button" id="profileResetPasswordButton" style="width:100%;text-align:right;">🔐 بازیابی رمز عبور</button>
         <p id="profileSecurityMessage" class="help-text" role="status" aria-live="polite"></p>
     </div>
-    <div class="profile-panel">
+    <div class="profile-panel" id="profileBackupPanel" style="display:none;">
         <h3>پشتیبان‌گیری و بازیابی</h3>
         <button type="button" class="secondary-button" id="exportBackupButton" style="width:100%;text-align:right;">💾 دریافت نسخه پشتیبان <span style="float:left;">↓</span></button>
         <div id="backupStatus" style="margin-top:10px;padding:12px;background:#211b38;border-radius:10px;font-size:13px;line-height:1.8;">وضعیت پشتیبان‌گیری هنوز بررسی نشده است.</div>
@@ -2930,8 +2927,8 @@ document.addEventListener("DOMContentLoaded", function() {
         exportBackupButton.addEventListener("click", function() {
             const user = window.masirCurrentUser;
 
-            if (!user) {
-                alert("ابتدا وارد حساب کاربری شو.");
+            if (!user || String(user.email || "").trim().toLowerCase() !== "ramtinxasf@gmail.com") {
+                alert("پشتیبان‌گیری فقط برای مدیر فعال است.");
                 return;
             }
 
@@ -3039,8 +3036,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
                 const user = window.masirCurrentUser;
 
-                if (!user) {
-                    alert("ابتدا وارد حساب کاربری شو.");
+                if (!user || String(user.email || "").trim().toLowerCase() !== "ramtinxasf@gmail.com") {
+                    alert("بازیابی پشتیبان فقط برای مدیر فعال است.");
                     return;
                 }
 
@@ -4047,6 +4044,13 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
     const sendOtpButton = document.getElementById("masir-send-otp");
     const verifyOtpButton = document.getElementById("masir-verify-otp");
     const forgotPasswordButton = document.getElementById("masir-forgot-password");
+    const ADMIN_EMAIL = "ramtinxasf@gmail.com";
+    function updateAdminOnlyRecoveryVisibility() {
+        const allowed = String(emailInput && emailInput.value || "").trim().toLowerCase() === ADMIN_EMAIL;
+        if (forgotPasswordButton) forgotPasswordButton.style.display = allowed ? "block" : "none";
+    }
+    if (emailInput) emailInput.addEventListener("input", updateAdminOnlyRecoveryVisibility);
+    updateAdminOnlyRecoveryVisibility();
     const passwordRules = document.getElementById("masir-password-rules");
     const recoveryPanel = document.getElementById("masir-recovery-auth");
     const newPasswordInput = document.getElementById("masir-new-password");
@@ -4304,9 +4308,15 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
         configureAdminUserExport(user);
     }
     function configureAdminUserExport(user) {
-        const panel = document.getElementById("adminUserExportPanel");
         const isAdmin = Boolean(user && typeof user.email === "string" && user.email.trim().toLowerCase() === "ramtinxasf@gmail.com");
+        const panel = document.getElementById("adminUserExportPanel");
+        const securityPanel = document.getElementById("profileSecurityPanel");
+        const backupPanel = document.getElementById("profileBackupPanel");
+        const profileChatLink = document.getElementById("profilePrivateChatLinkPanel");
         if (panel) panel.style.display = isAdmin ? "block" : "none";
+        if (securityPanel) securityPanel.style.display = isAdmin ? "block" : "none";
+        if (backupPanel) backupPanel.style.display = isAdmin ? "block" : "none";
+        if (profileChatLink) profileChatLink.style.display = user && !isAdmin ? "block" : "none";
         const adminChat = document.getElementById("adminSupportInbox");
         const userChat = document.getElementById("userSupportChatPanel");
         const chatNotice = document.getElementById("chatLoginNotice");
@@ -4323,6 +4333,15 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
             }
         };
     }
+
+    const openPrivateChatFromProfile = document.getElementById("openPrivateChatFromProfile");
+    if (openPrivateChatFromProfile) openPrivateChatFromProfile.addEventListener("click", function() {
+        const user = window.masirCurrentUser;
+        const isAdmin = Boolean(user && typeof user.email === "string" && user.email.trim().toLowerCase() === "ramtinxasf@gmail.com");
+        if (!user || isAdmin) return;
+        showPage("chat");
+        if (window.masirConfigureChatPage) window.masirConfigureChatPage();
+    });
 
     const exportUsersCsvButton = document.getElementById("exportUsersCsvButton");
     if (exportUsersCsvButton) exportUsersCsvButton.addEventListener("click", async function() {
@@ -4488,6 +4507,11 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
     const resetPasswordButton = document.getElementById("profileResetPasswordButton");
     if (resetPasswordButton) resetPasswordButton.addEventListener("click", async function() {
         const user = window.masirCurrentUser;
+        if (!user || String(user.email || "").trim().toLowerCase() !== "ramtinxasf@gmail.com") {
+            const securityPanel = document.getElementById("profileSecurityPanel");
+            if (securityPanel) securityPanel.style.display = "none";
+            return;
+        }
         const target = document.getElementById("profileSecurityMessage");
         if (!user || !user.email) {
             target.textContent = "برای بازیابی رمز عبور، حساب باید ایمیل داشته باشد.";
@@ -4510,6 +4534,9 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
     });
     if (forgotPasswordButton) forgotPasswordButton.addEventListener("click", async function() {
         const email = emailInput.value.trim();
+        if (email.toLowerCase() !== ADMIN_EMAIL) {
+            return showMessage("بازیابی رمز عبور فقط برای مدیر فعال است.", true);
+        }
         if (!email) return showMessage("ابتدا ایمیل حسابت را وارد کن.", true);
         forgotPasswordButton.disabled = true;
         showMessage("در حال ارسال لینک بازیابی...");
