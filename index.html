@@ -2839,6 +2839,59 @@ const MASIR_LANGUAGES = {
         "برای ورود یا ساخت حساب با پیامک، نام و نام خانوادگی را وارد کن.": "SMSでログインまたはアカウントを作成するには、名と姓を入力してください。",
     }}
 };
+function masirCurrentLanguage() {
+    const picker = document.getElementById("appLanguage");
+    if (picker && picker.value) return picker.value;
+    try { return localStorage.getItem(MASIR_LANGUAGE_KEY) || "fa"; } catch (_) { return "fa"; }
+}
+function masirTranslate(key) {
+    const lang = masirCurrentLanguage();
+    const dict = (MASIR_LANGUAGES[lang] || MASIR_LANGUAGES.fa).text;
+    return dict[key] || key;
+}
+function formatNumber(value) {
+    const lang = masirCurrentLanguage();
+    const locale = lang === "fa" ? "fa-IR" : lang === "ar" ? "ar" : lang === "ja" ? "ja" : lang === "tr" ? "tr-TR" : "en-US";
+    return new Intl.NumberFormat(locale).format(value);
+}
+function formatCompletedCount(completed, total) {
+    const lang = masirCurrentLanguage();
+    if (lang === "en") return `${formatNumber(completed)} of ${formatNumber(total)} activities completed.`;
+    if (lang === "ar") return `تم إنجاز ${formatNumber(completed)} من أصل ${formatNumber(total)} أنشطة.`;
+    if (lang === "tr") return `${formatNumber(total)} etkinliğin ${formatNumber(completed)} tanesi tamamlandı.`;
+    if (lang === "ja") return `${formatNumber(total)}件中${formatNumber(completed)}件のアクティビティが完了しました。`;
+    return `${formatNumber(completed)} فعالیت از ${formatNumber(total)} فعالیت انجام شده است.`;
+}
+function formatReportCompleted(completed, total) {
+    const lang = masirCurrentLanguage();
+    if (lang === "en") return `${formatNumber(completed)} completed of ${formatNumber(total)} activities`;
+    if (lang === "ar") return `اكتمل ${formatNumber(completed)} من ${formatNumber(total)} أنشطة`;
+    if (lang === "tr") return `${formatNumber(total)} etkinlikten ${formatNumber(completed)} tanesi tamamlandı`;
+    if (lang === "ja") return `${formatNumber(total)}件中${formatNumber(completed)}件完了`;
+    return `${formatNumber(completed)} انجام‌شده از ${formatNumber(total)} فعالیت`;
+}
+function formatCountLabel(label, count) {
+    const lang = masirCurrentLanguage();
+    const labels = { en: {"مجموع فعالیت‌ها":"Total activities","انجام‌شده":"Completed","باقی‌مانده":"Remaining"}, ar: {"مجموع فعالیت‌ها":"إجمالي الأنشطة","انجام‌شده":"مكتمل","باقی‌مانده":"متبقٍ"}, tr: {"مجموع فعالیت‌ها":"Toplam etkinlik","انجام‌شده":"Tamamlandı","باقی‌مانده":"Kalan"}, ja: {"مجموع فعالیت‌ها":"活動の合計","انجام‌شده":"完了","باقی‌مانده":"残り"} };
+    return lang === "fa" ? `${label}: ${formatNumber(count)}` : `${labels[lang]?.[label] || label}: ${formatNumber(count)}`;
+}
+function formatWeekLabel(start, end, remaining) {
+    const lang = masirCurrentLanguage();
+    if (lang === "en") return `${start} to ${end} | ${formatNumber(remaining)} activities remaining`;
+    if (lang === "ar") return `من ${start} إلى ${end} | ${formatNumber(remaining)} أنشطة متبقية`;
+    if (lang === "tr") return `${start} - ${end} | ${formatNumber(remaining)} etkinlik kaldı`;
+    if (lang === "ja") return `${start}〜${end} | 残り${formatNumber(remaining)}件`;
+    return `از ${start} تا ${end} | ${formatNumber(remaining)} فعالیت باقی‌مانده`;
+}
+function formatBestDay(names, percentage) {
+    const lang = masirCurrentLanguage();
+    if (lang === "en") return `${names.join(", ")} with ${formatNumber(percentage)}% completion`;
+    if (lang === "ar") return `${names.join("، ")} بنسبة إنجاز ${formatNumber(percentage)}٪`;
+    if (lang === "tr") return `${names.join(", ")} - %${formatNumber(percentage)} tamamlandı`;
+    if (lang === "ja") return `${names.join("、")}、達成率${formatNumber(percentage)}%`;
+    return `${names.join("، ")} با ${formatNumber(percentage)}٪ موفقیت`;
+}
+
 function applyMasirLanguage(language) {
     const config = MASIR_LANGUAGES[language] || MASIR_LANGUAGES.fa;
     const dict = config.text;
@@ -3795,12 +3848,11 @@ function updateStats() {
     const label = document.getElementById("progressLabel");
 
     if (totalCount === 0) {
-        label.textContent = "برای این روز فعالیتی برنامه‌ریزی نشده است.";
+        label.textContent = masirTranslate("برای این روز فعالیتی برنامه‌ریزی نشده است.");
     } else if (percentage === 100) {
-        label.textContent = "عالی است! تمام فعالیت‌های این روز انجام شده‌اند. 💜";
+        label.textContent = masirTranslate("عالی است! تمام فعالیت‌های این روز انجام شده‌اند. 💜");
     } else {
-        label.textContent =
-            `${toPersianNumber(completedCount)} فعالیت از ${toPersianNumber(totalCount)} فعالیت انجام شده است.`;
+        label.textContent = formatCompletedCount(completedCount, totalCount);
     }
 }
 
@@ -3851,7 +3903,7 @@ function renderWeeklyReport() {
     const endLabel = getPersianDate(dates[6]);
 
     document.getElementById("reportWeekLabel").textContent =
-        `از ${startLabel} تا ${endLabel} | ${toPersianNumber(remaining)} فعالیت باقی‌مانده`;
+        formatWeekLabel(startLabel, endLabel, remaining);
 
     renderWeeklyChart(reports);
     renderDailyReportList(reports);
@@ -3925,8 +3977,8 @@ function renderDailyReportList(reports) {
         const percentage = document.createElement("div");
         percentage.className = "daily-report-percent";
         percentage.textContent = report.total === 0
-            ? "بدون فعالیت"
-            : `${toPersianNumber(report.percentage)}٪`;
+            ? masirTranslate("بدون فعالیت")
+            : `${formatNumber(report.percentage)}%`;
 
         top.append(name, percentage);
 
@@ -3942,7 +3994,7 @@ function renderDailyReportList(reports) {
         const details = document.createElement("div");
         details.className = "daily-report-details";
         details.textContent =
-            `${toPersianNumber(report.completed)} انجام‌شده از ${toPersianNumber(report.total)} فعالیت`;
+            formatReportCompleted(report.completed, report.total);
 
         item.append(top, track, details);
         list.appendChild(item);
@@ -3956,7 +4008,7 @@ function renderBestDay(reports) {
 
     if (reportsWithActivities.length === 0) {
         box.textContent =
-            "هنوز فعالیتی در این هفته ثبت نشده است. پس از ثبت فعالیت‌ها، بهترین روز مشخص می‌شود.";
+            masirTranslate("هنوز فعالیتی در این هفته ثبت نشده است. پس از ثبت فعالیت‌ها، بهترین روز مشخص می‌شود.");
         return;
     }
 
@@ -3976,12 +4028,12 @@ function renderBestDay(reports) {
 
     const title = document.createElement("strong");
     title.textContent = bestDays.length > 1
-        ? "🏆 بهترین روزها: "
-        : "🏆 بهترین روز: ";
+        ? masirTranslate("🏆 بهترین روزها: ")
+        : masirTranslate("🏆 بهترین روز: ");
 
     const description = document.createElement("span");
     description.textContent =
-        `${bestNames.join("، ")} با ${toPersianNumber(bestPercentage)}٪ موفقیت`;
+        formatBestDay(bestNames, bestPercentage);
 
     box.append(title, description);
 }
@@ -3998,9 +4050,9 @@ function renderDailyOverview() {
     summary.replaceChildren();
 
     [
-        `مجموع فعالیت‌ها: ${toPersianNumber(dayActivities.length)}`,
-        `انجام‌شده: ${toPersianNumber(completedCount)}`,
-        `باقی‌مانده: ${toPersianNumber(dayActivities.length - completedCount)}`
+        formatCountLabel("مجموع فعالیت‌ها", dayActivities.length),
+        formatCountLabel("انجام‌شده", completedCount),
+        formatCountLabel("باقی‌مانده", dayActivities.length - completedCount)
     ].forEach(label => {
         const chip = document.createElement("span");
         chip.textContent = label;
@@ -4011,7 +4063,7 @@ function renderDailyOverview() {
     if (dayActivities.length === 0) {
         const empty = document.createElement("div");
         empty.className = "empty-message";
-        empty.textContent = "برای این روز فعالیتی برنامه‌ریزی نشده است.";
+        empty.textContent = masirTranslate("برای این روز فعالیتی برنامه‌ریزی نشده است.");
         timeline.appendChild(empty);
         return;
     }
@@ -4032,7 +4084,7 @@ function renderDailyOverview() {
 
         const status = document.createElement("div");
         status.className = "daily-timeline-status";
-        status.textContent = completed ? "✓ انجام‌شده" : "○ انجام‌نشده";
+        status.textContent = completed ? masirTranslate("✓ انجام‌شده") : masirTranslate("○ انجام‌نشده");
 
         details.append(name, status);
         item.append(time, details);
