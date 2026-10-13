@@ -2061,6 +2061,7 @@ html[dir="ltr"] .language-picker { justify-content: flex-end; }
       <main class="messenger-thread"><div id="adminSupportEmpty" class="messenger-empty"><div class="messenger-empty-icon">💬</div><h3>یک گفتگو را انتخاب کن</h3><p>گفتگوی کاربر از فهرست سمت راست انتخاب می‌شود.</p></div><div id="adminSupportConversation" style="display:none;"><div class="messenger-thread-heading"><span class="messenger-avatar small">👤</span><div><strong id="adminSupportSelectedEmail">گفتگو</strong><small>گفتگوی خصوصی کاربر</small></div></div><div id="adminSupportMessages" class="messenger-messages"></div><label for="adminSupportBroadcastAll" style="display:flex;align-items:center;gap:8px;margin:10px 0;color:#fcd34d;font-size:13px;"><input type="checkbox" id="adminSupportBroadcastAll" style="accent-color:#a78bfa;width:17px;height:17px;"> ارسال این پیام به همه کاربران دارای گفتگو</label><div class="messenger-compose"><textarea id="adminSupportReply" rows="2" maxlength="4000" placeholder="پاسخ مدیر..." aria-label="پاسخ مدیر"></textarea><button type="button" class="primary-button" id="adminSupportReplyButton" aria-label="ارسال پاسخ">➤</button></div><p id="adminSupportStatus" class="help-text messenger-status" role="status" aria-live="polite"></p></div></main></div>
     </div>
     <p id="chatLoginNotice" class="help-text" style="display:none;">برای استفاده از گفتگوی داخل برنامه، ابتدا وارد حساب شو. اگر رمز نداری، از گزینهٔ «گفتگوی خصوصی با مدیر» در صفحهٔ ورود استفاده کن.</p>
+    <button type="button" id="publicChatBackToLogin" class="secondary-button" style="display:none;margin:0 0 14px;">← بازگشت به صفحه ورود</button>
         <div class="profile-panel" id="userSupportChatPanel" style="display:none;">
       <div class="messenger-topbar"><div class="messenger-avatar">م</div><div><h3>گفتگوی خصوصی با مدیر</h3><p>مسیر · پشتیبانی خصوصی</p></div><span class="messenger-online-dot" title="گفتگو خصوصی است"></span></div>
       <div class="messenger-body"><aside class="messenger-sidebar"><div class="messenger-sidebar-title">گفتگوها</div><button type="button" class="messenger-contact active" id="userAdminChatContact"><span class="messenger-avatar small">م</span><span class="messenger-contact-copy"><strong>مدیر مسیر</strong><small>پشتیبانی و پاسخ‌گویی</small></span><span class="messenger-contact-arrow">‹</span></button><p class="messenger-privacy-note">🔒 پیام‌های این گفتگو خصوصی هستند.</p></aside>
@@ -4944,9 +4945,37 @@ async function create(email,msg) {
 }
 async function userRead(email,el){const t=JSON.parse(localStorage.getItem(key(email))||"null");if(!t)return false;const d=await api({action:"user_read",...t});draw(el,d.messages);updateChatBadge(0);return true;}
 async function userSend(email,msg,el){const t=JSON.parse(localStorage.getItem(key(email))||"null");if(!t)throw Error("گفتگوی ذخیره‌شده‌ای برای این ایمیل پیدا نشد.");const d=await api({action:"user_send",...t,message:msg});draw(el,d.messages);}
-const contact=$("masir-contact-admin");if(contact)contact.onclick=()=>{const p=$("masir-support-start");p.style.display=p.style.display==="none"?"block":"none";if($("masir-email").value.trim())$("masir-support-email").value=$("masir-email").value.trim();};
+let publicChatMode = false;
+function openPublicSupportChat() {
+  publicChatMode = true;
+  const overlay = $("masir-auth-overlay");
+  if (overlay) overlay.style.display = "none";
+  showPage("chat");
+  const panel = $("userSupportChatPanel");
+  const notice = $("chatLoginNotice");
+  const back = $("publicChatBackToLogin");
+  if (panel) panel.style.display = "block";
+  if (notice) notice.style.display = "none";
+  if (back) back.style.display = "inline-block";
+  const email = ($("masir-email")?.value || $("masir-support-email")?.value || "").trim();
+  if (email && $("profileSupportEmail")) {
+    $("profileSupportEmail").value = email;
+    $("profileSupportEmail").dispatchEvent(new Event("change"));
+  } else if ($("profileSupportEmail")) {
+    $("profileSupportEmail").focus();
+  }
+}
+const publicChatBack = $("publicChatBackToLogin");
+if (publicChatBack) publicChatBack.onclick = () => {
+  publicChatMode = false;
+  showPage("home");
+  if ($("userSupportChatPanel")) $("userSupportChatPanel").style.display = "none";
+  publicChatBack.style.display = "none";
+  if ($("masir-auth-overlay")) $("masir-auth-overlay").style.display = "flex";
+};
+const contact=$("masir-contact-admin");if(contact)contact.onclick=openPublicSupportChat;
 if($("masir-support-start-button"))$("masir-support-start-button").onclick=async()=>{const b=$("masir-support-start-button"),st=$("masir-support-status");b.disabled=true;try{const email=$("masir-support-email").value.trim(),d=await create(email,$("masir-support-first-message").value);st.style.color="#a7f3d0";st.textContent=d.message+" برای ادامه گفتگو از همین دستگاه استفاده کن.";$("masir-support-first-message").value="";}catch(e){st.style.color="#ff8b8b";st.textContent=e.message;}finally{b.disabled=false;}};
-if($("profileSupportStartButton"))$("profileSupportStartButton").onclick=async()=>{const b=$("profileSupportStartButton"),st=$("profileSupportStatus");b.disabled=true;try{const email=$("profileSupportEmail").value.trim(),d=await create(email,$("profileSupportFirstMessage").value);$("profileSupportStart").style.display="none";$("profileSupportConversation").style.display="flex";draw($("profileSupportMessages"),d.messages || []);$("profileSupportFirstMessage").value="";st.textContent=d.message;}catch(e){st.style.color="#fb7185";st.textContent=e.message;}finally{b.disabled=false;}};
+if($("profileSupportStartButton"))$("profileSupportStartButton").onclick=async()=>{const b=$("profileSupportStartButton"),st=$("profileSupportStatus"),email=$("profileSupportEmail").value.trim();b.disabled=true;try{const saved=JSON.parse(localStorage.getItem(key(email))||"null");if(saved){const d=await api({action:"user_read",...saved});$("profileSupportStart").style.display="none";$("profileSupportConversation").style.display="flex";draw($("profileSupportMessages"),d.messages||[]);updateChatBadge(0);st.textContent="گفتگوی قبلی بارگذاری شد؛ می‌توانی پیام بفرستی یا پاسخ مدیر را بخوانی.";}else{const d=await create(email,$("profileSupportFirstMessage").value);$("profileSupportStart").style.display="none";$("profileSupportConversation").style.display="flex";draw($("profileSupportMessages"),d.messages||[]);$("profileSupportFirstMessage").value="";st.textContent=d.message;}}catch(e){st.style.color="#fb7185";st.textContent=e.message;}finally{b.disabled=false;}};
 if($("profileSupportReplyButton"))$("profileSupportReplyButton").onclick=async()=>{const b=$("profileSupportReplyButton"),st=$("profileSupportStatus"),msg=$("profileSupportReply").value.trim();if(!msg){st.textContent="پیامت را بنویس.";return;}b.disabled=true;try{await userSend($("profileSupportEmail").value.trim(),msg,$("profileSupportMessages"));$("profileSupportReply").value="";st.textContent="پیام ارسال شد.";}catch(e){st.style.color="#fb7185";st.textContent=e.message;}finally{b.disabled=false;}};
 if($("profileSupportNewButton"))$("profileSupportNewButton").onclick=()=>{localStorage.removeItem(key($("profileSupportEmail").value.trim()));$("profileSupportConversation").style.display="none";$("profileSupportStart").style.display="block";$("profileSupportStatus").textContent="گفتگوی جدید را آغاز کن.";};
 if($("userAdminChatContact"))$("userAdminChatContact").onclick=()=>{const start=$("profileSupportStart"),conv=$("profileSupportConversation");if(start&&conv){const email=$("profileSupportEmail").value.trim();if(email){userRead(email,$("profileSupportMessages")).then(ok=>{start.style.display=ok?"none":"block";conv.style.display=ok?"flex":"none";}).catch(()=>{});}}};
