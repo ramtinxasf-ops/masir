@@ -1999,6 +1999,7 @@ var supabaseClient = window.supabase.createClient(
         <form id="profileForm">
             <div class="form-grid">
                 <div class="form-field"><label for="profileFirstName">نام</label><input type="text" id="profileFirstName" maxlength="60" autocomplete="given-name" required></div>
+                <div class="form-field"><label for="profileEmailInput">ایمیل</label><input type="email" id="profileEmailInput" maxlength="254" autocomplete="email" required></div>
                 <div class="form-field"><label for="profileLastName">نام خانوادگی</label><input type="text" id="profileLastName" maxlength="80" autocomplete="family-name" required></div>
                 <div class="form-field"><label for="profilePhoneInput">شماره تلفن</label><input type="tel" id="profilePhoneInput" maxlength="20" autocomplete="tel" placeholder="+989123456789"></div>
                 <div class="form-field"><label for="profileBirthDate">تاریخ تولد</label><input type="date" id="profileBirthDate" autocomplete="bday"></div>
@@ -2113,7 +2114,7 @@ const MASIR_LANGUAGES = {
         "🏠 خانه":"🏠 خانه","💬 چت":"💬 چت","📅 برنامه‌ریزی":"📅 برنامه‌ریزی","🗓️ برنامهٔ روز":"🗓️ برنامهٔ روز","📊 گزارش‌ها":"📊 گزارش‌ها","👤 نمایه":"👤 نمایه",
         "➕ افزودن فعالیت جدید":"➕ افزودن فعالیت جدید","نام فعالیت":"نام فعالیت","دسته‌بندی فعالیت":"دسته‌بندی فعالیت","ساعت شروع":"ساعت شروع","ساعت پایان":"ساعت پایان",
         "ذخیره اطلاعات پروفایل":"ذخیره اطلاعات پروفایل","اطلاعات حساب":"اطلاعات حساب","امنیت حساب":"امنیت حساب","ایمیل حساب":"ایمیل حساب","تلفن حساب":"تلفن حساب",
-        "نام":"نام","نام خانوادگی":"نام خانوادگی","شماره تلفن":"شماره تلفن","تاریخ تولد":"تاریخ تولد","بدون دسته‌بندی":"بدون دسته‌بندی",
+        "نام":"نام","نام خانوادگی":"نام خانوادگی","شماره تلفن":"شماره تلفن","تاریخ تولد":"تاریخ تولد","ایمیل":"ایمیل","رمز عبور فعلی برنامه":"رمز عبور فعلی برنامه","اطلاعات ذخیره شد. برای تأیید ایمیل جدید، صندوق ورودی آن را بررسی کن.":"اطلاعات ذخیره شد. برای تأیید ایمیل جدید، صندوق ورودی آن را بررسی کن.","اطلاعات پروفایل ذخیره شد.":"اطلاعات پروفایل ذخیره شد.","ایمیل معتبر وارد کن.":"ایمیل معتبر وارد کن.","نام و نام خانوادگی را وارد کن.":"نام و نام خانوادگی را وارد کن.","بدون دسته‌بندی":"بدون دسته‌بندی",
         "کار":"کار","آموزش و مطالعه":"آموزش و مطالعه","سلامتی و ورزش":"سلامتی و ورزش","شخصی":"شخصی","مالی":"مالی",
         "انجام‌شده":"انجام‌شده","پیشرفت روز":"پیشرفت روز","خانه":"خانه","امروز":"امروز","حذف":"حذف","ذخیره":"ذخیره"
     }},
@@ -2122,7 +2123,7 @@ const MASIR_LANGUAGES = {
         "🏠 خانه":"🏠 Home","📅 برنامه‌ریزی":"📅 Planning","🗓️ برنامهٔ روز":"🗓️ Daily plan","📊 گزارش‌ها":"📊 Reports","👤 نمایه":"👤 Profile",
         "➕ افزودن فعالیت جدید":"➕ Add a new activity","نام فعالیت":"Activity name","دسته‌بندی فعالیت":"Activity category","ساعت شروع":"Start time","ساعت پایان":"End time",
         "ذخیره اطلاعات پروفایل":"Save profile information","اطلاعات حساب":"Account information","امنیت حساب":"Account security","ایمیل حساب":"Account email","تلفن حساب":"Account phone",
-        "نام":"First name","نام خانوادگی":"Last name","شماره تلفن":"Phone number","تاریخ تولد":"Date of birth","بدون دسته‌بندی":"Uncategorized",
+        "نام":"First name","نام خانوادگی":"Last name","شماره تلفن":"Phone number","تاریخ تولد":"Date of birth","ایمیل":"Email","رمز عبور فعلی برنامه":"Current account password","اطلاعات ذخیره شد. برای تأیید ایمیل جدید، صندوق ورودی آن را بررسی کن.":"Profile details were saved. Check the new email inbox to confirm the email change.","اطلاعات پروفایل ذخیره شد.":"Profile information saved.","ایمیل معتبر وارد کن.":"Enter a valid email address.","نام و نام خانوادگی را وارد کن.":"Enter your first and last name.","بدون دسته‌بندی":"Uncategorized",
         "کار":"Work","آموزش و مطالعه":"Learning & study","سلامتی و ورزش":"Health & fitness","شخصی":"Personal","مالی":"Finance",
         "انجام‌شده":"Completed","پیشرفت روز":"Daily progress","خانه":"Home","امروز":"Today","حذف":"Delete","ذخیره":"Save",
         "مثلاً مطالعه یا ورزش":"e.g. reading or exercise","برای تغییر رمز، لینک بازیابی به ایمیل حسابت ارسال می‌شود.":"To change your password, a recovery link will be sent to your account email.",
@@ -2303,7 +2304,7 @@ const MASIR_LANGUAGES = {
         "🏠 خانه":"🏠 الرئيسية","📅 برنامه‌ریزی":"📅 التخطيط","🗓️ برنامهٔ روز":"🗓️ خطة اليوم","📊 گزارش‌ها":"📊 التقارير","👤 نمایه":"👤 الملف الشخصي",
         "➕ افزودن فعالیت جدید":"➕ إضافة نشاط جديد","نام فعالیت":"اسم النشاط","دسته‌بندی فعالیت":"فئة النشاط","ساعت شروع":"وقت البدء","ساعت پایان":"وقت الانتهاء",
         "ذخیره اطلاعات پروفایل":"حفظ معلومات الملف الشخصي","اطلاعات حساب":"معلومات الحساب","امنیت حساب":"أمان الحساب","ایمیل حساب":"البريد الإلكتروني للحساب","تلفن حساب":"هاتف الحساب",
-        "نام":"الاسم","نام خانوادگی":"اسم العائلة","شماره تلفن":"رقم الهاتف","تاریخ تولد":"تاريخ الميلاد","بدون دسته‌بندی":"بلا فئة",
+        "نام":"الاسم","نام خانوادگی":"اسم العائلة","شماره تلفن":"رقم الهاتف","تاریخ تولد":"تاريخ الميلاد","ایمیل":"البريد الإلكتروني","رمز عبور فعلی برنامه":"كلمة مرور الحساب الحالية","اطلاعات ذخیره شد. برای تأیید ایمیل جدید، صندوق ورودی آن را بررسی کن.":"تم حفظ المعلومات. تحقق من صندوق البريد الجديد لتأكيد تغيير البريد الإلكتروني.","اطلاعات پروفایل ذخیره شد.":"تم حفظ معلومات الملف الشخصي.","ایمیل معتبر وارد کن.":"أدخل بريدًا إلكترونيًا صالحًا.","نام و نام خانوادگی را وارد کن.":"أدخل الاسم واسم العائلة.","بدون دسته‌بندی":"بلا فئة",
         "کار":"العمل","آموزش و مطالعه":"التعلم والدراسة","سلامتی و ورزش":"الصحة والرياضة","شخصی":"شخصي","مالی":"المالية",
         "انجام‌شده":"مكتمل","پیشرفت روز":"التقدم اليومي","خانه":"الرئيسية","امروز":"اليوم","حذف":"حذف","ذخیره":"حفظ",
         "مثلاً مطالعه یا ورزش":"مثلاً القراءة أو الرياضة",
@@ -2483,7 +2484,7 @@ const MASIR_LANGUAGES = {
         "🏠 خانه":"🏠 Ana sayfa","📅 برنامه‌ریزی":"📅 Planlama","🗓️ برنامهٔ روز":"🗓️ Günlük plan","📊 گزارش‌ها":"📊 Raporlar","👤 نمایه":"👤 Profil",
         "➕ افزودن فعالیت جدید":"➕ Yeni etkinlik ekle","نام فعالیت":"Etkinlik adı","دسته‌بندی فعالیت":"Etkinlik kategorisi","ساعت شروع":"Başlangıç saati","ساعت پایان":"Bitiş saati",
         "ذخیره اطلاعات پروفایل":"Profil bilgilerini kaydet","اطلاعات حساب":"Hesap bilgileri","امنیت حساب":"Hesap güvenliği","ایمیل حساب":"Hesap e-postası","تلفن حساب":"Hesap telefonu",
-        "نام":"Ad","نام خانوادگی":"Soyadı","شماره تلفن":"Telefon numarası","تاریخ تولد":"Doğum tarihi","بدون دسته‌بندی":"Kategorisiz",
+        "نام":"Ad","نام خانوادگی":"Soyadı","شماره تلفن":"Telefon numarası","تاریخ تولد":"Doğum tarihi","ایمیل":"E-posta","رمز عبور فعلی برنامه":"Mevcut hesap parolası","اطلاعات ذخیره شد. برای تأیید ایمیل جدید، صندوق ورودی آن را بررسی کن.":"Bilgiler kaydedildi. E-posta değişikliğini onaylamak için yeni e-posta gelen kutunu kontrol et.","اطلاعات پروفایل ذخیره شد.":"Profil bilgileri kaydedildi.","ایمیل معتبر وارد کن.":"Geçerli bir e-posta adresi gir.","نام و نام خانوادگی را وارد کن.":"Adını ve soyadını gir.","بدون دسته‌بندی":"Kategorisiz",
         "کار":"İş","آموزش و مطالعه":"Eğitim ve çalışma","سلامتی و ورزش":"Sağlık ve spor","شخصی":"Kişisel","مالی":"Finans",
         "انجام‌شده":"Tamamlandı","پیشرفت روز":"Günlük ilerleme","خانه":"Ana sayfa","امروز":"Bugün","حذف":"Sil","ذخیره":"Kaydet",
         "مثلاً مطالعه یا ورزش":"ör. okuma veya spor",
@@ -2663,7 +2664,7 @@ const MASIR_LANGUAGES = {
         "🏠 خانه":"🏠 ホーム","📅 برنامه‌ریزی":"📅 計画","🗓️ برنامهٔ روز":"🗓️ 今日の予定","📊 گزارش‌ها":"📊 レポート","👤 نمایه":"👤 プロフィール",
         "➕ افزودن فعالیت جدید":"➕ 新しい活動を追加","نام فعالیت":"活動名","دسته‌بندی فعالیت":"活動カテゴリ","ساعت شروع":"開始時刻","ساعت پایان":"終了時刻",
         "ذخیره اطلاعات پروفایل":"プロフィール情報を保存","اطلاعات حساب":"アカウント情報","امنیت حساب":"アカウントのセキュリティ","ایمیل حساب":"アカウントのメール","تلفن حساب":"アカウントの電話番号",
-        "نام":"名","نام خانوادگی":"姓","شماره تلفن":"電話番号","تاریخ تولد":"生年月日","بدون دسته‌بندی":"未分類",
+        "نام":"名","نام خانوادگی":"姓","شماره تلفن":"電話番号","تاریخ تولد":"生年月日","ایمیل":"メールアドレス","رمز عبور فعلی برنامه":"現在のアカウントパスワード","اطلاعات ذخیره شد. برای تأیید ایمیل جدید، صندوق ورودی آن را بررسی کن.":"情報を保存しました。メール変更を確認するため、新しいメールの受信箱を確認してください。","اطلاعات پروفایل ذخیره شد.":"プロフィール情報を保存しました。","ایمیل معتبر وارد کن.":"有効なメールアドレスを入力してください。","نام و نام خانوادگی را وارد کن.":"名と姓を入力してください。","بدون دسته‌بندی":"未分類",
         "کار":"仕事","آموزش و مطالعه":"学習・勉強","سلامتی و ورزش":"健康・運動","شخصی":"個人","مالی":"金融",
         "انجام‌شده":"完了","پیشرفت روز":"今日の進捗","خانه":"ホーム","امروز":"今日","حذف":"削除","ذخیره":"保存",
         "مثلاً مطالعه یا ورزش":"例：読書や運動",
@@ -4676,6 +4677,7 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
         const phoneElement = document.getElementById("profilePhone");
         if (emailElement) emailElement.textContent = user.email || "بدون ایمیل";
         if (phoneElement) phoneElement.textContent = user.phone || metadata.phone || "ثبت نشده";
+        setValue("profileEmailInput", user.email);
         setValue("profileFirstName", metadata.first_name || metadata.firstName);
         setValue("profileLastName", metadata.last_name || metadata.lastName);
         setValue("profilePhoneInput", user.phone || metadata.phone);
@@ -4855,22 +4857,28 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
         if (!user) return showProfileMessage("ابتدا وارد حساب شو.", true);
         const firstName = document.getElementById("profileFirstName").value.trim();
         const lastName = document.getElementById("profileLastName").value.trim();
+        const email = document.getElementById("profileEmailInput").value.trim();
         const phone = document.getElementById("profilePhoneInput").value.trim();
         const birthDate = document.getElementById("profileBirthDate").value;
         if (!firstName || !lastName) return showProfileMessage("نام و نام خانوادگی را وارد کن.", true);
+        if (!email || !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email)) return showProfileMessage("ایمیل معتبر وارد کن.", true);
         const button = document.getElementById("saveProfileButton");
         button.disabled = true;
         showProfileMessage("در حال ذخیره اطلاعات...");
         try {
-            const { data, error } = await supabaseClient.auth.updateUser({
+            const updatePayload = {
                 data: { ...(user.user_metadata || {}), first_name: firstName, last_name: lastName, phone, birth_date: birthDate }
-            });
+            };
+            const emailChanged = email.toLowerCase() !== String(user.email || "").trim().toLowerCase();
+            if (emailChanged) updatePayload.email = email;
+            const { data, error } = await supabaseClient.auth.updateUser(updatePayload);
             if (error) throw error;
             window.masirCurrentUser = data && data.user ? data.user : {
                 ...user, user_metadata: { ...(user.user_metadata || {}), first_name: firstName, last_name: lastName, phone, birth_date: birthDate }
             };
             populateProfile(window.masirCurrentUser);
-            showProfileMessage("اطلاعات پروفایل ذخیره شد.");
+            if (emailChanged) document.getElementById("profileEmailInput").value = email;
+            showProfileMessage(emailChanged ? "اطلاعات ذخیره شد. برای تأیید ایمیل جدید، صندوق ورودی آن را بررسی کن." : "اطلاعات پروفایل ذخیره شد.");
         } catch (error) {
             console.error("ذخیره پروفایل ناموفق بود:", error);
             showProfileMessage("ذخیره اطلاعات انجام نشد. اتصال حساب را بررسی کن.", true);
