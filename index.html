@@ -1674,6 +1674,68 @@ html[dir="ltr"] body { direction: ltr; }
 html[dir="rtl"] body { direction: rtl; }
 html[dir="ltr"] .language-picker { justify-content: flex-end; }
 
+
+/* Standalone messenger page */
+#chatSection { padding:18px; min-height:560px; overflow:hidden; background:linear-gradient(145deg,#111827,#15172a); }
+.messenger-page-heading { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:16px; }
+.messenger-page-heading h2 { margin:0; }
+.messenger-page-heading .help-text { margin:2px 0 0; }
+.messenger-lock { color:#c4b5fd; border:1px solid #514477; background:#201a35; border-radius:20px; padding:4px 10px; font-size:12px; white-space:nowrap; }
+.messenger-body { display:grid; grid-template-columns:minmax(220px, .78fr) minmax(0,1.6fr); min-height:470px; border:1px solid #30344b; border-radius:16px; overflow:hidden; background:#0e1423; }
+.messenger-sidebar { padding:12px; background:#141a2a; border-inline-end:1px solid #30344b; min-width:0; }
+.messenger-sidebar-title { font-size:13px; color:#c4b5fd; font-weight:bold; padding:5px 7px 12px; }
+.messenger-contact { display:flex; width:100%; align-items:center; gap:10px; border:1px solid transparent; border-radius:12px; background:transparent; color:#f3f4f6; padding:10px; text-align:start; cursor:pointer; font-family:inherit; }
+.messenger-contact.active,.messenger-contact:hover { background:#292440; border-color:#514477; }
+.messenger-avatar { width:42px; height:42px; border-radius:50%; flex:0 0 auto; display:grid; place-items:center; color:#171226; background:linear-gradient(135deg,#c4b5fd,#8b5cf6); font-weight:bold; }
+.messenger-avatar.small { width:34px; height:34px; font-size:13px; }
+.messenger-contact-copy { display:flex; flex:1; min-width:0; flex-direction:column; }
+.messenger-contact-copy strong { font-size:13px; }
+.messenger-contact-copy small,.messenger-thread-heading small { font-size:11px; color:#a5b4cc; }
+.messenger-contact-arrow { color:#c4b5fd; font-size:22px; }
+.messenger-privacy-note { color:#9ca3af; font-size:11px; padding:12px 7px; }
+.messenger-thread { display:flex; flex-direction:column; min-width:0; min-height:470px; background:radial-gradient(ellipse at 50% 0%,rgba(139,92,246,.08),transparent 55%),#0d1321; }
+.messenger-thread-heading,.messenger-topbar { display:flex; align-items:center; gap:10px; padding:13px 16px; border-bottom:1px solid #30344b; background:#151b2b; }
+.messenger-thread-heading > div,.messenger-topbar > div:nth-child(2) { display:flex; flex-direction:column; min-width:0; }
+.messenger-thread-heading strong { font-size:13px; }
+.messenger-topbar h3 { margin:0; color:#f3f4f6; }
+.messenger-topbar p { margin:0; font-size:11px; color:#a5b4cc; }
+.messenger-online-dot { margin-inline-start:auto; width:8px; height:8px; border-radius:50%; background:#34d399; box-shadow:0 0 12px #34d39955; }
+.messenger-messages { flex:1; min-height:260px; max-height:420px; overflow:auto; padding:18px; background-image:radial-gradient(rgba(167,139,250,.045) .8px,transparent .8px); background-size:16px 16px; }
+.messenger-messages > div { max-width:min(85%,520px); padding:10px 13px !important; margin:8px 0 !important; border:1px solid #35324b; border-radius:14px 14px 14px 4px !important; background:#20283b !important; box-shadow:0 3px 9px #0002; }
+.messenger-messages > div:has(small:first-child) { }
+.messenger-messages small { display:block; font-size:10px; color:#c4b5fd !important; }
+.messenger-messages > div:has(small) { }
+.messenger-compose { display:flex; align-items:flex-end; gap:9px; padding:12px; border-top:1px solid #30344b; background:#151b2b; }
+.messenger-compose textarea { flex:1; resize:vertical; min-height:44px; max-height:120px; padding:11px 13px; border-radius:14px; border:1px solid #41445d; background:#0b1020; color:#f3f4f6; font:inherit; line-height:1.6; }
+.messenger-compose button { width:46px; height:44px; flex:0 0 auto; padding:0; border-radius:13px; font-size:20px; }
+.messenger-start { padding:20px; margin:auto; width:min(100%,540px); }
+.messenger-start > p { color:#a5b4cc; font-size:13px; }
+.messenger-start .primary-button { width:100%; }
+.messenger-active-thread { display:flex; flex:1; flex-direction:column; min-height:0; }
+.messenger-new-chat { align-self:flex-start; margin:0 12px 10px; font-size:12px; }
+.messenger-status { padding:0 12px; margin:4px 0 10px; }
+.messenger-empty { margin:auto; text-align:center; padding:25px; color:#a5b4cc; }
+.messenger-empty h3 { color:#f3f4f6; margin:10px 0 2px; }
+.messenger-empty-icon { font-size:44px; opacity:.8; }
+.messenger-refresh { width:100%; font-size:12px; margin-bottom:10px; }
+.messenger-contacts { display:grid; gap:7px; }
+#adminSupportThreads button { border:1px solid #303b57; border-radius:12px; background:#1b2235; color:#f3f4f6; font-family:inherit; cursor:pointer; overflow-wrap:anywhere; }
+#adminSupportThreads button:hover { border-color:#a78bfa; background:#292440; }
+#adminSupportThreads button[data-id] { margin:0; }
+@media(max-width:650px) {
+  body { padding:10px; }
+  #chatSection { padding:10px; min-height:calc(100dvh - 150px); }
+  .messenger-body { grid-template-columns:minmax(0,1fr); min-height:unset; }
+  .messenger-sidebar { border-inline-end:0; border-bottom:1px solid #30344b; padding:8px; }
+  .messenger-sidebar-title { padding:2px 5px 7px; }
+  .messenger-privacy-note { display:none; }
+  .messenger-thread { min-height:430px; }
+  .messenger-messages { max-height:45dvh; min-height:220px; padding:12px; }
+  .messenger-page-heading { margin-bottom:10px; }
+  #bottomNav { gap:3px; }
+  #bottomNav button { font-size:11px; padding:8px 5px; }
+}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -1927,10 +1989,13 @@ html[dir="ltr"] .language-picker { justify-content: flex-end; }
             <button type="submit" class="primary-button" id="saveProfileButton" style="width:100%;margin-top:12px;">ذخیره اطلاعات پروفایل</button>
         </form>
     </div>
-    <div class="profile-panel" id="userSupportChatPanel">
-      <h3>گفتگوی خصوصی با مدیر</h3><p class="help-text">پیام‌ها فقط برای شما و مدیر قابل مشاهده‌اند. ادامه گفتگو در همین دستگاه در دسترس است.</p>
-      <div id="profileSupportStart"><div class="form-field"><label for="profileSupportEmail">ایمیل شما</label><input type="email" id="profileSupportEmail" autocomplete="email" placeholder="ایمیل حساب شما"></div><div class="form-field"><label for="profileSupportFirstMessage">پیام به مدیر</label><textarea id="profileSupportFirstMessage" rows="3" maxlength="4000" placeholder="پیامت را بنویس..."></textarea></div><button type="button" class="primary-button" id="profileSupportStartButton" style="width:100%;">شروع گفتگوی خصوصی</button></div>
-      <div id="profileSupportConversation" style="display:none;"><div id="profileSupportMessages" style="max-height:300px;overflow:auto;padding:10px;border-radius:10px;background:rgba(15,23,42,.45);margin-bottom:10px;"></div><textarea id="profileSupportReply" rows="2" maxlength="4000" placeholder="پیام جدید..." style="width:100%;box-sizing:border-box;"></textarea><button type="button" class="primary-button" id="profileSupportReplyButton" style="width:100%;margin-top:8px;">ارسال پیام</button><button type="button" class="secondary-button" id="profileSupportNewButton" style="width:100%;margin-top:8px;">شروع گفتگوی جدید</button></div><p id="profileSupportStatus" class="help-text" role="status" aria-live="polite"></p>
+    <div class="profile-panel" id="userSupportChatPanel" style="display:none;">
+      <div class="messenger-topbar"><div class="messenger-avatar">م</div><div><h3>گفتگوی خصوصی با مدیر</h3><p>مسیر · پشتیبانی خصوصی</p></div><span class="messenger-online-dot" title="گفتگو خصوصی است"></span></div>
+      <div class="messenger-body"><aside class="messenger-sidebar"><div class="messenger-sidebar-title">گفتگوها</div><button type="button" class="messenger-contact active" id="userAdminChatContact"><span class="messenger-avatar small">م</span><span class="messenger-contact-copy"><strong>مدیر مسیر</strong><small>پشتیبانی و پاسخ‌گویی</small></span><span class="messenger-contact-arrow">‹</span></button><p class="messenger-privacy-note">🔒 پیام‌های این گفتگو خصوصی هستند.</p></aside>
+      <main class="messenger-thread"><div class="messenger-thread-heading"><span class="messenger-avatar small">م</span><div><strong>مدیر مسیر</strong><small>گفتگوی خصوصی</small></div></div>
+      <div id="profileSupportStart" class="messenger-start"><p>برای شروع گفتگو، ایمیل و پیام خود را وارد کن.</p><div class="form-field"><label for="profileSupportEmail">ایمیل شما</label><input type="email" id="profileSupportEmail" autocomplete="email" placeholder="ایمیل حساب شما"></div><div class="form-field"><label for="profileSupportFirstMessage">پیام اول</label><textarea id="profileSupportFirstMessage" rows="3" maxlength="4000" placeholder="پیامت را بنویس..."></textarea></div><button type="button" class="primary-button" id="profileSupportStartButton">شروع گفتگو</button></div>
+      <div id="profileSupportConversation" class="messenger-active-thread" style="display:none;"><div id="profileSupportMessages" class="messenger-messages"></div><div class="messenger-compose"><textarea id="profileSupportReply" rows="2" maxlength="4000" placeholder="پیام بنویس..." aria-label="پیام جدید"></textarea><button type="button" class="primary-button" id="profileSupportReplyButton" aria-label="ارسال پیام">➤</button></div><button type="button" class="secondary-button messenger-new-chat" id="profileSupportNewButton">شروع گفتگوی جدید</button></div>
+      <p id="profileSupportStatus" class="help-text messenger-status" role="status" aria-live="polite"></p></main></div>
     </div>
     <div class="profile-panel" id="adminUserExportPanel" style="display:none;">
         <h3>مدیریت کاربران</h3>
@@ -1952,7 +2017,7 @@ html[dir="ltr"] .language-picker { justify-content: flex-end; }
             <button type="submit" class="primary-button" id="adminResetPasswordButton" style="width:100%;margin-top:10px;">🔐 تنظیم رمز جدید کاربر</button>
             <p id="adminResetPasswordMessage" class="help-text" role="status" aria-live="polite"></p>
         </form>
-        <div id="adminSupportInbox" style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(167,139,250,.3);"><h4>پیام‌های خصوصی کاربران</h4><button type="button" class="secondary-button" id="adminSupportRefreshButton" style="width:100%;">بارگذاری گفتگوها</button><div id="adminSupportThreads" style="margin-top:10px;display:grid;gap:8px;"></div><div id="adminSupportConversation" style="display:none;margin-top:12px;"><p id="adminSupportSelectedEmail" class="help-text"></p><div id="adminSupportMessages" style="max-height:320px;overflow:auto;padding:10px;border-radius:10px;background:rgba(15,23,42,.45);margin-bottom:10px;"></div><textarea id="adminSupportReply" rows="3" maxlength="4000" placeholder="پاسخ مدیر..." style="width:100%;box-sizing:border-box;"></textarea><button type="button" class="primary-button" id="adminSupportReplyButton" style="width:100%;margin-top:8px;">ارسال پاسخ</button><p id="adminSupportStatus" class="help-text" role="status" aria-live="polite"></p></div></div>
+        
     </div>
     <div class="profile-panel">
         <h3>امنیت حساب</h3>
@@ -1992,8 +2057,26 @@ html[dir="ltr"] .language-picker { justify-content: flex-end; }
     </div>
 </section>
 
+<section class="card" id="chatSection" style="display:none;">
+    <div class="messenger-page-heading"><div><h2>گفتگوها</h2><p class="help-text">پیام‌های خصوصی در یک صفحهٔ مستقل</p></div><span class="messenger-lock">🔒 خصوصی</span></div>
+    <div id="adminSupportInbox" class="messenger-admin" style="display:none;">
+      <div class="messenger-body"><aside class="messenger-sidebar"><div class="messenger-sidebar-title">گفتگوهای کاربران</div><button type="button" class="secondary-button messenger-refresh" id="adminSupportRefreshButton">↻ بارگذاری گفتگوها</button><div id="adminSupportThreads" class="messenger-contacts"></div></aside>
+      <main class="messenger-thread"><div id="adminSupportEmpty" class="messenger-empty"><div class="messenger-empty-icon">💬</div><h3>یک گفتگو را انتخاب کن</h3><p>گفتگوی کاربر از فهرست سمت راست انتخاب می‌شود.</p></div><div id="adminSupportConversation" style="display:none;"><div class="messenger-thread-heading"><span class="messenger-avatar small">👤</span><div><strong id="adminSupportSelectedEmail">گفتگو</strong><small>گفتگوی خصوصی کاربر</small></div></div><div id="adminSupportMessages" class="messenger-messages"></div><div class="messenger-compose"><textarea id="adminSupportReply" rows="2" maxlength="4000" placeholder="پاسخ مدیر..." aria-label="پاسخ مدیر"></textarea><button type="button" class="primary-button" id="adminSupportReplyButton" aria-label="ارسال پاسخ">➤</button></div><p id="adminSupportStatus" class="help-text messenger-status" role="status" aria-live="polite"></p></div></main></div>
+    </div>
+    <p id="chatLoginNotice" class="help-text" style="display:none;">برای استفاده از گفتگوی داخل برنامه، ابتدا وارد حساب شو. اگر رمز نداری، از گزینهٔ «گفتگوی خصوصی با مدیر» در صفحهٔ ورود استفاده کن.</p>
+        <div class="profile-panel" id="userSupportChatPanel" style="display:none;">
+      <div class="messenger-topbar"><div class="messenger-avatar">م</div><div><h3>گفتگوی خصوصی با مدیر</h3><p>مسیر · پشتیبانی خصوصی</p></div><span class="messenger-online-dot" title="گفتگو خصوصی است"></span></div>
+      <div class="messenger-body"><aside class="messenger-sidebar"><div class="messenger-sidebar-title">گفتگوها</div><button type="button" class="messenger-contact active" id="userAdminChatContact"><span class="messenger-avatar small">م</span><span class="messenger-contact-copy"><strong>مدیر مسیر</strong><small>پشتیبانی و پاسخ‌گویی</small></span><span class="messenger-contact-arrow">‹</span></button><p class="messenger-privacy-note">🔒 پیام‌های این گفتگو خصوصی هستند.</p></aside>
+      <main class="messenger-thread"><div class="messenger-thread-heading"><span class="messenger-avatar small">م</span><div><strong>مدیر مسیر</strong><small>گفتگوی خصوصی</small></div></div>
+      <div id="profileSupportStart" class="messenger-start"><p>برای شروع گفتگو، ایمیل و پیام خود را وارد کن.</p><div class="form-field"><label for="profileSupportEmail">ایمیل شما</label><input type="email" id="profileSupportEmail" autocomplete="email" placeholder="ایمیل حساب شما"></div><div class="form-field"><label for="profileSupportFirstMessage">پیام اول</label><textarea id="profileSupportFirstMessage" rows="3" maxlength="4000" placeholder="پیامت را بنویس..."></textarea></div><button type="button" class="primary-button" id="profileSupportStartButton">شروع گفتگو</button></div>
+      <div id="profileSupportConversation" class="messenger-active-thread" style="display:none;"><div id="profileSupportMessages" class="messenger-messages"></div><div class="messenger-compose"><textarea id="profileSupportReply" rows="2" maxlength="4000" placeholder="پیام بنویس..." aria-label="پیام جدید"></textarea><button type="button" class="primary-button" id="profileSupportReplyButton" aria-label="ارسال پیام">➤</button></div><button type="button" class="secondary-button messenger-new-chat" id="profileSupportNewButton">شروع گفتگوی جدید</button></div>
+      <p id="profileSupportStatus" class="help-text messenger-status" role="status" aria-live="polite"></p></main></div>
+    </div>
+</section>
+
 <nav id="bottomNav">
     <button type="button" id="nav-home" onclick="showPage('home')">🏠 خانه</button>
+    <button type="button" id="nav-chat" onclick="showPage('chat')">💬 چت</button>
     <button type="button" id="nav-planning" onclick="showPage('planning')">📅 برنامه‌ریزی</button>
     <button type="button" id="nav-daily" onclick="showPage('daily')">🗓️ برنامهٔ روز</button>
     <button type="button" id="nav-reports" onclick="showPage('reports')">📊 گزارش‌ها</button>
@@ -2011,7 +2094,7 @@ const MASIR_LANGUAGE_KEY = "masir_app_language_v1";
 const MASIR_LANGUAGES = {
     fa: { dir: "rtl", lang: "fa", text: {
         "🌐 زبان / Language":"🌐 زبان برنامه","مسیر":"مسیر","مسیر 💜":"مسیر 💜","مسیر | برنامه‌ریز شخصی":"مسیر | برنامه‌ریز شخصی","هر روز یک قدم به زندگی دلخواهت نزدیک‌تر شو.":"هر روز یک قدم به زندگی دلخواهت نزدیک‌تر شو.",
-        "🏠 خانه":"🏠 خانه","📅 برنامه‌ریزی":"📅 برنامه‌ریزی","🗓️ برنامهٔ روز":"🗓️ برنامهٔ روز","📊 گزارش‌ها":"📊 گزارش‌ها","👤 پروفایل":"👤 پروفایل",
+        "🏠 خانه":"🏠 خانه","💬 چت":"💬 چت","📅 برنامه‌ریزی":"📅 برنامه‌ریزی","🗓️ برنامهٔ روز":"🗓️ برنامهٔ روز","📊 گزارش‌ها":"📊 گزارش‌ها","👤 پروفایل":"👤 پروفایل",
         "➕ افزودن فعالیت جدید":"➕ افزودن فعالیت جدید","نام فعالیت":"نام فعالیت","دسته‌بندی فعالیت":"دسته‌بندی فعالیت","ساعت شروع":"ساعت شروع","ساعت پایان":"ساعت پایان",
         "ذخیره اطلاعات پروفایل":"ذخیره اطلاعات پروفایل","اطلاعات حساب":"اطلاعات حساب","امنیت حساب":"امنیت حساب","ایمیل حساب":"ایمیل حساب","تلفن حساب":"تلفن حساب",
         "نام":"نام","نام خانوادگی":"نام خانوادگی","شماره تلفن":"شماره تلفن","تاریخ تولد":"تاریخ تولد","بدون دسته‌بندی":"بدون دسته‌بندی",
@@ -2721,6 +2804,7 @@ let activities = [];
 function showPage(page) {
     const sections = {
         home: ["homeStats", "homeProgress", "calendarSection"],
+        chat: ["chatSection"],
         daily: ["dailyOverviewSection"],
         planning: ["planningSection"],
         reports: ["reportSection"],
@@ -2730,6 +2814,7 @@ function showPage(page) {
     const allSections = [
         "homeStats",
         "homeProgress",
+        "chatSection",
         "dailyOverviewSection",
         "planningSection",
         "calendarSection",
@@ -2770,6 +2855,8 @@ function showPage(page) {
     if (page === "daily") {
         renderDailyOverview();
     }
+
+    if (page === "chat") { if (window.masirConfigureChatPage) window.masirConfigureChatPage(); }
 
     if (page === "profile" && window.masirCurrentUser) {
         if (window.masirPopulateProfile) window.masirPopulateProfile(window.masirCurrentUser);
@@ -4218,9 +4305,21 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
     }
     function configureAdminUserExport(user) {
         const panel = document.getElementById("adminUserExportPanel");
-        if (!panel) return;
         const isAdmin = Boolean(user && typeof user.email === "string" && user.email.trim().toLowerCase() === "ramtinxasf@gmail.com");
-        panel.style.display = isAdmin ? "block" : "none";
+        if (panel) panel.style.display = isAdmin ? "block" : "none";
+        const adminChat = document.getElementById("adminSupportInbox");
+        const userChat = document.getElementById("userSupportChatPanel");
+        const chatNotice = document.getElementById("chatLoginNotice");
+        if (adminChat) adminChat.style.display = isAdmin ? "block" : "none";
+        if (userChat) userChat.style.display = user && !isAdmin ? "block" : "none";
+        if (chatNotice) chatNotice.style.display = user ? "none" : "block";
+        window.masirConfigureChatPage = function() {
+            if (adminChat && isAdmin && !adminChat.dataset.loaded) {
+                adminChat.dataset.loaded = "yes";
+                const refreshButton = document.getElementById("adminSupportRefreshButton");
+                if (refreshButton) refreshButton.click();
+            }
+        };
     }
 
     const exportUsersCsvButton = document.getElementById("exportUsersCsvButton");
@@ -4750,10 +4849,11 @@ if($("masir-support-start-button"))$("masir-support-start-button").onclick=async
 if($("profileSupportStartButton"))$("profileSupportStartButton").onclick=async()=>{const b=$("profileSupportStartButton"),st=$("profileSupportStatus");b.disabled=true;try{const email=$("profileSupportEmail").value.trim(),d=await create(email,$("profileSupportFirstMessage").value);$("profileSupportStart").style.display="none";$("profileSupportConversation").style.display="block";draw($("profileSupportMessages"),[{sender:"user",message:$("profileSupportFirstMessage").value,created_at:new Date().toISOString()}]);$("profileSupportFirstMessage").value="";st.textContent=d.message;}catch(e){st.style.color="#fb7185";st.textContent=e.message;}finally{b.disabled=false;}};
 if($("profileSupportReplyButton"))$("profileSupportReplyButton").onclick=async()=>{const b=$("profileSupportReplyButton"),st=$("profileSupportStatus"),msg=$("profileSupportReply").value.trim();if(!msg){st.textContent="پیامت را بنویس.";return;}b.disabled=true;try{await userSend($("profileSupportEmail").value.trim(),msg,$("profileSupportMessages"));$("profileSupportReply").value="";st.textContent="پیام ارسال شد.";}catch(e){st.style.color="#fb7185";st.textContent=e.message;}finally{b.disabled=false;}};
 if($("profileSupportNewButton"))$("profileSupportNewButton").onclick=()=>{localStorage.removeItem(key($("profileSupportEmail").value.trim()));$("profileSupportConversation").style.display="none";$("profileSupportStart").style.display="block";$("profileSupportStatus").textContent="گفتگوی جدید را آغاز کن.";};
+if($("userAdminChatContact"))$("userAdminChatContact").onclick=()=>{const start=$("profileSupportStart"),conv=$("profileSupportConversation");if(start&&conv){const email=$("profileSupportEmail").value.trim();if(email){userRead(email,$("profileSupportMessages")).then(ok=>{start.style.display=ok?"none":"block";conv.style.display=ok?"flex":"none";}).catch(()=>{});}}};
 const pe=$("profileEmail");if(pe&&$("profileSupportEmail")){const sync=()=>{const v=(pe.textContent||"").trim();if(v&&v!=="—")$("profileSupportEmail").value=v;};sync();new MutationObserver(sync).observe(pe,{childList:true,subtree:true,characterData:true});$("profileSupportEmail").addEventListener("change",async()=>{try{const ok=await userRead($("profileSupportEmail").value.trim(),$("profileSupportMessages"));$("profileSupportStart").style.display=ok?"none":"block";$("profileSupportConversation").style.display=ok?"block":"none";}catch(e){$("profileSupportStatus").textContent="گفتگو بارگذاری نشد؛ اگر دستگاه عوض شده، گفتگوی تازه بساز.";}});}
 async function adminApi(body){return api(body,true);}
-async function refresh(){const list=$("adminSupportThreads");if(!list)return;list.innerHTML="<p>در حال بارگذاری...</p>";try{const d=await adminApi({action:"admin_list"});list.innerHTML=d.threads.map(t=>'<button type="button" class="secondary-button" data-id="'+esc(t.id)+'" data-email="'+esc(t.email)+'" style="text-align:right;width:100%;padding:10px">'+esc(t.email)+'<div style="font-size:11px;margin-top:4px">'+esc(new Date(t.updated_at).toLocaleString("fa-IR"))+'</div></button>').join("")||"<p>هنوز گفتگویی وجود ندارد.</p>";list.querySelectorAll("[data-id]").forEach(b=>b.onclick=()=>openThread(b.dataset.id,b.dataset.email));}catch(e){list.innerHTML='<p style="color:#fb7185">'+esc(e.message)+'</p>';}}
-async function openThread(id,email){chosen=id;$("adminSupportConversation").style.display="block";$("adminSupportSelectedEmail").textContent="گفتگو با: "+email;await readThread();}
+async function refresh(){const list=$("adminSupportThreads");if(!list)return;list.innerHTML="<p>در حال بارگذاری...</p>";try{const d=await adminApi({action:"admin_list"});list.innerHTML=d.threads.map(t=>'<button type="button" data-id="'+esc(t.id)+'" data-email="'+esc(t.email)+'" style="text-align:right;width:100%;padding:12px">'+ '<strong>👤 '+esc(t.email)+'</strong><div style="font-size:11px;color:#a5b4cc;margin-top:4px">آخرین فعالیت · '+esc(new Date(t.updated_at).toLocaleString("fa-IR"))+'</div></button>').join("")||"<p class='help-text'>هنوز گفتگویی وجود ندارد.</p>";list.querySelectorAll("[data-id]").forEach(b=>b.onclick=()=>openThread(b.dataset.id,b.dataset.email));}catch(e){list.innerHTML='<p style="color:#fb7185">'+esc(e.message)+'</p>';}}
+async function openThread(id,email){chosen=id;$("adminSupportConversation").style.display="flex";$("adminSupportConversation").style.flexDirection="column";$("adminSupportEmpty").style.display="none";$("adminSupportSelectedEmail").textContent=email;await readThread();}
 async function readThread(){const d=await adminApi({action:"admin_read",thread_id:chosen});draw($("adminSupportMessages"),d.messages);}
 if($("adminSupportRefreshButton"))$("adminSupportRefreshButton").onclick=refresh;
 if($("adminSupportReplyButton"))$("adminSupportReplyButton").onclick=async()=>{const st=$("adminSupportStatus"),b=$("adminSupportReplyButton"),msg=$("adminSupportReply").value.trim();if(!chosen){st.textContent="ابتدا گفتگو را انتخاب کن.";return;}if(!msg){st.textContent="پاسخ را بنویس.";return;}b.disabled=true;try{await adminApi({action:"admin_reply",thread_id:chosen,message:msg});$("adminSupportReply").value="";await readThread();st.textContent="پاسخ ارسال شد.";await refresh();}catch(e){st.style.color="#fb7185";st.textContent=e.message;}finally{b.disabled=false;}};
