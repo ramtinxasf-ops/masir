@@ -1532,6 +1532,53 @@ input:focus, select:focus, .activity-priority:focus, .activity-category:focus {
     .stat-card, .report-stat { padding-top: 17px; padding-bottom: 17px; }
 }
 
+
+/* نمای یک‌جای برنامهٔ روزانه */
+#dailyOverviewSection .daily-overview-frame {
+    border: 1px solid rgba(196,167,255,.2);
+    border-radius: 20px;
+    padding: 18px;
+    background: linear-gradient(145deg, rgba(40,32,52,.96), rgba(24,22,31,.98));
+    box-shadow: 0 12px 30px rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.035);
+}
+#dailyOverviewSection .daily-overview-controls {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 8px; flex-wrap: wrap; margin-bottom: 16px;
+}
+#dailyOverviewSection .daily-overview-controls button {
+    border: 1px solid var(--border); border-radius: 10px; padding: 8px 12px;
+    background: var(--card-light); color: var(--text); cursor: pointer;
+}
+#dailyOverviewSection .daily-overview-date { font-weight: bold; color: var(--purple); }
+#dailyOverviewSection .daily-overview-summary {
+    display: flex; gap: 10px; flex-wrap: wrap; color: var(--muted);
+    font-size: 13px; margin-bottom: 18px;
+}
+#dailyOverviewSection .daily-overview-summary span {
+    background: rgba(196,167,255,.08); border: 1px solid rgba(196,167,255,.12);
+    border-radius: 10px; padding: 5px 10px;
+}
+#dailyOverviewSection .daily-timeline { display: grid; gap: 10px; }
+#dailyOverviewSection .daily-timeline-item {
+    display: grid; grid-template-columns: 82px minmax(0,1fr); gap: 12px;
+    align-items: stretch; padding: 13px; border-radius: 14px;
+    border: 1px solid var(--border); background: rgba(255,255,255,.025);
+}
+#dailyOverviewSection .daily-timeline-time {
+    color: var(--purple); font-weight: bold; font-size: 13px;
+    direction: ltr; text-align: center; align-self: center;
+}
+#dailyOverviewSection .daily-timeline-name { font-weight: bold; overflow-wrap: anywhere; }
+#dailyOverviewSection .daily-timeline-status { color: var(--muted); font-size: 12px; margin-top: 3px; }
+#dailyOverviewSection .daily-timeline-item.is-completed {
+    border-color: rgba(114,214,174,.35); background: rgba(50,130,91,.10);
+}
+#dailyOverviewSection .daily-timeline-item.is-completed .daily-timeline-status { color: var(--green); }
+@media(max-width:480px) {
+    #dailyOverviewSection .daily-overview-frame { padding: 12px; }
+    #dailyOverviewSection .daily-timeline-item { grid-template-columns: 70px minmax(0,1fr); gap: 8px; padding: 10px; }
+    #dailyOverviewSection .daily-timeline-time { font-size: 12px; }
+}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -1804,9 +1851,25 @@ input:focus, select:focus, .activity-priority:focus, .activity-category:focus {
     <div id="profileLogoutArea" style="margin-top:24px;"></div>
 </section>
 
+<section class="card" id="dailyOverviewSection" style="display:none;">
+    <h2>🗓️ برنامهٔ کامل روز</h2>
+    <p class="help-text">همهٔ فعالیت‌های روز انتخاب‌شده را همراه ساعت شروع و پایان، در یک قاب ببین.</p>
+    <div class="daily-overview-frame">
+        <div class="daily-overview-controls">
+            <button type="button" onclick="shiftDailyOverviewDate(-1)">روز قبل ←</button>
+            <div class="daily-overview-date" id="dailyOverviewDate"></div>
+            <button type="button" onclick="shiftDailyOverviewDate(1)">→ روز بعد</button>
+            <button type="button" onclick="goDailyOverviewToday()">امروز</button>
+        </div>
+        <div class="daily-overview-summary" id="dailyOverviewSummary"></div>
+        <div class="daily-timeline" id="dailyTimeline"></div>
+    </div>
+</section>
+
 <nav id="bottomNav">
     <button type="button" id="nav-home" onclick="showPage('home')">🏠 خانه</button>
     <button type="button" id="nav-planning" onclick="showPage('planning')">📅 برنامه‌ریزی</button>
+    <button type="button" id="nav-daily" onclick="showPage('daily')">🗓️ برنامهٔ روز</button>
     <button type="button" id="nav-reports" onclick="showPage('reports')">📊 گزارش‌ها</button>
     <button type="button" id="nav-profile" onclick="showPage('profile')">👤 پروفایل</button>
 </nav>
@@ -1985,6 +2048,7 @@ let activities = [];
 function showPage(page) {
     const sections = {
         home: ["homeStats", "homeProgress", "calendarSection"],
+        daily: ["dailyOverviewSection"],
         planning: ["planningSection"],
         reports: ["reportSection"],
         profile: ["profileSection"]
@@ -1993,6 +2057,7 @@ function showPage(page) {
     const allSections = [
         "homeStats",
         "homeProgress",
+        "dailyOverviewSection",
         "planningSection",
         "calendarSection",
         "reportSection",
@@ -2027,6 +2092,10 @@ function showPage(page) {
 
     if (activeButton) {
         activeButton.style.background = "#514477";
+    }
+
+    if (page === "daily") {
+        renderDailyOverview();
     }
 
     if (page === "profile" && window.masirCurrentUser) {
@@ -2897,11 +2966,78 @@ function renderBestDay(reports) {
     box.append(title, description);
 }
 
+function renderDailyOverview() {
+    const dateLabel = document.getElementById("dailyOverviewDate");
+    const summary = document.getElementById("dailyOverviewSummary");
+    const timeline = document.getElementById("dailyTimeline");
+    if (!dateLabel || !summary || !timeline) return;
+
+    const dayActivities = getActivitiesForDate(selectedDate);
+    const completedCount = dayActivities.filter(activity => isActivityCompleted(activity, selectedDate)).length;
+    dateLabel.textContent = `${getPersianWeekday(selectedDate)}، ${getPersianDate(selectedDate)}`;
+    summary.replaceChildren();
+
+    [
+        `مجموع فعالیت‌ها: ${toPersianNumber(dayActivities.length)}`,
+        `انجام‌شده: ${toPersianNumber(completedCount)}`,
+        `باقی‌مانده: ${toPersianNumber(dayActivities.length - completedCount)}`
+    ].forEach(label => {
+        const chip = document.createElement("span");
+        chip.textContent = label;
+        summary.appendChild(chip);
+    });
+
+    timeline.replaceChildren();
+    if (dayActivities.length === 0) {
+        const empty = document.createElement("div");
+        empty.className = "empty-message";
+        empty.textContent = "برای این روز فعالیتی برنامه‌ریزی نشده است.";
+        timeline.appendChild(empty);
+        return;
+    }
+
+    dayActivities.forEach(activity => {
+        const completed = isActivityCompleted(activity, selectedDate);
+        const item = document.createElement("div");
+        item.className = "daily-timeline-item" + (completed ? " is-completed" : "");
+
+        const time = document.createElement("div");
+        time.className = "daily-timeline-time";
+        time.textContent = `${activity.start} – ${activity.end}`;
+
+        const details = document.createElement("div");
+        const name = document.createElement("div");
+        name.className = "daily-timeline-name";
+        name.textContent = activity.name;
+
+        const status = document.createElement("div");
+        status.className = "daily-timeline-status";
+        status.textContent = completed ? "✓ انجام‌شده" : "○ انجام‌نشده";
+
+        details.append(name, status);
+        item.append(time, details);
+        timeline.appendChild(item);
+    });
+}
+
+function shiftDailyOverviewDate(offset) {
+    selectedDate.setDate(selectedDate.getDate() + offset);
+    renderAll();
+    renderDailyOverview();
+}
+
+function goDailyOverviewToday() {
+    selectedDate = getTodayDate();
+    renderAll();
+    renderDailyOverview();
+}
+
 function renderAll() {
     renderCalendar();
     renderActivities();
     updateStats();
     renderWeeklyReport();
+    renderDailyOverview();
 }
 
 const dailyOption = document.getElementById("dailyOption");
