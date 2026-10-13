@@ -1791,7 +1791,7 @@ var supabaseClient = window.supabase.createClient(
 <aside id="masirSideDrawer" aria-label="منوی اصلی" aria-hidden="true">
   <div id="masirDrawerHead"><strong>مسیر 💜</strong><button type="button" id="masirDrawerClose" aria-label="بستن منو">×</button></div>
   <nav id="masirDrawerItems">
-    <button type="button" data-masir-page="profile"><span>👤</span><span>حساب کاربری</span></button>
+    <button type="button" data-masir-page="account"><span>👤</span><span>حساب کاربری</span></button>
     <button type="button" data-masir-page="settings"><span>⚙️</span><span>تنظیمات</span></button>
     <button type="button" data-masir-page="password"><span>🔐</span><span>تغییر رمز عبور</span></button>
     <button type="button" data-masir-page="notes"><span>📝</span><span>یادداشت‌ها</span></button>
@@ -2030,8 +2030,22 @@ var supabaseClient = window.supabase.createClient(
 </section>
     
 <section class="card" id="profileSection" style="display:none;">
-    <h2>👤 پروفایل من</h2>
-    <p class="help-text">اطلاعات شخصی، امنیت حساب و پشتیبان‌گیری را از این بخش مدیریت کن.</p>
+    <h2>👤 نمایه</h2>
+    <p class="help-text">اطلاعات ثبت‌شده حساب کاربری در این بخش فقط نمایش داده می‌شود. برای ویرایش، از منوی سه‌نقطه وارد «حساب کاربری» شو.</p>
+    <div class="profile-panel"><h3>اطلاعات شخصی</h3>
+        <div class="profile-account-line"><span>نام</span><strong id="profileViewFirstName">—</strong></div>
+        <div class="profile-account-line"><span>نام خانوادگی</span><strong id="profileViewLastName">—</strong></div>
+        <div class="profile-account-line"><span>سال تولد</span><strong id="profileViewBirthYear">—</strong></div>
+        <div class="profile-account-line"><span>ایمیل</span><strong id="profileViewEmail">—</strong></div>
+        <div class="profile-account-line"><span>شماره تلفن</span><strong id="profileViewPhone">—</strong></div>
+        <div class="profile-account-line"><span>علایق</span><strong id="profileViewInterests" style="white-space:pre-wrap;">—</strong></div>
+        <div class="profile-account-line"><span>اهداف</span><strong id="profileViewGoals" style="white-space:pre-wrap;">—</strong></div>
+    </div>
+</section>
+
+<section class="card" id="accountSection" style="display:none;">
+    <h2>👤 حساب کاربری</h2>
+    <p class="help-text">اطلاعات شخصی را اینجا ثبت و ویرایش کن. ابزارهای مدیریتی فقط برای حساب مدیر نمایش داده می‌شوند.</p>
     <div class="profile-panel">
         <h3>اطلاعات حساب</h3>
         <div class="profile-account-line"><span>ایمیل حساب</span><strong id="profileEmail">—</strong></div>
@@ -2041,10 +2055,25 @@ var supabaseClient = window.supabase.createClient(
                 <div class="form-field"><label for="profileFirstName">نام</label><input type="text" id="profileFirstName" maxlength="60" autocomplete="given-name" required></div>
                 <div class="form-field"><label for="profileLastName">نام خانوادگی</label><input type="text" id="profileLastName" maxlength="80" autocomplete="family-name" required></div>
                 <div class="form-field"><label for="profilePhoneInput">شماره تلفن</label><input type="tel" id="profilePhoneInput" maxlength="20" autocomplete="tel" placeholder="+989123456789"></div>
-                <div class="form-field"><label for="profileBirthDate">تاریخ تولد</label><input type="date" id="profileBirthDate" autocomplete="bday"></div>
+                <div class="form-field"><label for="profileBirthYear">سال تولد</label><input type="number" id="profileBirthYear" min="1900" max="2100" inputmode="numeric" autocomplete="bday-year" placeholder="مثلاً ۱۳۷۵"></div>
+            </div>
+            <div class="form-field" style="margin-top:12px;">
+                <label for="profileInterestChoice">علایق</label>
+                <div class="form-grid" style="grid-template-columns:minmax(0,1fr) auto;align-items:end;">
+                    <div class="form-field"><label for="profileInterestChoice">انتخاب از علایق پیشنهادی</label><select id="profileInterestChoice">
+                        <option value="">یک علاقه انتخاب کن</option><option>هنر و طراحی</option><option>موسیقی</option><option>کتاب‌خوانی</option><option>برنامه‌نویسی</option>
+                        <option>امنیت سایبری</option><option>علم داده</option><option>ورزش و تناسب اندام</option><option>سفر</option><option>تاریخ</option><option>زبان‌آموزی</option>
+                        <option>کسب‌وکار و کارآفرینی</option><option>فناوری</option><option>عکاسی</option><option>طبیعت</option><option>بازی</option><option>آشپزی</option>
+                    </select></div><button type="button" class="secondary-button" id="addProfileInterestButton">افزودن</button>
+                </div>
+                <label for="profileInterests">علایق انتخاب‌شده یا علایق دلخواه را اینجا بنویس</label>
+                <textarea id="profileInterests" rows="3" maxlength="2000" placeholder="می‌توانی چند علاقه را با ویرگول جدا کنی یا دستی بنویسی." style="width:100%;padding:12px;border:1px solid var(--border);border-radius:10px;background:#0d1426;color:var(--text);font:inherit;"></textarea>
+            </div>
+            <div class="form-field" style="margin-top:12px;"><label for="profileGoals">اهداف</label>
+                <textarea id="profileGoals" rows="4" maxlength="4000" placeholder="هدف‌های شخصی‌ات را اینجا بنویس..." style="width:100%;padding:12px;border:1px solid var(--border);border-radius:10px;background:#0d1426;color:var(--text);font:inherit;"></textarea>
             </div>
             <p id="profileSaveMessage" class="help-text" role="status" aria-live="polite"></p>
-            <button type="submit" class="primary-button" id="saveProfileButton" style="width:100%;margin-top:12px;">ذخیره اطلاعات پروفایل</button>
+            <button type="submit" class="primary-button" id="saveProfileButton" style="width:100%;margin-top:12px;">ذخیره اطلاعات حساب کاربری</button>
         </form>
     </div>
     <div class="profile-panel" id="profilePrivateChatLinkPanel" style="display:none;">
@@ -3040,6 +3069,10 @@ const MASIR_LANGUAGES = {
         "برای ورود یا ساخت حساب با پیامک، نام و نام خانوادگی را وارد کن.": "SMSでログインまたはアカウントを作成するには、名と姓を入力してください。",
     }}
 };
+const MASIR_ACCOUNT_TRANSLATION_KEYS = ["نمایه","اطلاعات شخصی","اطلاعات ثبت‌شده حساب کاربری در این بخش فقط نمایش داده می‌شود. برای ویرایش، از منوی سه‌نقطه وارد «حساب کاربری» شو.","اطلاعات شخصی را اینجا ثبت و ویرایش کن. ابزارهای مدیریتی فقط برای حساب مدیر نمایش داده می‌شوند.","ایمیل","سال تولد","علایق","اهداف","انتخاب از علایق پیشنهادی","یک علاقه انتخاب کن","افزودن","علایق انتخاب‌شده یا علایق دلخواه را اینجا بنویس","می‌توانی چند علاقه را با ویرگول جدا کنی یا دستی بنویسی.","هدف‌های شخصی‌ات را اینجا بنویس...","ذخیره اطلاعات حساب کاربری","اطلاعات حساب کاربری ذخیره شد.","سال تولد باید یک سال معتبر باشد.","هنر و طراحی","موسیقی","کتاب‌خوانی","برنامه‌نویسی","امنیت سایبری","علم داده","ورزش و تناسب اندام","سفر","تاریخ","زبان‌آموزی","کسب‌وکار و کارآفرینی","فناوری","عکاسی","طبیعت","بازی","آشپزی"];
+const MASIR_ACCOUNT_TRANSLATION_VALUES = {"fa":["نمایه","اطلاعات شخصی","اطلاعات ثبت‌شده حساب کاربری در این بخش فقط نمایش داده می‌شود. برای ویرایش، از منوی سه‌نقطه وارد «حساب کاربری» شو.","اطلاعات شخصی را اینجا ثبت و ویرایش کن. ابزارهای مدیریتی فقط برای حساب مدیر نمایش داده می‌شوند.","ایمیل","سال تولد","علایق","اهداف","انتخاب از علایق پیشنهادی","یک علاقه انتخاب کن","افزودن","علایق انتخاب‌شده یا علایق دلخواه را اینجا بنویس","می‌توانی چند علاقه را با ویرگول جدا کنی یا دستی بنویسی.","هدف‌های شخصی‌ات را اینجا بنویس...","ذخیره اطلاعات حساب کاربری","اطلاعات حساب کاربری ذخیره شد.","سال تولد باید یک سال معتبر باشد.","هنر و طراحی","موسیقی","کتاب‌خوانی","برنامه‌نویسی","امنیت سایبری","علم داده","ورزش و تناسب اندام","سفر","تاریخ","زبان‌آموزی","کسب‌وکار و کارآفرینی","فناوری","عکاسی","طبیعت","بازی","آشپزی"],"en":["Profile","Personal information","This section only displays saved account information. To edit it, open Account from the three-dot menu.","Add and edit your personal information here. Management tools are visible only to the administrator.","Email","Birth year","Interests","Goals","Choose a suggested interest","Choose an interest","Add","Selected or custom interests","Separate multiple interests with commas, or type them manually.","Write your personal goals here...","Save account information","Account information saved.","Enter a valid birth year.","Art and design","Music","Reading","Programming","Cybersecurity","Data science","Sports and fitness","Travel","History","Language learning","Business and entrepreneurship","Technology","Photography","Nature","Gaming","Cooking"],"ar":["الملف الشخصي","المعلومات الشخصية","يعرض هذا القسم معلومات الحساب المحفوظة فقط. للتعديل، افتح الحساب من قائمة النقاط الثلاث.","أضف معلوماتك الشخصية وعدّلها هنا. تظهر أدوات الإدارة للمسؤول فقط.","البريد الإلكتروني","سنة الميلاد","الاهتمامات","الأهداف","اختر اهتمامًا مقترحًا","اختر اهتمامًا","إضافة","الاهتمامات المختارة أو المخصصة","افصل بين الاهتمامات بفواصل أو اكتبها يدويًا.","اكتب أهدافك الشخصية هنا...","حفظ معلومات الحساب","تم حفظ معلومات الحساب.","أدخل سنة ميلاد صحيحة.","الفن والتصميم","الموسيقى","القراءة","البرمجة","الأمن السيبراني","علم البيانات","الرياضة واللياقة","السفر","التاريخ","تعلم اللغات","الأعمال وريادة الأعمال","التقنية","التصوير","الطبيعة","الألعاب","الطبخ"],"tr":["Profil","Kişisel bilgiler","Bu bölüm kayıtlı hesap bilgilerini yalnızca gösterir. Düzenlemek için üç nokta menüsünden Hesap bölümünü açın.","Kişisel bilgilerinizi burada ekleyip düzenleyin. Yönetim araçları yalnızca yöneticiye görünür.","E-posta","Doğum yılı","İlgi alanları","Hedefler","Önerilen ilgi alanını seçin","Bir ilgi alanı seçin","Ekle","Seçilen veya özel ilgi alanları","Birden fazla ilgi alanını virgülle ayırın veya elle yazın.","Kişisel hedeflerinizi buraya yazın...","Hesap bilgilerini kaydet","Hesap bilgileri kaydedildi.","Geçerli bir doğum yılı girin.","Sanat ve tasarım","Müzik","Kitap okuma","Programlama","Siber güvenlik","Veri bilimi","Spor ve fitness","Seyahat","Tarih","Dil öğrenme","İş ve girişimcilik","Teknoloji","Fotoğrafçılık","Doğa","Oyun","Yemek pişirme"],"ja":["プロフィール","個人情報","このセクションには保存済みのアカウント情報のみ表示されます。編集するには三点メニューからアカウントを開いてください。","ここで個人情報を登録・編集できます。管理ツールは管理者にのみ表示されます。","メールアドレス","生年","興味・関心","目標","おすすめの興味を選択","興味を選択","追加","選択した興味・関心、または自由入力","複数の場合はカンマで区切るか、手入力してください。","個人の目標を入力してください...","アカウント情報を保存","アカウント情報を保存しました。","有効な生年を入力してください。","アート・デザイン","音楽","読書","プログラミング","サイバーセキュリティ","データサイエンス","スポーツ・フィットネス","旅行","歴史","語学学習","ビジネス・起業","テクノロジー","写真","自然","ゲーム","料理"]};
+for (const lang of Object.keys(MASIR_ACCOUNT_TRANSLATION_VALUES)) { const d = {}; MASIR_ACCOUNT_TRANSLATION_KEYS.forEach((key, i) => d[key] = MASIR_ACCOUNT_TRANSLATION_VALUES[lang][i]); Object.assign(MASIR_LANGUAGES[lang].text, d); }
+
 function masirCurrentLanguage() {
     const picker = document.getElementById("appLanguage");
     if (picker && picker.value) return picker.value;
@@ -3355,6 +3388,7 @@ function showPage(page) {
         planning: ["planningSection"],
         reports: ["reportSection"],
         profile: ["profileSection"],
+        account: ["accountSection"],
         settings: ["settingsSection"],
         password: ["passwordSection"],
         notes: ["notesSection"],
@@ -3371,6 +3405,7 @@ function showPage(page) {
         "calendarSection",
         "reportSection",
         "profileSection",
+        "accountSection",
         "settingsSection",
         "passwordSection",
         "notesSection",
@@ -3413,7 +3448,7 @@ function showPage(page) {
 
     if (page === "chat") { if (window.masirConfigureChatPage) window.masirConfigureChatPage(); }
 
-    if (page === "profile" && window.masirCurrentUser) {
+    if ((page === "profile" || page === "account") && window.masirCurrentUser) {
         if (window.masirPopulateProfile) window.masirPopulateProfile(window.masirCurrentUser);
     }
 }
@@ -4905,18 +4940,25 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
     }
     function populateProfile(user) {
         const metadata = user && user.user_metadata ? user.user_metadata : {};
-        const setValue = (id, value) => {
-            const element = document.getElementById(id);
-            if (element) element.value = value || "";
-        };
+        const setValue = (id, value) => { const element = document.getElementById(id); if (element) element.value = value == null ? "" : value; };
+        const setText = (id, value) => { const element = document.getElementById(id); if (element) element.textContent = value == null || value === "" ? "ثبت نشده" : String(value); };
+        const email = user && user.email ? user.email : "";
+        const phone = user && (user.phone || metadata.phone) ? (user.phone || metadata.phone) : "";
+        const firstName = metadata.first_name || metadata.firstName || "";
+        const lastName = metadata.last_name || metadata.lastName || "";
+        const birthYear = metadata.birth_year || metadata.birthYear || (metadata.birth_date || metadata.birthDate || "").slice(0, 4) || "";
+        const interests = Array.isArray(metadata.interests) ? metadata.interests.join("، ") : (metadata.interests || "");
+        const goals = metadata.goals || "";
         const emailElement = document.getElementById("profileEmail");
         const phoneElement = document.getElementById("profilePhone");
-        if (emailElement) emailElement.textContent = user.email || "بدون ایمیل";
-        if (phoneElement) phoneElement.textContent = user.phone || metadata.phone || "ثبت نشده";
-        setValue("profileFirstName", metadata.first_name || metadata.firstName);
-        setValue("profileLastName", metadata.last_name || metadata.lastName);
-        setValue("profilePhoneInput", user.phone || metadata.phone);
-        setValue("profileBirthDate", metadata.birth_date || metadata.birthDate);
+        if (emailElement) emailElement.textContent = email || "بدون ایمیل";
+        if (phoneElement) phoneElement.textContent = phone || "ثبت نشده";
+        setValue("profileFirstName", firstName); setValue("profileLastName", lastName);
+        setValue("profilePhoneInput", phone); setValue("profileBirthYear", birthYear);
+        setValue("profileInterests", interests); setValue("profileGoals", goals);
+        setText("profileViewFirstName", firstName); setText("profileViewLastName", lastName);
+        setText("profileViewBirthYear", birthYear); setText("profileViewEmail", email);
+        setText("profileViewPhone", phone); setText("profileViewInterests", interests); setText("profileViewGoals", goals);
         configureAdminUserExport(user);
     }
     function configureAdminUserExport(user) {
@@ -5085,6 +5127,18 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
 
     window.masirPopulateProfile = populateProfile;
 
+    const addProfileInterestButton = document.getElementById("addProfileInterestButton");
+    if (addProfileInterestButton) addProfileInterestButton.addEventListener("click", function() {
+        const choice = document.getElementById("profileInterestChoice");
+        const interestsField = document.getElementById("profileInterests");
+        if (!choice || !interestsField || !choice.value) return;
+        const current = interestsField.value.split(/[,،;؛\\n]+/).map(item => item.trim()).filter(Boolean);
+        if (!current.some(item => item.toLocaleLowerCase() === choice.value.toLocaleLowerCase())) current.push(choice.value);
+        interestsField.value = current.join("، ");
+        choice.value = "";
+        interestsField.focus();
+    });
+
     const profileForm = document.getElementById("profileForm");
     if (profileForm) profileForm.addEventListener("submit", async function(event) {
         event.preventDefault();
@@ -5093,21 +5147,24 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
         const firstName = document.getElementById("profileFirstName").value.trim();
         const lastName = document.getElementById("profileLastName").value.trim();
         const phone = document.getElementById("profilePhoneInput").value.trim();
-        const birthDate = document.getElementById("profileBirthDate").value;
+        const birthYear = document.getElementById("profileBirthYear").value.trim();
+        const interests = document.getElementById("profileInterests").value.split(/[,،;؛\\n]+/).map(item => item.trim()).filter(Boolean).filter((item, index, array) => array.indexOf(item) === index);
+        const goals = document.getElementById("profileGoals").value.trim();
         if (!firstName || !lastName) return showProfileMessage("نام و نام خانوادگی را وارد کن.", true);
+        if (birthYear && (!/^\\d{4}$/.test(birthYear) || Number(birthYear) < 1900 || Number(birthYear) > new Date().getFullYear())) return showProfileMessage("سال تولد باید یک سال معتبر باشد.", true);
         const button = document.getElementById("saveProfileButton");
         button.disabled = true;
         showProfileMessage("در حال ذخیره اطلاعات...");
         try {
             const { data, error } = await supabaseClient.auth.updateUser({
-                data: { ...(user.user_metadata || {}), first_name: firstName, last_name: lastName, phone, birth_date: birthDate }
+                data: { ...(user.user_metadata || {}), first_name: firstName, last_name: lastName, phone, birth_year: birthYear, interests, goals }
             });
             if (error) throw error;
             window.masirCurrentUser = data && data.user ? data.user : {
-                ...user, user_metadata: { ...(user.user_metadata || {}), first_name: firstName, last_name: lastName, phone, birth_date: birthDate }
+                ...user, user_metadata: { ...(user.user_metadata || {}), first_name: firstName, last_name: lastName, phone, birth_year: birthYear, interests, goals }
             };
             populateProfile(window.masirCurrentUser);
-            showProfileMessage("اطلاعات پروفایل ذخیره شد.");
+            showProfileMessage("اطلاعات حساب کاربری ذخیره شد.");
         } catch (error) {
             console.error("ذخیره پروفایل ناموفق بود:", error);
             showProfileMessage("ذخیره اطلاعات انجام نشد. اتصال حساب را بررسی کن.", true);
@@ -5331,7 +5388,7 @@ async function loadUserActivities(user) {
         try {
             const { data, error } = await supabaseClient.auth.signUp({
                 email, password,
-                options: { data: { first_name: firstName, last_name: lastName, phone, birth_date: birthDate } }
+                options: { data: { first_name: firstName, last_name: lastName, phone, birth_year: birthYear, interests, goals } }
             });
             if (error) throw error;
             if (data.session && data.user) await loadUserActivities(data.user);
@@ -5735,7 +5792,7 @@ if($("adminSupportReplyButton"))$("adminSupportReplyButton").onclick=async()=>{c
   function makeNoteId(){return "note-"+Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,9);}
   cancelButton.addEventListener("click",()=>{resetNoteForm();status.textContent="";});
   document.getElementById("masirOpenPasswordSettings").addEventListener("click",()=>{
-    if(typeof showPage==="function")showPage("profile");
+    if(typeof showPage==="function")showPage("account");
     window.scrollTo({top:0,behavior:"smooth"});
     const target=document.getElementById("profileSecurityPanel");
     if(target)target.scrollIntoView({behavior:"smooth",block:"center"});
