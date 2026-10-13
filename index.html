@@ -1579,6 +1579,28 @@ input:focus, select:focus, .activity-priority:focus, .activity-category:focus {
     #dailyOverviewSection .daily-timeline-item { grid-template-columns: 70px minmax(0,1fr); gap: 8px; padding: 10px; }
     #dailyOverviewSection .daily-timeline-time { font-size: 12px; }
 }
+
+/* کارت فعالیت‌های تیک‌خورده: جمع‌وجورتر و کم‌حجم‌تر */
+#activityList .activity-item.done {
+    min-height: 0;
+    padding: 9px 12px;
+    border-radius: 13px;
+    background: linear-gradient(110deg, rgba(35,63,51,.72), rgba(27,40,34,.78));
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.02);
+}
+#activityList .activity-item.done::after {
+    inset-block: 8px;
+    width: 2px;
+}
+#activityList .activity-item.done:hover {
+    transform: none;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.02);
+}
+#activityList .activity-item.done .activity-checkbox {
+    width: 19px;
+    height: 19px;
+}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
