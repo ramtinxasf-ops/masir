@@ -3599,18 +3599,62 @@ function renderCalendarMonth() {
     document.getElementById("calendarMonth").textContent = first === last ? first : `${first}${rangeWord}${last}`;
 }
 
-function getPersianDateInputValue(date) {
-    const parts = getPersianDateParts(date);
-    const month = String(parts.month).padStart(2, "0");
-    const day = String(parts.day).padStart(2, "0");
-    return toPersianNumber(`${parts.year}/${month}/${day}`);
+function localizedDateInputValue(date) {
+    const parts = new Intl.DateTimeFormat(localizedCalendarLocale(), {
+        year: "numeric", month: "2-digit", day: "2-digit"
+    }).formatToParts(date);
+    const values = Object.fromEntries(parts.filter(part => part.type !== "literal").map(part => [part.type, part.value]));
+    return `${values.year}/${values.month}/${values.day}`;
+}
+
+function parseLocalizedDateInput(value) {
+    const normalized = String(value)
+        .replace(/[۰-۹]/g, digit => "۰۱۲۳۴۵۶۷۸۹".indexOf(digit))
+        .replace(/[٠-٩]/g, digit => "٠١٢٣٤٥٦٧٨٩".indexOf(digit))
+        .trim();
+    const match = normalized.match(new RegExp("^(\\\\d{1,4})[./-](\\\\d{1,2})[./-](\\\\d{1,2})$"));
+    if (!match) return null;
+    const year = Number(match[1]), month = Number(match[2]), day = Number(match[3]);
+    const lang = masirCurrentLanguage();
+
+    if (lang === "fa") return persianDateToGregorian(normalized);
+
+    // Find the matching date using the calendar selected for the current language.
+    // Japanese calendar years can repeat across eras, so search the modern era range first.
+    const from = lang === "ar" ? 2020 : lang === "ja" ? 2019 : Math.max(1900, year - 1);
+    const to = lang === "ar" ? 2035 : lang === "ja" ? 2035 : Math.min(2200, year + 1);
+    const formatter = new Intl.DateTimeFormat(localizedCalendarLocale(), {
+        year: "numeric", month: "numeric", day: "numeric"
+    });
+    for (let timestamp = Date.UTC(from, 0, 1, 12); timestamp <= Date.UTC(to, 11, 31, 12); timestamp += 86400000) {
+        const candidate = new Date(timestamp);
+        const parts = Object.fromEntries(formatter.formatToParts(candidate).filter(part => part.type !== "literal").map(part => [part.type, Number(part.value)]));
+        if (parts.year === year && parts.month === month && parts.day === day) return candidate;
+    }
+    return null;
+}
+
+function updateDateJumpLanguage() {
+    const input = document.getElementById("calendarDateJump");
+    const lang = masirCurrentLanguage();
+    const examples = {fa: "۱۴۰۵/۰۷/۲۹", en: "2026/10/13", ar: "١٤٤٨/٠٤/٠١", tr: "2026/10/13", ja: "令和8/10/13"};
+    const labels = {
+        fa: "تاریخ شمسی برای نمایش در تقویم",
+        en: "Date to show in calendar (YYYY/MM/DD)",
+        ar: "التاريخ المراد عرضه في التقويم (سنة/شهر/يوم)",
+        tr: "Takvimde gösterilecek tarih (Yıl/Ay/Gün)",
+        ja: "カレンダーに表示する日付（年/月/日）"
+    };
+    input.placeholder = examples[lang] || examples.fa;
+    input.setAttribute("aria-label", labels[lang] || labels.fa);
 }
 
 function renderCalendar() {
     const calendar = document.getElementById("weekCalendar");
     calendar.innerHTML = "";
+    updateDateJumpLanguage();
 
-    document.getElementById("calendarDateJump").value = getPersianDateInputValue(selectedDate);
+    document.getElementById("calendarDateJump").value = localizedDateInputValue(selectedDate);
 
     const dates = getWeekDates(selectedDate);
     const todayKey = getDateKey(getTodayDate());
@@ -4298,7 +4342,7 @@ function persianDateToGregorian(value) {
 }
 
 document.getElementById("calendarDateJump").addEventListener("change", event => {
-    const date = persianDateToGregorian(event.target.value);
+    const date = parseLocalizedDateInput(event.target.value);
     if (!date) {
         renderCalendar();
         return;
