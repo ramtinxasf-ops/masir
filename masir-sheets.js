@@ -234,6 +234,8 @@
     activeSheet = name; panel.querySelector("#msMenu").hidden = true; panel.querySelector("#msPage").hidden = false;
     panel.querySelector("#msTitle").textContent = t(name);
     const content = panel.querySelector("#msContent");
+    // Preserve privileged panel nodes when switching sheets; innerHTML replacement would otherwise detach them.
+    ["adminUserExportPanel","profileSecurityPanel","profileBackupPanel"].forEach(id => { const el=document.getElementById(id); if(el && legacyPanelParking && !legacyPanelParking.contains(el)) legacyPanelParking.appendChild(el); });
     if (name === "profile") {
       const email = document.getElementById("profileEmail")?.textContent?.trim() || "—";
       const phone = document.getElementById("profilePhone")?.textContent?.trim() || "—";
