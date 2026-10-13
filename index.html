@@ -1932,9 +1932,11 @@ html[dir="ltr"] .language-picker { justify-content: flex-end; }
         <p class="help-text">این بخش فقط برای حساب مدیریتی مجاز فعال است. رمز قبلی کاربران نمایش داده نمی‌شود؛ می‌توانی رمز جدید تنظیم کنی.</p>
         <button type="button" class="secondary-button" id="exportUsersCsvButton" style="width:100%;text-align:right;">📄 دریافت فهرست کاربران (متن مرتب)</button>
         <p id="adminUserExportMessage" class="help-text" role="status" aria-live="polite"></p>
-        <form id="adminResetPasswordForm" style="margin-top:16px;">
-            <div class="form-field"><label for="adminTargetEmail">ایمیل کاربر</label><input type="email" id="adminTargetEmail" autocomplete="off" required placeholder="user@example.com"></div>
-            <div class="form-field"><label for="adminNewPassword">رمز عبور جدید</label><input type="password" id="adminNewPassword" autocomplete="new-password" required aria-describedby="adminPasswordRules"></div>
+        <form id="adminResetPasswordForm" style="margin-top:16px;padding:14px;border:1px solid rgba(167,139,250,.35);border-radius:12px;background:rgba(139,92,246,.06);">
+            <h4 style="margin:0 0 8px;font-size:15px;">تغییر رمز عبور یک کاربر</h4>
+            <p class="help-text" style="margin:0 0 12px;">ابتدا ایمیل همان حسابی را وارد کن که می‌خواهی رمز آن را تغییر بدهی؛ سپس رمز جدید را تعیین کن.</p>
+            <div class="form-field"><label for="adminTargetEmail">ایمیل حساب کاربر موردنظر</label><input type="email" id="adminTargetEmail" name="targetUserEmail" autocomplete="off" required placeholder="مثلاً user@example.com" aria-describedby="adminTargetEmailHelp"><small id="adminTargetEmailHelp" class="help-text">رمز فقط برای حسابی با همین ایمیل تغییر می‌کند.</small></div>
+            <div class="form-field"><label for="adminNewPassword">رمز عبور جدید</label><input type="password" id="adminNewPassword" name="newUserPassword" autocomplete="new-password" required aria-describedby="adminPasswordRules"></div>
             <div id="adminPasswordRules" class="help-text" style="font-size:12px;margin-top:-6px;">
                 رمز باید هر ۴ شرط را داشته باشد:
                 <div data-admin-rule="length">○ حداقل ۸ کاراکتر</div>
