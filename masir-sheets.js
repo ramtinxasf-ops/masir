@@ -11,6 +11,13 @@
     ja:{title:"Masir",profile:"プロフィール",settings:"設定",password:"パスワード変更",notes:"メモ",calendar:"カレンダー",about:"Masirについて",close:"閉じる",save:"保存",saved:"保存しました。",notePlaceholder:"ここにメモを入力",language:"アプリの言語",calendarType:"カレンダーの種類",country:"国",solar:"太陽ヒジュラ暦",gregorian:"グレゴリオ暦",lunar:"太陰ヒジュラ暦",japanese:"和暦",passwordNew:"新しいパスワード",passwordAgain:"新しいパスワードの確認",change:"パスワード変更",passwordRules:"8文字以上で、大文字・小文字・英数字を含めてください。",passwordMismatch:"パスワードが一致しません。",passwordSuccess:"パスワードを変更しました。",passwordError:"変更できません。先にログインしてください。",developer:"開発者",email:"管理者メール"}
   };
   const countries = ["Azerbaijan","Iran","Turkey","Japan","United States","United Kingdom","Saudi Arabia","United Arab Emirates","Afghanistan","Pakistan"];
+  const countryLabels = {
+    fa: {"Azerbaijan":"آذربایجان","Iran":"ایران","Turkey":"ترکیه","Japan":"ژاپن","United States":"ایالات متحده","United Kingdom":"بریتانیا","Saudi Arabia":"عربستان سعودی","United Arab Emirates":"امارات متحده عربی","Afghanistan":"افغانستان","Pakistan":"پاکستان"},
+    en: {"Azerbaijan":"Azerbaijan","Iran":"Iran","Turkey":"Turkey","Japan":"Japan","United States":"United States","United Kingdom":"United Kingdom","Saudi Arabia":"Saudi Arabia","United Arab Emirates":"United Arab Emirates","Afghanistan":"Afghanistan","Pakistan":"Pakistan"},
+    ar: {"Azerbaijan":"أذربيجان","Iran":"إيران","Turkey":"تركيا","Japan":"اليابان","United States":"الولايات المتحدة","United Kingdom":"المملكة المتحدة","Saudi Arabia":"السعودية","United Arab Emirates":"الإمارات","Afghanistan":"أفغانستان","Pakistan":"باكستان"},
+    tr: {"Azerbaijan":"Azerbaycan","Iran":"İran","Turkey":"Türkiye","Japan":"Japonya","United States":"Amerika Birleşik Devletleri","United Kingdom":"Birleşik Krallık","Saudi Arabia":"Suudi Arabistan","United Arab Emirates":"Birleşik Arap Emirlikleri","Afghanistan":"Afganistan","Pakistan":"Pakistan"},
+    ja: {"Azerbaijan":"アゼルバイジャン","Iran":"イラン","Turkey":"トルコ","Japan":"日本","United States":"アメリカ合衆国","United Kingdom":"イギリス","Saudi Arabia":"サウジアラビア","United Arab Emirates":"アラブ首長国連邦","Afghanistan":"アフガニスタン","Pakistan":"パキスタン"}
+  };
   const $ = id => document.getElementById(id);
   const lang = () => translations[$("appLanguage")?.value] ? $("appLanguage").value : "fa";
   const t = key => (translations[lang()] || translations.fa)[key] || translations.fa[key] || key;
@@ -64,12 +71,12 @@
     }else if(page==="notes"){
       html+='<label for="masirSheetNote">'+t("notes")+'</label><textarea id="masirSheetNote" placeholder="'+t("notePlaceholder")+'"></textarea>';
     }else if(page==="calendar"){
-      const selectedType=read("masir.calendarType","solar"),selectedCountry=read("masir.calendarCountry","Azerbaijan");
-      html+='<label for="masirSheetCalendarType">'+t("calendarType")+'</label><select id="masirSheetCalendarType">'+[["solar","solar"],["gregorian","gregorian"],["lunar","lunar"],["japanese","japanese"]].map(([v,k])=>'<option value="'+v+'"'+(v===selectedType?" selected":"")+'>'+t(k)+'</option>').join("")+'</select><label for="masirSheetCountry">'+t("country")+'</label><select id="masirSheetCountry">'+countries.map(c=>'<option value="'+c+'"'+(c===selectedCountry?" selected":"")+'>'+c+'</option>').join("")+'</select><p class="help-text">Calendar preferences are stored separately and do not yet change the calendar rendering.</p>';
+      const selectedType=read("masir.calendarType","auto"),selectedCountry=read("masir.calendarCountry","Azerbaijan");
+      html+='<label for="masirSheetCalendarType">'+t("calendarType")+'</label><select id="masirSheetCalendarType">'+[["auto","auto"],["solar","solar"],["gregorian","gregorian"],["lunar","lunar"],["japanese","japanese"]].map(([v,k])=>'<option value="'+v+'"'+(v===selectedType?" selected":"")+'>'+(k==="auto"?(lang()==="fa"?"خودکار":lang()==="en"?"Automatic":lang()==="ar"?"تلقائي":lang()==="tr"?"Otomatik":"自動"):t(k))+'</option>').join("")+'</select><label for="masirSheetCountry">'+t("country")+'</label><select id="masirSheetCountry">'+countries.map(c=>'<option value="'+c+'"'+(c===selectedCountry?" selected":"")+'>'+((countryLabels[lang()]||countryLabels.en)[c]||c)+'</option>').join("")+'</select><p class="help-text">Calendar preferences are stored separately and do not yet change the calendar rendering.</p>';
     }else if(page==="password"){
       html+='<label for="masirSheetNewPassword">'+t("passwordNew")+'</label><input type="password" id="masirSheetNewPassword" autocomplete="new-password" minlength="8"><label for="masirSheetPasswordAgain">'+t("passwordAgain")+'</label><input type="password" id="masirSheetPasswordAgain" autocomplete="new-password"><p class="help-text">'+t("passwordRules")+'</p>';
     }else if(page==="about"){
-      html+='<p>'+t("title")+' — personal planner for your daily path.</p><p><strong>'+t("developer")+':</strong> رامتین همتای</p><p><strong>'+t("email")+':</strong> <a href="mailto:ramtinxasf@gmail.com" style="color:#c4b5fd">ramtinxasf@gmail.com</a></p>';
+      html+='<p>'+(lang()==="fa"?"برنامه‌ریز شخصی برای ساختن مسیر روزانه.":lang()==="ar"?"مخطط شخصي لتنظيم مسارك اليومي.":lang()==="tr"?"Günlük yolunuzu planlamak için kişisel planlayıcı.":lang()==="ja"?"毎日の計画を立てるための個人プランナー.":"A personal planner for building your daily path.")+'</p><p><strong>'+t("developer")+':</strong> رامتین همتای</p><p><strong>'+t("email")+':</strong> <a href="mailto:ramtinxasf@gmail.com" style="color:#c4b5fd">ramtinxasf@gmail.com</a></p>';
     }
     content.innerHTML=html;$("masirSheetsSave").textContent=page==="about"?t("close"):page==="password"?t("change"):t("save");$("masirSheetsClose").textContent=t("close");$("masirSheetsSave").style.display=page==="about"?"none":"";$("masirSheetsStatus").textContent="";
     if(page==="notes")$("masirSheetNote").value=read("masir.notes","");
@@ -83,7 +90,7 @@
       target.value=next;target.dispatchEvent(new Event("change",{bubbles:true}));write("masir.language",next);status.textContent=t("saved");renderDrawer();return;
     }
     if(page==="notes"){status.textContent=write("masir.notes",$("masirSheetNote").value)?t("saved"):"Could not save note in this browser.";return;}
-    if(page==="calendar"){write("masir.calendarType",$("masirSheetCalendarType").value);write("masir.calendarCountry",$("masirSheetCountry").value);status.textContent=t("saved");return;}
+    if(page==="calendar"){write("masir.calendarType",$("masirSheetCalendarType").value);write("masir.calendarCountry",$("masirSheetCountry").value);try{if(typeof renderAll==="function")renderAll();if(typeof renderCalendarMonth==="function")renderCalendarMonth();}catch(_){}status.textContent=t("saved");return;}
     if(page==="password"){
       const p1=$("masirSheetNewPassword").value,p2=$("masirSheetPasswordAgain").value;
       if(p1!==p2){status.textContent=t("passwordMismatch");return;}
