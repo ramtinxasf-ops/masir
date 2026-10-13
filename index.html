@@ -568,6 +568,86 @@ input[type="email"], input[type="password"], input[type="tel"] {
 }
 
 
+
+/* Daily activity cards: clearer completion feedback */
+#activityList .activity-item {
+    position: relative;
+    overflow: hidden;
+    min-height: 70px;
+    padding: 15px 16px;
+    border-radius: 17px;
+    background: linear-gradient(125deg, rgba(42,34,52,.92), rgba(25,22,32,.97));
+    border-color: rgba(196,167,255,.13);
+    box-shadow: 0 8px 20px rgba(0,0,0,.12), inset 0 1px 0 rgba(255,255,255,.025);
+}
+#activityList .activity-item::after {
+    content: "";
+    position: absolute;
+    inset-block: 12px;
+    inset-inline-start: 0;
+    width: 3px;
+    border-radius: 0 4px 4px 0;
+    background: linear-gradient(180deg, rgba(196,167,255,.65), rgba(196,167,255,.08));
+    opacity: .75;
+    pointer-events: none;
+}
+#activityList .activity-item.done {
+    background:
+      radial-gradient(ellipse at 100% 50%, rgba(105,190,145,.12), transparent 55%),
+      linear-gradient(125deg, rgba(28,54,46,.96), rgba(22,34,31,.98));
+    border-color: rgba(105,190,145,.42);
+    box-shadow: 0 8px 22px rgba(20,90,62,.11), inset 0 1px 0 rgba(255,255,255,.035);
+}
+#activityList .activity-item.done::after {
+    background: linear-gradient(180deg, #8bd9b0, rgba(105,190,145,.18));
+    opacity: 1;
+}
+#activityList .activity-checkbox {
+    width: 23px;
+    height: 23px;
+    accent-color: #65c994;
+    filter: drop-shadow(0 0 5px rgba(101,201,148,.12));
+}
+#activityList .activity-name {
+    line-height: 1.7;
+    transition: color .2s ease, opacity .2s ease;
+}
+#activityList .activity-item.done .activity-name {
+    color: #a8e5c4;
+    text-decoration-color: rgba(168,229,196,.65);
+    text-decoration-thickness: 1.5px;
+}
+#activityList .activity-item.done .activity-time {
+    color: rgba(177,220,195,.68);
+}
+#activityList .activity-item .activity-priority {
+    border-radius: 10px;
+}
+#activityList .activity-item.done .activity-priority {
+    border-color: rgba(105,190,145,.22);
+}
+#activityList .activity-item {
+    transition: background .24s ease, border-color .24s ease, box-shadow .24s ease, transform .2s ease;
+}
+#activityList .activity-item:hover {
+    transform: translateY(-2px);
+    border-color: rgba(196,167,255,.3);
+}
+#activityList .activity-item.done:hover {
+    border-color: rgba(105,190,145,.56);
+}
+@media (max-width: 600px) {
+    #activityList .activity-item {
+        gap: 10px;
+        padding: 13px 12px;
+        border-radius: 15px;
+    }
+    #activityList .activity-checkbox {
+        width: 22px;
+        height: 22px;
+    }
+}
+
 /* Home dashboard refinement: clearer hierarchy and daily momentum */
 header {
     position: relative;
