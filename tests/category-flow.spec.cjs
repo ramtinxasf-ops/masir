@@ -163,6 +163,7 @@ test("activity category can be created, changed, and saved without a real Supaba
   expect(await page.evaluate(() => window.__mockState.upserts.length)).toBeGreaterThan(0);
 
   // Existing activities must allow start/end times to be edited and saved locally and remotely.
+  await page.evaluate(() => showPage("home"));
   await page.locator("#activityList .edit-button").click();
   await expect(page.locator("#startTime")).toHaveValue("09:00");
   await expect(page.locator("#endTime")).toHaveValue("10:00");
