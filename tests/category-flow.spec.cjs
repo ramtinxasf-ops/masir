@@ -7,7 +7,7 @@ test("activity category can be created, changed, and saved without a real Supaba
   page.on("dialog", dialog => dialog.accept());
   await page.addInitScript(() => {
     window.__mockState = { rows: [], upserts: [], updates: [], signOutCalls: 0 };
-    const user = { id: "playwright-test-user", email: "ramtinxasf@gmail.com", app_metadata: { role: "admin" } };
+    const user = { id: "playwright-test-user", email: "ramtinxasf@gmail.com", app_metadata: { role: "admin" }, user_metadata: { first_name: "آزمایشی", last_name: "کاربر", phone: "+989123456789", birth_date: "1998-04-23" } };
     const session = { user };
     window.__testSupabase = {
       createClient: () => ({
@@ -66,15 +66,36 @@ test("activity category can be created, changed, and saved without a real Supaba
   // Category flow test only: bypass the login UI and set a synthetic test user.
   // All Supabase calls remain mocked; no real account or production data is used.
   await page.evaluate(() => {
-    window.masirCurrentUser = { id: "playwright-test-user", email: "ramtinxasf@gmail.com", app_metadata: { role: "admin" } };
+    window.masirCurrentUser = { id: "playwright-test-user", email: "ramtinxasf@gmail.com", app_metadata: { role: "admin" }, user_metadata: { first_name: "آزمایشی", last_name: "کاربر", phone: "+989123456789", birth_date: "1998-04-23" } };
     document.getElementById("masir-auth-overlay").style.display = "none";
     window.masirPopulateProfile(window.masirCurrentUser);
   });
 
   console.log("STEP: mock user set");
 
-  // This test focuses on activity categories and calendar behavior; auth/profile/export are covered separately.
+  // Profile page is read-only; edits are available only from Settings.
+  await page.evaluate(() => showPage("profile"));
+  await expect(page.locator("#profileEmail")).toHaveText("ramtinxasf@gmail.com");
+  await expect(page.locator("#profileReadOnlyFirstName")).toHaveText("آزمایشی");
+  await expect(page.locator("#profileReadOnlyLastName")).toHaveText("کاربر");
+  await expect(page.locator("#profileReadOnlyBirthDate")).toHaveText("1998-04-23");
+  await expect(page.locator("#profileSection #profileForm")).toHaveCount(0);
+  await expect(page.locator("#profileSection #appInfoButton")).toHaveCount(0);
 
+  await page.evaluate(() => showPage("settings"));
+  await page.locator("#profileFirstName").fill("رامتین");
+  await page.locator("#profileLastName").fill("آزمایشی");
+  await page.locator("#profilePhoneInput").fill("+989111111111");
+  await page.locator("#profileBirthDate").fill("1998-04-24");
+  await page.locator("#saveProfileButton").click();
+  await expect(page.locator("#profileSaveMessage")).toContainText("ذخیره شد");
+  await expect.poll(() => page.evaluate(() => window.__mockState.updates.length)).toBe(1);
+  await page.evaluate(() => showPage("profile"));
+  await expect(page.locator("#profileReadOnlyFirstName")).toHaveText("رامتین");
+  await expect(page.locator("#profileReadOnlyLastName")).toHaveText("آزمایشی");
+  await expect(page.locator("#profileReadOnlyBirthDate")).toHaveText("1998-04-24");
+
+  // Continue with category and calendar regression checks.
   await page.evaluate(() => showPage("planning"));
   console.log("STEP: planning page opened");
   await page.locator("#activityName").fill("فعالیت آزمایشی دسته‌بندی");
