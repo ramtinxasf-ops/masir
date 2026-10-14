@@ -68,6 +68,7 @@ test("activity category can be created, changed, and saved without a real Supaba
   await page.evaluate(() => {
     window.masirCurrentUser = { id: "playwright-test-user", email: "ramtinxasf@gmail.com", app_metadata: { role: "admin" } };
     document.getElementById("masir-auth-overlay").style.display = "none";
+    window.masirPopulateProfile(window.masirCurrentUser);
   });
 
   console.log("STEP: mock user set");
@@ -92,7 +93,9 @@ test("activity category can be created, changed, and saved without a real Supaba
   console.log("STEP: profile save clicked");
   await expect(page.locator("#profileSaveMessage")).toContainText("ذخیره شد");
   await expect(page.locator("#profileEmail")).toContainText("ramtinxasf@gmail.com");
-  await expect(page.locator("#profileLogoutArea button")).toContainText("خروج از حساب");
+  await page.evaluate(() => showPage("settings"));
+  await expect(page.locator("#settingsAccountActions")).toContainText("خروج از حساب");
+  await expect(page.locator("#settingsAccountActions")).toContainText("حذف دائمی حساب");
 
   // Password requirements update while typing; phone OTP panel can be selected.
   await page.evaluate(() => { document.getElementById("masir-auth-overlay").style.display = "flex"; });
