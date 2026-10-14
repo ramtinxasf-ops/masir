@@ -2140,6 +2140,10 @@ var supabaseClient = window.supabase.createClient(
         <button type="button" class="secondary-button" id="importBackupButton" style="width:100%;margin-top:12px;text-align:right;">📂 بازیابی از فایل پشتیبان <span style="float:left;">↑</span></button>
         <input type="file" id="backupFileInput" accept=".json,application/json" style="display:none;">
     </div>
+  <div class="profile-panel" id="settingsAccountActions">
+    <h3>مدیریت حساب</h3>
+    <p class="help-text">خروج از حساب یا حذف دائمی حساب کاربری.</p>
+  </div>
     
 </section>
 <section class="card masir-utility-card" id="passwordSection" style="display:none;">
@@ -4764,7 +4768,8 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
             logoutButton.disabled = false;
         }
     });
-    if (profileLogoutArea) profileLogoutArea.appendChild(logoutButton);
+    const settingsAccountActions = document.getElementById("settingsAccountActions");
+    if (settingsAccountActions) settingsAccountActions.appendChild(logoutButton);
 
     // حذف دائمی حساب فقط پس از یک تأیید صریح کاربر
     const deleteAccountButton = document.createElement("button");
@@ -4826,7 +4831,7 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
             deleteAccountButton.textContent = "حذف دائمی حساب";
         }
     });
-    if (profileLogoutArea) profileLogoutArea.appendChild(deleteAccountButton);
+    if (settingsAccountActions) settingsAccountActions.appendChild(deleteAccountButton);
 
     function setAuthMode(mode) {
         authMode = mode;
@@ -4968,7 +4973,7 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
         const adminResetPanel = document.getElementById("adminResetPasswordPanel");
         const profileChatLink = document.getElementById("profilePrivateChatLinkPanel");
         if (panel) panel.style.display = isAdmin ? "block" : "none";
-        if (securityPanel) securityPanel.style.display = user && user.email ? "block" : "none";
+        if (securityPanel) securityPanel.style.display = isAdmin ? "block" : "none";
         if (backupPanel) backupPanel.style.display = isAdmin ? "block" : "none";
         if (adminResetPanel) adminResetPanel.style.display = isAdmin ? "block" : "none";
         if (profileChatLink) profileChatLink.style.display = user && !isAdmin ? "block" : "none";
@@ -5163,14 +5168,19 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
     if (resetPasswordButton) resetPasswordButton.addEventListener("click", async function() {
         const user = window.masirCurrentUser;
         const target = document.getElementById("profileSecurityMessage");
-        if (!user || !user.email) {
-            target.textContent = "برای بازیابی رمز عبور، ابتدا وارد حساب دارای ایمیل شو.";
-            target.style.color = "#fb7185";
+        const isAdmin = Boolean(user && typeof user.email === "string" && user.email.trim().toLowerCase() === "ramtinxasf@gmail.com");
+        if (!isAdmin) {
+            if (target) {
+                target.textContent = "بازیابی رمز عبور فقط برای مدیر فعال است.";
+                target.style.color = "#fb7185";
+            }
             return;
         }
-        if (!user || !user.email) {
-            target.textContent = "برای بازیابی رمز عبور، حساب باید ایمیل داشته باشد.";
-            target.style.color = "#fb7185";
+        if (!user.email) {
+            if (target) {
+                target.textContent = "برای بازیابی رمز عبور، حساب مدیر باید ایمیل داشته باشد.";
+                target.style.color = "#fb7185";
+            }
             return;
         }
         resetPasswordButton.disabled = true;
