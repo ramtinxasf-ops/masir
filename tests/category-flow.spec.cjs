@@ -7,7 +7,7 @@ test("activity category can be created, changed, and saved without a real Supaba
   page.on("dialog", dialog => dialog.accept());
   await page.addInitScript(() => {
     window.__mockState = { rows: [], upserts: [] };
-    const user = { id: "playwright-test-user", email: "masir-test@example.invalid", app_metadata: { role: "admin" } };
+    const user = { id: "playwright-test-user", email: "ramtinxasf@gmail.com", app_metadata: { role: "admin" } };
     const session = { user };
     window.__testSupabase = {
       createClient: () => ({
@@ -50,7 +50,7 @@ test("activity category can be created, changed, and saved without a real Supaba
   await page.route("**/*", route => {
     const url = route.request().url();
     if (url.startsWith("http://127.0.0.1:4173/")) return route.continue();
-    if (url.includes("/functions/v1/export-users")) return route.fulfill({ status: 200, contentType: "text/csv; charset=utf-8", headers: { "Content-Disposition": 'attachment; filename="masir-users-test.csv"' }, body: '\uFEFF"نام","نام خانوادگی","تلفن","ایمیل","تاریخ ثبت‌نام"\r\n"کاربر","آزمایشی","+989123456789","test@example.invalid","2026-10-11T00:00:00Z"\r\n' });
+    if (url.includes("/functions/v1/export-users")) return route.fulfill({ status: 200, contentType: "text/plain; charset=utf-8", headers: { "Content-Disposition": 'attachment; filename="masir-users-test.txt"' }, body: '\\uFEFFکاربر شماره ۱\\r\\nنام: کاربر\\r\\nنام خانوادگی: آزمایشی\\r\\nتلفن: +989123456789\\r\\nایمیل: test@example.invalid\\r\\nتاریخ ثبت‌نام: ۱۴۰۵/۰۷/۱۹' });
     if (url.includes("cdn.jsdelivr.net/npm/@supabase/supabase-js@2")) {
       return route.fulfill({
         status: 200,
@@ -66,21 +66,21 @@ test("activity category can be created, changed, and saved without a real Supaba
   // Category flow test only: bypass the login UI and set a synthetic test user.
   // All Supabase calls remain mocked; no real account or production data is used.
   await page.evaluate(() => {
-    window.masirCurrentUser = { id: "playwright-test-user", email: "masir-test@example.invalid", app_metadata: { role: "admin" } };
+    window.masirCurrentUser = { id: "playwright-test-user", email: "ramtinxasf@gmail.com", app_metadata: { role: "admin" } };
     document.getElementById("masir-auth-overlay").style.display = "none";
   });
 
   console.log("STEP: mock user set");
 
-  // Profile details save to Supabase user metadata and remain editable.
+  // Profile details save to Supabase user metadata and are displayed in the profile.
   await page.evaluate(() => showPage("profile"));
   console.log("STEP: profile page opened");
   await expect(page.locator("#adminUserExportPanel")).toBeVisible();
-  const csvDownloadPromise = page.waitForEvent("download");
+  const textDownloadPromise = page.waitForEvent("download");
   await page.locator("#exportUsersCsvButton").click();
-  const csvDownload = await csvDownloadPromise;
-  expect(csvDownload.suggestedFilename()).toContain("masir-users-");
-  expect(csvDownload.suggestedFilename()).toMatch(/\.csv$/);
+  const textDownload = await textDownloadPromise;
+  expect(textDownload.suggestedFilename()).toContain("masir-users-");
+  expect(textDownload.suggestedFilename()).toMatch(/\.txt$/);
   await expect(page.locator("#adminUserExportMessage")).toContainText("دانلود شد");
   await page.locator("#profileFirstName").fill("رامتین");
   console.log("STEP: profile first name filled");
@@ -91,7 +91,7 @@ test("activity category can be created, changed, and saved without a real Supaba
   await page.locator("#saveProfileButton").click();
   console.log("STEP: profile save clicked");
   await expect(page.locator("#profileSaveMessage")).toContainText("ذخیره شد");
-  await expect(page.locator("#profileEmail")).toContainText("masir-test@example.invalid");
+  await expect(page.locator("#profileEmail")).toContainText("ramtinxasf@gmail.com");
   await expect(page.locator("#profileLogoutArea button")).toContainText("خروج از حساب");
 
   // Password requirements update while typing; phone OTP panel can be selected.
