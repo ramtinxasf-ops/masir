@@ -3228,7 +3228,7 @@ function applyMasirLanguage(language) {
         }
         if (node.nodeValue !== translated) node.nodeValue = translated;
     });
-    document.querySelectorAll("input[placeholder],textarea[placeholder]").forEach(el => {
+    document.querySelectorAll("input:not(#calendarDateJump)[placeholder],textarea[placeholder]").forEach(el => {
         if (!el.dataset.masirOriginalPlaceholder) el.dataset.masirOriginalPlaceholder = el.placeholder;
         const original = el.dataset.masirOriginalPlaceholder;
         el.placeholder = dict[original] || original;
