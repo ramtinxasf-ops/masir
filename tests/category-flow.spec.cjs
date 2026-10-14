@@ -6,7 +6,7 @@ test("activity category can be created, changed, and saved without a real Supaba
   page.on("console", message => { if (message.type() === "error") console.log("BROWSER ERROR:", message.text()); });
   page.on("dialog", dialog => dialog.accept());
   await page.addInitScript(() => {
-    window.__mockState = { rows: [], upserts: [] };
+    window.__mockState = { rows: [], upserts: [], updates: [] };
     const user = { id: "playwright-test-user", email: "ramtinxasf@gmail.com", app_metadata: { role: "admin" } };
     const session = { user };
     window.__testSupabase = {
@@ -17,7 +17,7 @@ test("activity category can be created, changed, and saved without a real Supaba
           signInWithPassword: async () => ({ data: { user, session }, error: null }),
           signUp: async () => ({ data: { user, session }, error: null }),
           signOut: async () => ({ error: null }),
-          updateUser: async ({ data }) => ({ data: { user: { ...user, user_metadata: data } }, error: null }),
+          updateUser: async ({ data }) => { window.__mockState.updates.push(data); return { data: { user: { ...user, user_metadata: data } }, error: null }; },
           resetPasswordForEmail: async () => ({ error: null }),
           signInWithOtp: async () => ({ error: null }),
           verifyOtp: async () => ({ data: { user, session }, error: null })
@@ -92,6 +92,9 @@ test("activity category can be created, changed, and saved without a real Supaba
   console.log("STEP: profile fields filled");
   await page.locator("#saveProfileButton").click();
   console.log("STEP: profile save clicked");
+  await page.waitForTimeout(100);
+  console.log("STEP: profile save status=" + await page.locator("#profileSaveMessage").textContent());
+  console.log("STEP: mocked profile updates=" + await page.evaluate(() => window.__mockState.updates.length));
   await expect(page.locator("#profileSaveMessage")).toContainText("ذخیره شد");
   await expect(page.locator("#profileEmail")).toContainText("ramtinxasf@gmail.com");
   await page.evaluate(() => showPage("settings"));
