@@ -5869,7 +5869,7 @@ if($("adminSupportReplyButton"))$("adminSupportReplyButton").onclick=async()=>{c
       const el=document.createElement("div");el.className="month-weekday";el.textContent=name;el.setAttribute("role","columnheader");grid.appendChild(el);
     });
     const first=firstGregorianDayOfCalendarMonth(shownMonth);
-    const startDate=new Date(first);startDate.setDate(first.getDate()-first.getDay());
+    const startDate=new Date(first);const weekStart=l==="fa"?6:0;startDate.setDate(first.getDate()-((first.getDay()-weekStart+7)%7));
     const targetMonth=monthKey(first);
     for(let i=0;i<42;i++){
       const date=new Date(startDate);date.setDate(startDate.getDate()+i);
