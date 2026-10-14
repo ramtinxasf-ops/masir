@@ -3228,7 +3228,7 @@ function applyMasirLanguage(language) {
         }
         if (node.nodeValue !== translated) node.nodeValue = translated;
     });
-    document.querySelectorAll("input[placeholder],textarea[placeholder]").forEach(el => {
+    document.querySelectorAll("input:not(#calendarDateJump)[placeholder],textarea[placeholder]").forEach(el => {
         if (!el.dataset.masirOriginalPlaceholder) el.dataset.masirOriginalPlaceholder = el.placeholder;
         const original = el.dataset.masirOriginalPlaceholder;
         el.placeholder = dict[original] || original;
@@ -3872,6 +3872,14 @@ function renderCalendarMonth() {
 }
 
 function localizedDateInputValue(date) {
+    const lang = masirCurrentLanguage();
+    if (lang === "ja") {
+        const parts = new Intl.DateTimeFormat("ja-JP-u-ca-japanese", {
+            era: "short", year: "numeric", month: "2-digit", day: "2-digit"
+        }).formatToParts(date);
+        const values = Object.fromEntries(parts.filter(part => part.type !== "literal").map(part => [part.type, part.value]));
+        return `${values.era}${values.year}/${values.month}/${values.day}`;
+    }
     const parts = new Intl.DateTimeFormat(localizedCalendarLocale(), {
         year: "numeric", month: "2-digit", day: "2-digit"
     }).formatToParts(date);
@@ -3884,19 +3892,37 @@ function parseLocalizedDateInput(value) {
         .replace(/[۰-۹]/g, digit => "۰۱۲۳۴۵۶۷۸۹".indexOf(digit))
         .replace(/[٠-٩]/g, digit => "٠١٢٣٤٥٦٧٨٩".indexOf(digit))
         .trim();
-    const match = normalized.match(new RegExp("^(\\\\d{1,4})[./-](\\\\d{1,2})[./-](\\\\d{1,2})$"));
+    const lang = masirCurrentLanguage();
+
+    if (lang === "ja") {
+        const japaneseMatch = normalized.match(/^(令和|平成|昭和|大正|明治)(\d{1,3})[./-](\d{1,2})[./-](\d{1,2})$/);
+        if (!japaneseMatch) return null;
+        const eraOffsets = { "令和": 2018, "平成": 1988, "昭和": 1925, "大正": 1911, "明治": 1867 };
+        const era = japaneseMatch[1];
+        const year = Number(japaneseMatch[2]);
+        const month = Number(japaneseMatch[3]);
+        const day = Number(japaneseMatch[4]);
+        if (year < 1 || month < 1 || month > 12 || day < 1 || day > 31) return null;
+        const candidate = new Date(year + eraOffsets[era], month - 1, day, 12, 0, 0, 0);
+        if (candidate.getFullYear() !== year + eraOffsets[era] || candidate.getMonth() !== month - 1 || candidate.getDate() !== day) return null;
+        const parts = Object.fromEntries(new Intl.DateTimeFormat("ja-JP-u-ca-japanese", {
+            era: "short", year: "numeric", month: "numeric", day: "numeric"
+        }).formatToParts(candidate).filter(part => part.type !== "literal").map(part => [part.type, part.value]));
+        if (parts.era !== era || Number(parts.year) !== year || Number(parts.month) !== month || Number(parts.day) !== day) return null;
+        return candidate;
+    }
+
+    const match = normalized.match(/^(\d{1,4})[./-](\d{1,2})[./-](\d{1,2})$/);
     if (!match) return null;
     const year = Number(match[1]), month = Number(match[2]), day = Number(match[3]);
-    const lang = masirCurrentLanguage();
 
     if (lang === "fa") return persianDateToGregorian(normalized);
 
     // Find the matching date using the calendar selected for the current language.
-    // Japanese calendar years can repeat across eras, so search the modern era range first.
-    const from = lang === "ar" ? 2020 : lang === "ja" ? 2019 : Math.max(1900, year - 1);
-    const to = lang === "ar" ? 2035 : lang === "ja" ? 2035 : Math.min(2200, year + 1);
+    const from = lang === "ar" ? 2020 : Math.max(1900, year - 1);
+    const to = lang === "ar" ? 2035 : Math.min(2200, year + 1);
     const formatter = new Intl.DateTimeFormat(localizedCalendarLocale(), {
-        year: "numeric", month: "numeric", day: "numeric"
+        year: "numeric", month: "numeric", day: "numeric", numberingSystem: "latn"
     });
     for (let timestamp = Date.UTC(from, 0, 1, 12); timestamp <= Date.UTC(to, 11, 31, 12); timestamp += 86400000) {
         const candidate = new Date(timestamp);
@@ -4594,7 +4620,7 @@ function persianDateToGregorian(value) {
         .replace(/[۰-۹]/g, digit => "۰۱۲۳۴۵۶۷۸۹".indexOf(digit))
         .replace(/[٠-٩]/g, digit => "٠١٢٣٤٥٦٧٨٩".indexOf(digit))
         .trim();
-    const match = normalized.match(new RegExp("^(\\d{4})[./-](\\d{1,2})[./-](\\d{1,2})$"));
+    const match = normalized.match(/^(\d{4})[./-](\d{1,2})[./-](\d{1,2})$/);
     if (!match) return null;
 
     const year = Number(match[1]);
