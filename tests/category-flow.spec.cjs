@@ -149,7 +149,6 @@ test("activity category can be created, changed, and saved without a real Supaba
 
   // Calendar navigation: direct date jump updates the selected day and weekly report.
   await page.evaluate(() => showPage("home"));
-  console.log("DATE DEBUG " + JSON.stringify(await page.evaluate(() => ({ lang: masirCurrentLanguage(), parsed: parseLocalizedDateInput("۱۴۰۵/۰۷/۲۹") ? getDateKey(parseLocalizedDateInput("۱۴۰۵/۰۷/۲۹")) : null, direct: persianDateToGregorian("1405/07/29") ? getDateKey(persianDateToGregorian("1405/07/29")) : null, persianParts: getPersianDateParts(new Date(2026, 9, 21, 12)), input: document.getElementById("calendarDateJump").value }))));
   const dateJump = page.locator("#calendarDateJump");
   await expect(dateJump).toHaveValue(/^۱۴[۰-۹]{2}\/[۰-۹]{2}\/[۰-۹]{2}$/);
   await dateJump.evaluate(input => {
@@ -180,7 +179,6 @@ test("activity category can be created, changed, and saved without a real Supaba
     picker.value = "ja";
     picker.dispatchEvent(new Event("change", { bubbles: true }));
   });
-  console.log("JA DEBUG " + JSON.stringify(await page.evaluate(() => ({ picker: document.getElementById("appLanguage").value, language: masirCurrentLanguage(), settings: document.getElementById("appLanguageSettings").value, placeholder: document.getElementById("calendarDateJump").placeholder, value: document.getElementById("calendarDateJump").value, stored: localStorage.getItem("masir_app_language_v1") }))));
   await expect(dateJump).toHaveAttribute("placeholder", "令和8/10/13");
   await dateJump.evaluate(input => {
     input.value = "令和8/10/21";
