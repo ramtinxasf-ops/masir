@@ -186,4 +186,21 @@ test("activity category can be created, changed, and saved without a real Supaba
   });
   await expect(dateJump).toHaveValue("令和8/10/21");
   expect(await page.evaluate(() => getDateKey(selectedDate))).toBe("2026-10-21");
+
+  // The calendar placeholder and date parser must stay synchronized for every supported language.
+  const languageExamples = { en: "2026/10/13", ar: "١٤٤٨/٠٤/٠١", tr: "2026/10/13" };
+  for (const language of ["en", "ar", "tr"]) {
+    await page.evaluate(language => {
+      const picker = document.getElementById("appLanguage");
+      picker.value = language;
+      picker.dispatchEvent(new Event("change", { bubbles: true }));
+    }, language);
+    await expect(dateJump).toHaveAttribute("placeholder", languageExamples[language]);
+    const localizedValue = await page.evaluate(() => localizedDateInputValue(new Date(2026, 9, 21, 12)));
+    await dateJump.evaluate((input, value) => {
+      input.value = value;
+      input.dispatchEvent(new Event("change", { bubbles: true }));
+    }, localizedValue);
+    expect(await page.evaluate(() => getDateKey(selectedDate))).toBe("2026-10-21");
+  }
 });
