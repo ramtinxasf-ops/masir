@@ -8,7 +8,7 @@ on:
       - "tests/**"
       - ".github/workflows/test-category-flow.yml"
   push:
-    branches: [feature/categories]
+    branches: [main, feature/categories]
     paths:
       - "index.html"
       - "tests/**"
