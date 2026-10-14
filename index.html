@@ -1750,6 +1750,16 @@ html[dir="ltr"] .language-picker { justify-content: flex-end; }
 #masirDrawerItems button{display:flex;align-items:center;gap:10px;width:100%;padding:11px 10px;border:1px solid transparent;border-radius:12px;background:transparent;color:var(--text);text-align:start;font:inherit;font-size:13px;cursor:pointer}
 #masirDrawerItems button:hover,#masirDrawerItems button:focus-visible{background:#292440;border-color:#514477;outline:none}
 #masirDrawerItems button span:first-child{width:25px;text-align:center;font-size:18px}
+
+.masir-month-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;margin-top:16px}
+.masir-month-grid .month-day,.masir-month-grid .month-weekday{display:flex;align-items:center;justify-content:center;min-height:42px;border-radius:10px;font-size:13px}
+.masir-month-grid .month-weekday{color:var(--gold);font-weight:700;min-height:32px}
+.masir-month-grid .month-day{border:1px solid var(--border);background:#11182a;color:var(--text);cursor:pointer}
+.masir-month-grid .month-day.outside-month{opacity:.4}
+.masir-month-grid .month-day.is-today{box-shadow:inset 0 0 0 1px var(--green)}
+.masir-month-grid .month-day.is-selected{background:#514477;border-color:var(--purple);font-weight:700}
+@media(max-width:600px){.masir-month-grid{gap:4px}.masir-month-grid .month-day,.masir-month-grid .month-weekday{min-height:36px;font-size:12px;border-radius:8px}}
+
 .masir-utility-card{max-width:760px;margin-inline:auto}
 #appLanguageSettings{width:100%;margin-top:8px}
 #masirNoteTitle,#masirNoteBody{width:100%;margin:8px 0;padding:12px;border:1px solid var(--border);border-radius:12px;background:#0b1020;color:var(--text);font:inherit}
@@ -2034,6 +2044,23 @@ var supabaseClient = window.supabase.createClient(
     <div class="daily-report-list" id="dailyReportList"></div>
 </section>
     
+
+<section class="card masir-utility-card" id="drawerCalendarSection" style="display:none;">
+  <div class="calendar-header">
+    <div>
+      <h2>📅 تقویم ماهانه</h2>
+      <div class="calendar-month" id="drawerCalendarMonth"></div>
+    </div>
+    <div class="calendar-controls" aria-label="کنترل‌های تقویم ماهانه">
+      <button type="button" class="secondary-button" id="drawerCalendarPrev">ماه قبل</button>
+      <button type="button" class="today-button" id="drawerCalendarToday">امروز</button>
+      <button type="button" class="secondary-button" id="drawerCalendarNext">ماه بعد</button>
+    </div>
+  </div>
+  <div class="masir-month-grid" id="drawerCalendarGrid" role="grid" aria-label="تقویم ماهانه"></div>
+  <p class="help-text" id="drawerCalendarSelectedDate" aria-live="polite">یک روز را انتخاب کن.</p>
+</section>
+
 <section class="card" id="drawerAccountSection" style="display:none;">
   <h2>👤 اطلاعات حساب کاربری</h2>
   <p class="help-text">این بخش فقط برای مشاهده است. برای ثبت یا ویرایش اطلاعات از بخش «پروفایل» در نوار پایین استفاده کن.</p>
@@ -3390,7 +3417,7 @@ function showPage(page) {
         settings: ["settingsSection"],
         password: ["passwordSection"],
         notes: ["notesSection"],
-        calendar: ["calendarSection"],
+        calendar: ["drawerCalendarSection"],
         about: ["aboutSection"]
     };
 
@@ -3401,6 +3428,7 @@ function showPage(page) {
         "dailyOverviewSection",
         "planningSection",
         "calendarSection",
+        "drawerCalendarSection",
         "reportSection",
         "profileSection",
         "drawerAccountSection",
@@ -5795,6 +5823,60 @@ if($("adminSupportReplyButton"))$("adminSupportReplyButton").onclick=async()=>{c
     if(button)setTimeout(()=>button.focus({preventScroll:true}),150);
   });
   renderNotes();
+})();
+</script>
+
+
+<script>
+(function(){
+  let shownMonth = new Date();
+  let selectedMonthDay = new Date();
+  shownMonth = new Date(shownMonth.getFullYear(), shownMonth.getMonth(), 1);
+  const weekdays = {
+    fa:["ش","ی","د","س","چ","پ","ج"],
+    en:["S","M","T","W","T","F","S"],
+    ar:["ح","ن","ث","ر","خ","ج","س"],
+    tr:["P","S","Ç","P","C","C","P"],
+    ja:["日","月","火","水","木","金","土"]
+  };
+  function locale(){ return typeof localizedCalendarLocale === "function" ? localizedCalendarLocale() : "fa-IR"; }
+  function lang(){ return typeof masirCurrentLanguage === "function" ? masirCurrentLanguage() : "fa"; }
+  function dayKey(d){ return [d.getFullYear(),String(d.getMonth()+1).padStart(2,"0"),String(d.getDate()).padStart(2,"0")].join("-"); }
+  function render(){
+    const grid=document.getElementById("drawerCalendarGrid");
+    const title=document.getElementById("drawerCalendarMonth");
+    const selectedLabel=document.getElementById("drawerCalendarSelectedDate");
+    if(!grid||!title||!selectedLabel)return;
+    const l=lang(), loc=locale(), today=new Date();
+    title.textContent=new Intl.DateTimeFormat(loc,{month:"long",year:"numeric"}).format(shownMonth);
+    grid.innerHTML="";
+    (weekdays[l]||weekdays.fa).forEach((name,i)=>{
+      const el=document.createElement("div");el.className="month-weekday";el.textContent=name;el.setAttribute("role","columnheader");grid.appendChild(el);
+    });
+    const first=new Date(shownMonth.getFullYear(),shownMonth.getMonth(),1);
+    const start=new Date(first);start.setDate(first.getDate()-first.getDay());
+    for(let i=0;i<42;i++){
+      const date=new Date(start);date.setDate(start.getDate()+i);
+      const btn=document.createElement("button");btn.type="button";btn.className="month-day";
+      if(date.getMonth()!==shownMonth.getMonth())btn.classList.add("outside-month");
+      if(dayKey(date)===dayKey(today))btn.classList.add("is-today");
+      if(dayKey(date)===dayKey(selectedMonthDay))btn.classList.add("is-selected");
+      btn.textContent=new Intl.NumberFormat(loc,{useGrouping:false}).format(date.getDate());
+      btn.setAttribute("role","gridcell");
+      btn.setAttribute("aria-label",new Intl.DateTimeFormat(loc,{dateStyle:"full"}).format(date));
+      btn.addEventListener("click",()=>{selectedMonthDay=new Date(date);shownMonth=new Date(date.getFullYear(),date.getMonth(),1);render();});
+      grid.appendChild(btn);
+    }
+    const label=new Intl.DateTimeFormat(loc,{dateStyle:"full"}).format(selectedMonthDay);
+    selectedLabel.textContent=(l==="en"?"Selected date: ":l==="ar"?"التاريخ المحدد: ":l==="tr"?"Seçilen tarih: ":l==="ja"?"選択した日付：":"تاریخ انتخاب‌شده: ")+label;
+  }
+  document.addEventListener("DOMContentLoaded",()=>{
+    const prev=document.getElementById("drawerCalendarPrev"),next=document.getElementById("drawerCalendarNext"),today=document.getElementById("drawerCalendarToday");
+    if(prev)prev.addEventListener("click",()=>{shownMonth=new Date(shownMonth.getFullYear(),shownMonth.getMonth()-1,1);render();});
+    if(next)next.addEventListener("click",()=>{shownMonth=new Date(shownMonth.getFullYear(),shownMonth.getMonth()+1,1);render();});
+    if(today)today.addEventListener("click",()=>{selectedMonthDay=new Date();shownMonth=new Date(selectedMonthDay.getFullYear(),selectedMonthDay.getMonth(),1);render();});
+    render();
+  });
 })();
 </script>
 
