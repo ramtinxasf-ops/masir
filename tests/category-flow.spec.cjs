@@ -144,7 +144,7 @@ test("activity category can be created, changed, and saved without a real Supaba
   );
   expect(bakuBoundaryKey).toBe("2026-10-12");
   expect(await page.evaluate(() =>
-    getPersianDateInputValue(getTodayDate(new Date("2026-10-11T21:30:00.000Z")))
+    localizedDateInputValue(getTodayDate(new Date("2026-10-11T21:30:00.000Z")))
   )).toBe("۱۴۰۵/۰۷/۲۰");
 
   // Calendar navigation: direct date jump updates the selected day and weekly report.
@@ -171,5 +171,5 @@ test("activity category can be created, changed, and saved without a real Supaba
   await page.locator("#todayButton").click();
   const todayKey = await page.evaluate(() => getDateKey(new Date()));
   expect(await page.evaluate(() => getDateKey(selectedDate))).toBe(todayKey);
-  await expect(dateJump).toHaveValue(await page.evaluate(() => getPersianDateInputValue(new Date())));
+  await expect(dateJump).toHaveValue(await page.evaluate(() => localizedDateInputValue(new Date())));
 });
