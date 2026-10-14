@@ -7,7 +7,7 @@ on:
       - "index.html"
       - ".github/workflows/validate-categories.yml"
   push:
-    branches: [feature/categories]
+    branches: [main, feature/categories]
     paths:
       - "index.html"
       - ".github/workflows/validate-categories.yml"
