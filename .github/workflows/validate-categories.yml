@@ -5,11 +5,17 @@ on:
     branches: [main]
     paths:
       - "index.html"
+      - "manifest.json"
+      - "icon-192.png"
+      - "icon-512.png"
       - ".github/workflows/validate-categories.yml"
   push:
     branches: [main, feature/categories]
     paths:
       - "index.html"
+      - "manifest.json"
+      - "icon-192.png"
+      - "icon-512.png"
       - ".github/workflows/validate-categories.yml"
 
 permissions:
@@ -74,6 +80,27 @@ jobs:
             echo "Checking $file"
             node --check "$file"
           done
+
+
+      - name: Validate install manifest and referenced icons
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          manifest = json.loads(Path("manifest.json").read_text(encoding="utf-8"))
+          if manifest.get("name") != "مسیر" or manifest.get("short_name") != "مسیر":
+              raise SystemExit("Manifest name must be مسیر.")
+          icons = manifest.get("icons", [])
+          if not icons:
+              raise SystemExit("Manifest must define at least one icon.")
+          for icon in icons:
+              path = icon.get("src", "")
+              if not path or path.startswith("/") or "://" in path:
+                  raise SystemExit(f"Icon path must be relative to the project: {path}")
+              if not Path(path).is_file():
+                  raise SystemExit(f"Manifest icon does not exist: {path}")
+          print(f"Manifest valid; {len(icons)} icon(s) exist.")
+          PY
 
       - name: Check category UI and compatibility safeguards
         run: |
