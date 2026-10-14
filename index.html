@@ -5839,9 +5839,24 @@ if($("adminSupportReplyButton"))$("adminSupportReplyButton").onclick=async()=>{c
     tr:["P","S","Ç","P","C","C","P"],
     ja:["日","月","火","水","木","金","土"]
   };
-  function locale(){ return typeof localizedCalendarLocale === "function" ? localizedCalendarLocale() : "fa-IR"; }
+  function locale(){ return typeof localizedCalendarLocale === "function" ? localizedCalendarLocale() : "fa-IR-u-ca-persian"; }
   function lang(){ return typeof masirCurrentLanguage === "function" ? masirCurrentLanguage() : "fa"; }
   function dayKey(d){ return [d.getFullYear(),String(d.getMonth()+1).padStart(2,"0"),String(d.getDate()).padStart(2,"0")].join("-"); }
+  function calendarParts(date){
+    const parts=new Intl.DateTimeFormat(locale(),{year:"numeric",month:"numeric",day:"numeric"}).formatToParts(date);
+    return Object.fromEntries(parts.filter(p=>p.type!=="literal").map(p=>[p.type,p.value]));
+  }
+  function monthKey(date){const p=calendarParts(date);return p.era ? p.era+"-"+p.year+"-"+p.month : p.year+"-"+p.month;}
+  function firstGregorianDayOfCalendarMonth(anchor){
+    const target=monthKey(anchor);let first=new Date(anchor.getFullYear(),anchor.getMonth(),anchor.getDate());
+    for(let i=0;i<40;i++){const prev=new Date(first);prev.setDate(prev.getDate()-1);if(monthKey(prev)!==target)break;first=prev;}
+    return first;
+  }
+  function moveCalendarMonth(direction){
+    const first=firstGregorianDayOfCalendarMonth(shownMonth);
+    let candidate=new Date(first);candidate.setDate(candidate.getDate()+direction*20);
+    shownMonth=candidate;render();
+  }
   function render(){
     const grid=document.getElementById("drawerCalendarGrid");
     const title=document.getElementById("drawerCalendarMonth");
@@ -5850,21 +5865,22 @@ if($("adminSupportReplyButton"))$("adminSupportReplyButton").onclick=async()=>{c
     const l=lang(), loc=locale(), today=new Date();
     title.textContent=new Intl.DateTimeFormat(loc,{month:"long",year:"numeric"}).format(shownMonth);
     grid.innerHTML="";
-    (weekdays[l]||weekdays.fa).forEach((name,i)=>{
+    (weekdays[l]||weekdays.fa).forEach(name=>{
       const el=document.createElement("div");el.className="month-weekday";el.textContent=name;el.setAttribute("role","columnheader");grid.appendChild(el);
     });
-    const first=new Date(shownMonth.getFullYear(),shownMonth.getMonth(),1);
-    const start=new Date(first);start.setDate(first.getDate()-first.getDay());
+    const first=firstGregorianDayOfCalendarMonth(shownMonth);
+    const startDate=new Date(first);startDate.setDate(first.getDate()-first.getDay());
+    const targetMonth=monthKey(first);
     for(let i=0;i<42;i++){
-      const date=new Date(start);date.setDate(start.getDate()+i);
+      const date=new Date(startDate);date.setDate(startDate.getDate()+i);
       const btn=document.createElement("button");btn.type="button";btn.className="month-day";
-      if(date.getMonth()!==shownMonth.getMonth())btn.classList.add("outside-month");
+      if(monthKey(date)!==targetMonth)btn.classList.add("outside-month");
       if(dayKey(date)===dayKey(today))btn.classList.add("is-today");
       if(dayKey(date)===dayKey(selectedMonthDay))btn.classList.add("is-selected");
-      btn.textContent=new Intl.NumberFormat(loc,{useGrouping:false}).format(date.getDate());
+      btn.textContent=new Intl.NumberFormat(loc,{useGrouping:false}).format(Number(calendarParts(date).day));
       btn.setAttribute("role","gridcell");
       btn.setAttribute("aria-label",new Intl.DateTimeFormat(loc,{dateStyle:"full"}).format(date));
-      btn.addEventListener("click",()=>{selectedMonthDay=new Date(date);shownMonth=new Date(date.getFullYear(),date.getMonth(),1);render();});
+      btn.addEventListener("click",()=>{selectedMonthDay=new Date(date);shownMonth=new Date(date);render();});
       grid.appendChild(btn);
     }
     const label=new Intl.DateTimeFormat(loc,{dateStyle:"full"}).format(selectedMonthDay);
@@ -5872,10 +5888,12 @@ if($("adminSupportReplyButton"))$("adminSupportReplyButton").onclick=async()=>{c
   }
   document.addEventListener("DOMContentLoaded",()=>{
     const prev=document.getElementById("drawerCalendarPrev"),next=document.getElementById("drawerCalendarNext"),today=document.getElementById("drawerCalendarToday");
-    if(prev)prev.addEventListener("click",()=>{shownMonth=new Date(shownMonth.getFullYear(),shownMonth.getMonth()-1,1);render();});
-    if(next)next.addEventListener("click",()=>{shownMonth=new Date(shownMonth.getFullYear(),shownMonth.getMonth()+1,1);render();});
-    if(today)today.addEventListener("click",()=>{selectedMonthDay=new Date();shownMonth=new Date(selectedMonthDay.getFullYear(),selectedMonthDay.getMonth(),1);render();});
+    if(prev)prev.addEventListener("click",()=>moveCalendarMonth(-1));
+    if(next)next.addEventListener("click",()=>moveCalendarMonth(1));
+    if(today)today.addEventListener("click",()=>{selectedMonthDay=new Date();shownMonth=new Date(selectedMonthDay);render();});
     render();
+    const languagePicker=document.getElementById("appLanguage");
+    if(languagePicker)languagePicker.addEventListener("change",()=>setTimeout(render,0));
   });
 })();
 </script>
