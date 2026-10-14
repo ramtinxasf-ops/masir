@@ -6,12 +6,18 @@ on:
     paths:
       - "index.html"
       - "tests/**"
+      - "manifest.json"
+      - "icon-192.png"
+      - "icon-512.png"
       - ".github/workflows/test-category-flow.yml"
   push:
     branches: [main, feature/categories]
     paths:
       - "index.html"
       - "tests/**"
+      - "manifest.json"
+      - "icon-192.png"
+      - "icon-512.png"
       - ".github/workflows/test-category-flow.yml"
 
 permissions:
