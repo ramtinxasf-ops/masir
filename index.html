@@ -3242,6 +3242,10 @@ function applyMasirLanguage(language) {
     const picker = document.getElementById("appLanguage");
     if (picker && picker.value !== language) picker.value = language;
     try { localStorage.setItem(MASIR_LANGUAGE_KEY, language); } catch (_) {}
+    ["masir-password", "masir-new-password", "adminNewPassword"].forEach(id => {
+        const input = document.getElementById(id);
+        if (input) input.dispatchEvent(new Event("input", { bubbles: true }));
+    });
 }
 (function initMasirLanguage() {
     const picker = document.getElementById("appLanguage");
@@ -4908,18 +4912,26 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
             number: /[0-9]/.test(password)
         };
     }
+    function localizedPasswordRuleLabel(rule) {
+        const labels = {
+            length: "حداقل ۸ کاراکتر",
+            upper: "حداقل یک حرف بزرگ انگلیسی (A-Z)",
+            lower: "حداقل یک حرف کوچک انگلیسی (a-z)",
+            number: "حداقل یک عدد (0-9)"
+        };
+        const translated = typeof masirTranslate === "function"
+            ? masirTranslate("○ " + labels[rule])
+            : "○ " + labels[rule];
+        return translated.replace(/^○\s*/, "");
+    }
+
     function updatePasswordRules() {
         const rules = validatePassword(passwordInput.value);
         Object.keys(rules).forEach(rule => {
             const item = passwordRules.querySelector('[data-rule="' + rule + '"]');
             if (!item) return;
             item.style.color = rules[rule] ? "#34d399" : "#fca5a5";
-            item.textContent = (rules[rule] ? "✓ " : "○ ") + ({
-                length: "حداقل ۸ کاراکتر",
-                upper: "حداقل یک حرف بزرگ انگلیسی (A-Z)",
-                lower: "حداقل یک حرف کوچک انگلیسی (a-z)",
-                number: "حداقل یک عدد (0-9)"
-            }[rule]);
+            item.textContent = (rules[rule] ? "✓ " : "○ ") + localizedPasswordRuleLabel(rule);
         });
         return Object.values(rules).every(Boolean);
     }
@@ -4932,12 +4944,7 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
             const item = list.querySelector('[data-rule="' + rule + '"]');
             if (!item) return;
             item.style.color = rules[rule] ? "#34d399" : "#fca5a5";
-            item.textContent = (rules[rule] ? "✓ " : "○ ") + ({
-                length: "حداقل ۸ کاراکتر",
-                upper: "حداقل یک حرف بزرگ انگلیسی (A-Z)",
-                lower: "حداقل یک حرف کوچک انگلیسی (a-z)",
-                number: "حداقل یک عدد (0-9)"
-            }[rule]);
+            item.textContent = (rules[rule] ? "✓ " : "○ ") + localizedPasswordRuleLabel(rule);
         });
         return Object.values(rules).every(Boolean);
     }
