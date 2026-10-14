@@ -74,8 +74,8 @@ test("activity category can be created, changed, and saved without a real Supaba
   console.log("STEP: mock user set");
 
   // Profile details save to Supabase user metadata and are displayed in the profile.
-  await page.evaluate(() => showPage("profile"));
-  console.log("STEP: profile page opened");
+  await page.evaluate(() => showPage("settings"));
+  console.log("STEP: settings page opened");
   await expect(page.locator("#adminUserExportPanel")).toBeVisible();
   const textDownloadPromise = page.waitForEvent("download");
   await page.locator("#exportUsersCsvButton").click();
@@ -83,6 +83,7 @@ test("activity category can be created, changed, and saved without a real Supaba
   expect(textDownload.suggestedFilename()).toContain("masir-users-");
   expect(textDownload.suggestedFilename()).toMatch(/\.txt$/);
   await expect(page.locator("#adminUserExportMessage")).toContainText("دانلود شد");
+  await page.evaluate(() => showPage("profile"));
   await page.locator("#profileFirstName").fill("رامتین");
   console.log("STEP: profile first name filled");
   await page.locator("#profileLastName").fill("آزمایشی");
