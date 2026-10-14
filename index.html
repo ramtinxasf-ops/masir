@@ -2063,7 +2063,7 @@ var supabaseClient = window.supabase.createClient(
 
 <section class="card" id="drawerAccountSection" style="display:none;">
   <h2>👤 اطلاعات حساب کاربری</h2>
-  <p class="help-text">این بخش فقط برای مشاهده است. برای ثبت یا ویرایش اطلاعات از بخش «پروفایل» در نوار پایین استفاده کن.</p>
+  <p class="help-text">این بخش فقط برای مشاهده اطلاعات ثبت‌شده حساب است. برای ویرایش اطلاعات، از بخش «تنظیمات» استفاده کن.</p>
   <div class="profile-panel">
     <h3>اطلاعات حساب</h3>
     <div class="profile-account-line"><span>ایمیل حساب</span><strong id="drawerProfileEmail">—</strong></div>
@@ -2076,35 +2076,20 @@ var supabaseClient = window.supabase.createClient(
 
 <section class="card" id="profileSection" style="display:none;">
     <h2>👤 پروفایل من</h2>
-    <p class="help-text">اطلاعات شخصی خود را از این بخش ثبت و ویرایش کن.</p>
+    <p class="help-text">این بخش فقط برای مشاهده اطلاعات ثبت‌شده حساب است. برای ویرایش اطلاعات، از تنظیمات استفاده کن.</p>
     <div class="profile-panel">
         <h3>اطلاعات حساب</h3>
         <div class="profile-account-line"><span>ایمیل حساب</span><strong id="profileEmail">—</strong></div>
         <div class="profile-account-line"><span>تلفن حساب</span><strong id="profilePhone">—</strong></div>
-        <form id="profileForm">
-            <div class="form-grid">
-                <div class="form-field"><label for="profileFirstName">نام</label><input type="text" id="profileFirstName" maxlength="60" autocomplete="given-name" required></div>
-                <div class="form-field"><label for="profileLastName">نام خانوادگی</label><input type="text" id="profileLastName" maxlength="80" autocomplete="family-name" required></div>
-                <div class="form-field"><label for="profilePhoneInput">شماره تلفن</label><input type="tel" id="profilePhoneInput" maxlength="20" autocomplete="tel" placeholder="+989123456789"></div>
-                <div class="form-field"><label for="profileBirthDate">تاریخ تولد</label><input type="date" id="profileBirthDate" autocomplete="bday"></div>
-            </div>
-            <p id="profileSaveMessage" class="help-text" role="status" aria-live="polite"></p>
-            <button type="submit" class="primary-button" id="saveProfileButton" style="width:100%;margin-top:12px;">ذخیره اطلاعات پروفایل</button>
-        </form>
+        <div class="profile-account-line"><span>نام</span><strong id="profileReadOnlyFirstName">—</strong></div>
+        <div class="profile-account-line"><span>نام خانوادگی</span><strong id="profileReadOnlyLastName">—</strong></div>
+        <div class="profile-account-line"><span>تاریخ تولد</span><strong id="profileReadOnlyBirthDate">—</strong></div>
     </div>
     <div class="profile-panel" id="profilePrivateChatLinkPanel" style="display:none;">
         <h3>ارتباط با مدیر</h3>
         <p class="help-text">برای پشتیبانی یا ارسال پیام خصوصی به مدیر وارد صفحهٔ چت شو.</p>
         <button type="button" class="primary-button" id="openPrivateChatFromProfile" style="width:100%;">💬 چت خصوصی با مدیر</button>
     </div>
-    <div class="profile-panel">
-        <button type="button" class="secondary-button" id="appInfoButton" style="width:100%;text-align:right;">ℹ️ اطلاعات برنامه <span style="float:left;">←</span></button>
-        <div id="appInfoDetails" style="display:none;margin-top:16px;">
-            <h3>مسیر</h3><p>برنامه‌ریز شخصی برای مدیریت فعالیت‌ها، پیگیری پیشرفت و بررسی گزارش‌ها.</p>
-            <p>هدف برنامه: کمک به مدیریت بهتر زمان و پیگیری عادت‌های روزانه.</p>
-        </div>
-    </div>
-    <div id="profileLogoutArea" style="margin-top:24px;"></div>
 </section>
 
 <section class="card" id="dailyOverviewSection" style="display:none;">
@@ -2151,7 +2136,22 @@ var supabaseClient = window.supabase.createClient(
     <p class="help-text">زبان انتخابی برای تمام بخش‌های رابط کاربری اعمال می‌شود. متن یادداشت‌های شخصی شما ترجمه نمی‌شود.</p>
   </div>
 
-  <div class="profile-panel" id="adminUserExportPanel" style="display:none;">
+  <div class="profile-panel" id="profileEditSettingsPanel">
+    <h3>ویرایش اطلاعات شخصی</h3>
+    <p class="help-text">اطلاعات زیر فقط در این بخش قابل ویرایش است.</p>
+    <form id="profileForm">
+        <div class="form-grid">
+            <div class="form-field"><label for="profileFirstName">نام</label><input type="text" id="profileFirstName" maxlength="60" autocomplete="given-name" required></div>
+            <div class="form-field"><label for="profileLastName">نام خانوادگی</label><input type="text" id="profileLastName" maxlength="80" autocomplete="family-name" required></div>
+            <div class="form-field"><label for="profilePhoneInput">شماره تلفن</label><input type="tel" id="profilePhoneInput" maxlength="20" autocomplete="tel" placeholder="+989123456789"></div>
+            <div class="form-field"><label for="profileBirthDate">تاریخ تولد</label><input type="date" id="profileBirthDate" autocomplete="bday"></div>
+        </div>
+        <p id="profileSaveMessage" class="help-text" role="status" aria-live="polite"></p>
+        <button type="submit" class="primary-button" id="saveProfileButton" style="width:100%;margin-top:12px;">ذخیره اطلاعات پروفایل</button>
+    </form>
+</div>
+
+<div class="profile-panel" id="adminUserExportPanel" style="display:none;">
         <h3>مدیریت کاربران</h3>
         <p class="help-text">این بخش فقط برای حساب مدیریتی مجاز فعال است. رمز قبلی کاربران نمایش داده نمی‌شود؛ می‌توانی رمز جدید تنظیم کنی.</p>
         <button type="button" class="secondary-button" id="exportUsersCsvButton" style="width:100%;text-align:right;">📄 دریافت فهرست کاربران (متن مرتب)</button>
@@ -3243,13 +3243,20 @@ function applyMasirLanguage(language) {
     if (picker && picker.value !== language) picker.value = language;
     try { localStorage.setItem(MASIR_LANGUAGE_KEY, language); } catch (_) {}
 }
+function refreshMasirPasswordRules() {
+    ["masir-password", "masir-new-password", "adminNewPassword"].forEach(id => {
+        const input = document.getElementById(id);
+        if (input) input.dispatchEvent(new Event("input", { bubbles: true }));
+    });
+}
+
 (function initMasirLanguage() {
     const picker = document.getElementById("appLanguage");
     let language = "fa";
     try { language = localStorage.getItem(MASIR_LANGUAGE_KEY) || "fa"; } catch (_) {}
     if (picker) {
         picker.value = language;
-        picker.addEventListener("change", () => { applyMasirLanguage(picker.value); if (typeof renderAll === "function") renderAll(); });
+        picker.addEventListener("change", () => { applyMasirLanguage(picker.value); refreshMasirPasswordRules(); if (typeof renderAll === "function") renderAll(); });
     }
     applyMasirLanguage(language);
     const observer = new MutationObserver(() => {
@@ -4744,10 +4751,9 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
     const sendOtpButton = document.getElementById("masir-send-otp");
     const verifyOtpButton = document.getElementById("masir-verify-otp");
     const forgotPasswordButton = document.getElementById("masir-forgot-password");
-    const ADMIN_EMAIL = "ramtinxasf@gmail.com";
     function updateAdminOnlyRecoveryVisibility() {
-        const allowed = String(emailInput && emailInput.value || "").trim().toLowerCase() === ADMIN_EMAIL;
-        if (forgotPasswordButton) forgotPasswordButton.style.display = allowed ? "block" : "none";
+        // Self-service password recovery is available to every account, not only the administrator.
+        if (forgotPasswordButton) forgotPasswordButton.style.display = "block";
     }
     if (emailInput) emailInput.addEventListener("input", updateAdminOnlyRecoveryVisibility);
     updateAdminOnlyRecoveryVisibility();
@@ -4909,18 +4915,26 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
             number: /[0-9]/.test(password)
         };
     }
+    function localizedPasswordRuleLabel(rule) {
+        const labels = {
+            length: "حداقل ۸ کاراکتر",
+            upper: "حداقل یک حرف بزرگ انگلیسی (A-Z)",
+            lower: "حداقل یک حرف کوچک انگلیسی (a-z)",
+            number: "حداقل یک عدد (0-9)"
+        };
+        const translated = typeof masirTranslate === "function"
+            ? masirTranslate("○ " + labels[rule])
+            : "○ " + labels[rule];
+        return translated.replace(/^○\s*/, "");
+    }
+
     function updatePasswordRules() {
         const rules = validatePassword(passwordInput.value);
         Object.keys(rules).forEach(rule => {
             const item = passwordRules.querySelector('[data-rule="' + rule + '"]');
             if (!item) return;
             item.style.color = rules[rule] ? "#34d399" : "#fca5a5";
-            item.textContent = (rules[rule] ? "✓ " : "○ ") + ({
-                length: "حداقل ۸ کاراکتر",
-                upper: "حداقل یک حرف بزرگ انگلیسی (A-Z)",
-                lower: "حداقل یک حرف کوچک انگلیسی (a-z)",
-                number: "حداقل یک عدد (0-9)"
-            }[rule]);
+            item.textContent = (rules[rule] ? "✓ " : "○ ") + localizedPasswordRuleLabel(rule);
         });
         return Object.values(rules).every(Boolean);
     }
@@ -4933,12 +4947,7 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
             const item = list.querySelector('[data-rule="' + rule + '"]');
             if (!item) return;
             item.style.color = rules[rule] ? "#34d399" : "#fca5a5";
-            item.textContent = (rules[rule] ? "✓ " : "○ ") + ({
-                length: "حداقل ۸ کاراکتر",
-                upper: "حداقل یک حرف بزرگ انگلیسی (A-Z)",
-                lower: "حداقل یک حرف کوچک انگلیسی (a-z)",
-                number: "حداقل یک عدد (0-9)"
-            }[rule]);
+            item.textContent = (rules[rule] ? "✓ " : "○ ") + localizedPasswordRuleLabel(rule);
         });
         return Object.values(rules).every(Boolean);
     }
@@ -5007,7 +5016,10 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
             drawerProfilePhone: user.phone || metadata.phone || "ثبت نشده",
             drawerProfileFirstName: metadata.first_name || metadata.firstName || "ثبت نشده",
             drawerProfileLastName: metadata.last_name || metadata.lastName || "ثبت نشده",
-            drawerProfileBirthDate: metadata.birth_date || metadata.birthDate || "ثبت نشده"
+            drawerProfileBirthDate: metadata.birth_date || metadata.birthDate || "ثبت نشده",
+            profileReadOnlyFirstName: metadata.first_name || metadata.firstName || "ثبت نشده",
+            profileReadOnlyLastName: metadata.last_name || metadata.lastName || "ثبت نشده",
+            profileReadOnlyBirthDate: metadata.birth_date || metadata.birthDate || "ثبت نشده"
         };
         Object.entries(readOnlyValues).forEach(([id, value]) => {
             const element = document.getElementById(id);
@@ -5027,7 +5039,7 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
         const adminResetPanel = document.getElementById("adminResetPasswordPanel");
         const profileChatLink = document.getElementById("profilePrivateChatLinkPanel");
         if (panel) panel.style.display = isAdmin ? "block" : "none";
-        if (securityPanel) securityPanel.style.display = isAdmin ? "block" : "none";
+        if (securityPanel) securityPanel.style.display = user ? "block" : "none";
         if (backupPanel) backupPanel.style.display = isAdmin ? "block" : "none";
         if (adminResetPanel) adminResetPanel.style.display = isAdmin ? "block" : "none";
         if (profileChatLink) profileChatLink.style.display = user && !isAdmin ? "block" : "none";
@@ -5223,9 +5235,9 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
         const user = window.masirCurrentUser;
         const target = document.getElementById("profileSecurityMessage");
         const isAdmin = Boolean(user && typeof user.email === "string" && user.email.trim().toLowerCase() === "ramtinxasf@gmail.com");
-        if (!isAdmin) {
+        if (!user) {
             if (target) {
-                target.textContent = "بازیابی رمز عبور فقط برای مدیر فعال است.";
+                target.textContent = "ابتدا وارد حساب شو.";
                 target.style.color = "#fb7185";
             }
             return;
@@ -5253,9 +5265,6 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
     });
     if (forgotPasswordButton) forgotPasswordButton.addEventListener("click", async function() {
         const email = emailInput.value.trim();
-        if (email.toLowerCase() !== ADMIN_EMAIL) {
-            return showMessage("بازیابی رمز عبور فقط برای مدیر فعال است.", true);
-        }
         if (!email) return showMessage("ابتدا ایمیل حسابت را وارد کن.", true);
         forgotPasswordButton.disabled = true;
         showMessage("در حال ارسال لینک بازیابی...");
@@ -5791,6 +5800,7 @@ if($("adminSupportReplyButton"))$("adminSupportReplyButton").onclick=async()=>{c
     langSettings.addEventListener("change",()=>{
       langTop.value=langSettings.value;
       applyMasirLanguage(langSettings.value);
+      refreshMasirPasswordRules();
       if(typeof renderAll==="function")renderAll();
     });
     langTop.addEventListener("change",()=>{langSettings.value=langTop.value;});
