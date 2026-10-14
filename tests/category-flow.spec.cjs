@@ -81,7 +81,7 @@ test("activity category can be created, changed, and saved without a real Supaba
   const textDownloadPromise = page.waitForEvent("download");
   await page.locator("#exportUsersCsvButton").click();
   const textDownload = await textDownloadPromise;
-  expect(textDownload.suggestedFilename()).toMatch(/^masir-users-.*\\.txt$/);
+  expect(textDownload.suggestedFilename()).toMatch(/^masir-users-.*\.txt$/);
   await expect(page.locator("#adminUserExportMessage")).toContainText("دانلود شد");
 
   await page.locator("#profileFirstName").fill("رامتین");
