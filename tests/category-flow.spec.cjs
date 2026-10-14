@@ -102,7 +102,23 @@ test("activity category can be created, changed, and saved without a real Supaba
   await page.locator("#masir-forgot-password").click();
   await expect.poll(() => page.evaluate(() => window.__mockState.resetPasswordCalls.length)).toBe(1);
   expect(await page.evaluate(() => window.__mockState.resetPasswordCalls[0].email)).toBe("user@example.com");
-  await page.evaluate(() => { document.getElementById("masir-auth-overlay").style.display = "none"; });
+
+  // Dynamic password-rule labels must follow the selected interface language.
+  await page.locator("#masir-password").fill("weak");
+  await page.evaluate(() => {
+    const picker = document.getElementById("appLanguage");
+    picker.value = "en";
+    picker.dispatchEvent(new Event("change", { bubbles: true }));
+  });
+  await expect(page.locator('#masir-password-rules [data-rule="length"]')).toContainText("At least 8 characters");
+  await page.locator("#masir-password").fill("StrongPass1");
+  await expect(page.locator('#masir-password-rules [data-rule="length"]')).toContainText("✓ At least 8 characters");
+  await page.evaluate(() => {
+    const picker = document.getElementById("appLanguage");
+    picker.value = "fa";
+    picker.dispatchEvent(new Event("change", { bubbles: true }));
+    document.getElementById("masir-auth-overlay").style.display = "none";
+  });
 
   // Continue with category and calendar regression checks.
   await page.evaluate(() => showPage("planning"));
