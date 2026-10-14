@@ -96,10 +96,15 @@ test("activity category can be created, changed, and saved without a real Supaba
   console.log("STEP: profile save status=" + await page.locator("#profileSaveMessage").textContent());
   console.log("STEP: mocked profile updates=" + await page.evaluate(() => window.__mockState.updates.length));
   await expect(page.locator("#profileSaveMessage")).toContainText("ذخیره شد");
+  console.log("STEP: profile message assertion passed");
   await expect(page.locator("#profileEmail")).toContainText("ramtinxasf@gmail.com");
+  console.log("STEP: profile email assertion passed");
   await page.evaluate(() => showPage("settings"));
+  console.log("STEP: settings reopened");
   await expect(page.locator("#settingsAccountActions")).toContainText("خروج از حساب");
+  console.log("STEP: logout action assertion passed");
   await expect(page.locator("#settingsAccountActions")).toContainText("حذف دائمی حساب");
+  console.log("STEP: delete action assertion passed");
 
   // Password requirements update while typing; phone OTP panel can be selected.
   await page.evaluate(() => { document.getElementById("masir-auth-overlay").style.display = "flex"; });
