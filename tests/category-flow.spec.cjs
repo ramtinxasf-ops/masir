@@ -180,6 +180,7 @@ test("activity category can be created, changed, and saved without a real Supaba
     picker.value = "ja";
     picker.dispatchEvent(new Event("change", { bubbles: true }));
   });
+  console.log("JA DEBUG " + JSON.stringify(await page.evaluate(() => ({ picker: document.getElementById("appLanguage").value, language: masirCurrentLanguage(), settings: document.getElementById("appLanguageSettings").value, placeholder: document.getElementById("calendarDateJump").placeholder, value: document.getElementById("calendarDateJump").value, stored: localStorage.getItem("masir_app_language_v1") }))));
   await expect(dateJump).toHaveAttribute("placeholder", "令和8/10/13");
   await dateJump.evaluate(input => {
     input.value = "令和8/10/21";
