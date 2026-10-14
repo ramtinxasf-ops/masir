@@ -4620,7 +4620,7 @@ function persianDateToGregorian(value) {
         .replace(/[۰-۹]/g, digit => "۰۱۲۳۴۵۶۷۸۹".indexOf(digit))
         .replace(/[٠-٩]/g, digit => "٠١٢٣٤٥٦٧٨٩".indexOf(digit))
         .trim();
-    const match = normalized.match(new RegExp("^(\d{4})[./-](\d{1,2})[./-](\d{1,2})$"));
+    const match = normalized.match(/^(\d{4})[./-](\d{1,2})[./-](\d{1,2})$/);
     if (!match) return null;
 
     const year = Number(match[1]);
