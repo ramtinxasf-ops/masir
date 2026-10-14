@@ -6,7 +6,7 @@ test("activity category can be created, changed, and saved without a real Supaba
   page.on("console", message => { if (message.type() === "error") console.log("BROWSER ERROR:", message.text()); });
   page.on("dialog", dialog => dialog.accept());
   await page.addInitScript(() => {
-    window.__mockState = { rows: [], upserts: [], updates: [] };
+    window.__mockState = { rows: [], upserts: [], updates: [], signOutCalls: 0 };
     const user = { id: "playwright-test-user", email: "ramtinxasf@gmail.com", app_metadata: { role: "admin" } };
     const session = { user };
     window.__testSupabase = {
@@ -16,7 +16,7 @@ test("activity category can be created, changed, and saved without a real Supaba
           onAuthStateChange: () => ({ data: { subscription: { unsubscribe() {} } } }),
           signInWithPassword: async () => ({ data: { user, session }, error: null }),
           signUp: async () => ({ data: { user, session }, error: null }),
-          signOut: async () => ({ error: null }),
+          signOut: async () => { window.__mockState.signOutCalls += 1; return { error: null }; },
           updateUser: async ({ data }) => { window.__mockState.updates.push(data); return { data: { user: { ...user, user_metadata: data } }, error: null }; },
           resetPasswordForEmail: async () => ({ error: null }),
           signInWithOtp: async () => ({ error: null }),
@@ -203,4 +203,12 @@ test("activity category can be created, changed, and saved without a real Supaba
     }, localizedValue);
     expect(await page.evaluate(() => getDateKey(selectedDate))).toBe("2026-10-21");
   }
+
+  // Regression check: the account action must call Supabase signOut.
+  await page.evaluate(() => {
+    const button = document.querySelector("#settingsAccountActions button");
+    if (!button) throw new Error("Logout button was not added to account settings.");
+    button.click();
+  });
+  await expect.poll(() => page.evaluate(() => window.__mockState.signOutCalls)).toBe(1);
 });
