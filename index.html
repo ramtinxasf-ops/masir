@@ -2063,7 +2063,7 @@ var supabaseClient = window.supabase.createClient(
 
 <section class="card" id="drawerAccountSection" style="display:none;">
   <h2>👤 اطلاعات حساب کاربری</h2>
-  <p class="help-text">این بخش فقط برای مشاهده است. برای ثبت یا ویرایش اطلاعات از بخش «پروفایل» در نوار پایین استفاده کن.</p>
+  <p class="help-text">این بخش فقط برای مشاهده اطلاعات ثبت‌شده حساب است. برای ویرایش اطلاعات، از بخش «تنظیمات» استفاده کن.</p>
   <div class="profile-panel">
     <h3>اطلاعات حساب</h3>
     <div class="profile-account-line"><span>ایمیل حساب</span><strong id="drawerProfileEmail">—</strong></div>
@@ -2076,35 +2076,20 @@ var supabaseClient = window.supabase.createClient(
 
 <section class="card" id="profileSection" style="display:none;">
     <h2>👤 پروفایل من</h2>
-    <p class="help-text">اطلاعات شخصی خود را از این بخش ثبت و ویرایش کن.</p>
+    <p class="help-text">این بخش فقط برای مشاهده اطلاعات ثبت‌شده حساب است. برای ویرایش اطلاعات، از تنظیمات استفاده کن.</p>
     <div class="profile-panel">
         <h3>اطلاعات حساب</h3>
         <div class="profile-account-line"><span>ایمیل حساب</span><strong id="profileEmail">—</strong></div>
         <div class="profile-account-line"><span>تلفن حساب</span><strong id="profilePhone">—</strong></div>
-        <form id="profileForm">
-            <div class="form-grid">
-                <div class="form-field"><label for="profileFirstName">نام</label><input type="text" id="profileFirstName" maxlength="60" autocomplete="given-name" required></div>
-                <div class="form-field"><label for="profileLastName">نام خانوادگی</label><input type="text" id="profileLastName" maxlength="80" autocomplete="family-name" required></div>
-                <div class="form-field"><label for="profilePhoneInput">شماره تلفن</label><input type="tel" id="profilePhoneInput" maxlength="20" autocomplete="tel" placeholder="+989123456789"></div>
-                <div class="form-field"><label for="profileBirthDate">تاریخ تولد</label><input type="date" id="profileBirthDate" autocomplete="bday"></div>
-            </div>
-            <p id="profileSaveMessage" class="help-text" role="status" aria-live="polite"></p>
-            <button type="submit" class="primary-button" id="saveProfileButton" style="width:100%;margin-top:12px;">ذخیره اطلاعات پروفایل</button>
-        </form>
+        <div class="profile-account-line"><span>نام</span><strong id="profileReadOnlyFirstName">—</strong></div>
+        <div class="profile-account-line"><span>نام خانوادگی</span><strong id="profileReadOnlyLastName">—</strong></div>
+        <div class="profile-account-line"><span>تاریخ تولد</span><strong id="profileReadOnlyBirthDate">—</strong></div>
     </div>
     <div class="profile-panel" id="profilePrivateChatLinkPanel" style="display:none;">
         <h3>ارتباط با مدیر</h3>
         <p class="help-text">برای پشتیبانی یا ارسال پیام خصوصی به مدیر وارد صفحهٔ چت شو.</p>
         <button type="button" class="primary-button" id="openPrivateChatFromProfile" style="width:100%;">💬 چت خصوصی با مدیر</button>
     </div>
-    <div class="profile-panel">
-        <button type="button" class="secondary-button" id="appInfoButton" style="width:100%;text-align:right;">ℹ️ اطلاعات برنامه <span style="float:left;">←</span></button>
-        <div id="appInfoDetails" style="display:none;margin-top:16px;">
-            <h3>مسیر</h3><p>برنامه‌ریز شخصی برای مدیریت فعالیت‌ها، پیگیری پیشرفت و بررسی گزارش‌ها.</p>
-            <p>هدف برنامه: کمک به مدیریت بهتر زمان و پیگیری عادت‌های روزانه.</p>
-        </div>
-    </div>
-    <div id="profileLogoutArea" style="margin-top:24px;"></div>
 </section>
 
 <section class="card" id="dailyOverviewSection" style="display:none;">
@@ -2151,7 +2136,22 @@ var supabaseClient = window.supabase.createClient(
     <p class="help-text">زبان انتخابی برای تمام بخش‌های رابط کاربری اعمال می‌شود. متن یادداشت‌های شخصی شما ترجمه نمی‌شود.</p>
   </div>
 
-  <div class="profile-panel" id="adminUserExportPanel" style="display:none;">
+  <div class="profile-panel" id="profileEditSettingsPanel">
+    <h3>ویرایش اطلاعات شخصی</h3>
+    <p class="help-text">اطلاعات زیر فقط در این بخش قابل ویرایش است.</p>
+    <form id="profileForm">
+        <div class="form-grid">
+            <div class="form-field"><label for="profileFirstName">نام</label><input type="text" id="profileFirstName" maxlength="60" autocomplete="given-name" required></div>
+            <div class="form-field"><label for="profileLastName">نام خانوادگی</label><input type="text" id="profileLastName" maxlength="80" autocomplete="family-name" required></div>
+            <div class="form-field"><label for="profilePhoneInput">شماره تلفن</label><input type="tel" id="profilePhoneInput" maxlength="20" autocomplete="tel" placeholder="+989123456789"></div>
+            <div class="form-field"><label for="profileBirthDate">تاریخ تولد</label><input type="date" id="profileBirthDate" autocomplete="bday"></div>
+        </div>
+        <p id="profileSaveMessage" class="help-text" role="status" aria-live="polite"></p>
+        <button type="submit" class="primary-button" id="saveProfileButton" style="width:100%;margin-top:12px;">ذخیره اطلاعات پروفایل</button>
+    </form>
+</div>
+
+<div class="profile-panel" id="adminUserExportPanel" style="display:none;">
         <h3>مدیریت کاربران</h3>
         <p class="help-text">این بخش فقط برای حساب مدیریتی مجاز فعال است. رمز قبلی کاربران نمایش داده نمی‌شود؛ می‌توانی رمز جدید تنظیم کنی.</p>
         <button type="button" class="secondary-button" id="exportUsersCsvButton" style="width:100%;text-align:right;">📄 دریافت فهرست کاربران (متن مرتب)</button>
@@ -5007,7 +5007,10 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
             drawerProfilePhone: user.phone || metadata.phone || "ثبت نشده",
             drawerProfileFirstName: metadata.first_name || metadata.firstName || "ثبت نشده",
             drawerProfileLastName: metadata.last_name || metadata.lastName || "ثبت نشده",
-            drawerProfileBirthDate: metadata.birth_date || metadata.birthDate || "ثبت نشده"
+            drawerProfileBirthDate: metadata.birth_date || metadata.birthDate || "ثبت نشده",
+            profileReadOnlyFirstName: metadata.first_name || metadata.firstName || "ثبت نشده",
+            profileReadOnlyLastName: metadata.last_name || metadata.lastName || "ثبت نشده",
+            profileReadOnlyBirthDate: metadata.birth_date || metadata.birthDate || "ثبت نشده"
         };
         Object.entries(readOnlyValues).forEach(([id, value]) => {
             const element = document.getElementById(id);
