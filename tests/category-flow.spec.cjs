@@ -76,7 +76,7 @@ test("activity category can be created, changed, and saved without a real Supaba
   // This test focuses on activity categories and calendar behavior; auth/profile/export are covered separately.
 
   // Admin export and profile fields are on the profile page; account actions are in settings.
-  await page.evaluate(() => showPage("profile"));
+  await page.evaluate(() => { showPage("profile"); window.masirPopulateProfile(window.masirCurrentUser); console.log("ADMIN DEBUG", JSON.stringify({email:window.masirCurrentUser && window.masirCurrentUser.email, display:document.getElementById("adminUserExportPanel").style.display, profile:document.getElementById("profileSection").style.display})); });
   await expect(page.locator("#adminUserExportPanel")).toBeVisible();
   const textDownloadPromise = page.waitForEvent("download");
   await page.locator("#exportUsersCsvButton").click();
