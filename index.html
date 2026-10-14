@@ -1854,7 +1854,7 @@ var supabaseClient = window.supabase.createClient(
 </section>
 
 <section class="card" id="planningSection">
-    <h2>➕ افزودن فعالیت جدید</h2>
+    <h2 id="activityFormTitle">➕ افزودن فعالیت جدید</h2>
 
     <form id="activityForm">
         <div class="form-grid">
@@ -1943,8 +1943,11 @@ var supabaseClient = window.supabase.createClient(
             </div>
 
             <div class="form-field full-width">
-                <button type="submit" class="primary-button" style="width:100%">
+                <button type="submit" id="activitySubmitButton" class="primary-button" style="width:100%">
                     افزودن فعالیت
+                </button>
+                <button type="button" id="cancelActivityEditButton" class="secondary-button" style="display:none;width:100%;margin-top:8px;">
+                    لغو ویرایش
                 </button>
             </div>
 
@@ -3098,6 +3101,12 @@ const MASIR_LANGUAGES = {
         "برای ورود یا ساخت حساب با پیامک، نام و نام خانوادگی را وارد کن.": "SMSでログインまたはアカウントを作成するには、名と姓を入力してください。",
     }}
 };
+Object.assign(MASIR_LANGUAGES.fa.text, { "ذخیره تغییرات": "ذخیره تغییرات", "ویرایش فعالیت": "ویرایش فعالیت" });
+Object.assign(MASIR_LANGUAGES.en.text, { "ذخیره تغییرات": "Save changes", "ویرایش فعالیت": "Edit activity" });
+Object.assign(MASIR_LANGUAGES.ar.text, { "ذخیره تغییرات": "حفظ التغييرات", "ویرایش فعالیت": "تعديل النشاط" });
+Object.assign(MASIR_LANGUAGES.tr.text, { "ذخیره تغییرات": "Değişiklikleri kaydet", "ویرایش فعالیت": "Etkinliği düzenle" });
+Object.assign(MASIR_LANGUAGES.ja.text, { "ذخیره تغییرات": "変更を保存", "ویرایش فعالیت": "アクティビティを編集" });
+
 function masirCurrentLanguage() {
     const picker = document.getElementById("appLanguage");
     if (picker && picker.value) return picker.value;
@@ -3411,6 +3420,19 @@ function loadActivities() {
 }
 
 let activities = [];
+let editingActivityId = null;
+
+function resetActivityEditor() {
+    editingActivityId = null;
+    const form = document.getElementById("activityForm");
+    const title = document.getElementById("activityFormTitle");
+    const submit = document.getElementById("activitySubmitButton");
+    const cancel = document.getElementById("cancelActivityEditButton");
+    if (form) form.reset();
+    if (title) title.textContent = masirTranslate("➕ افزودن فعالیت جدید");
+    if (submit) submit.textContent = masirTranslate("افزودن فعالیت");
+    if (cancel) cancel.style.display = "none";
+}
 
 function showPage(page) {
     const sections = {
@@ -4148,24 +4170,65 @@ function renderActivities() {
 
         const time = document.createElement("div");
         time.className = "activity-time";
-        time.textContent = `⏰ ${activity.start} تا ${activity.end}`;
+        const lang = masirCurrentLanguage();
+        const timeJoin = { fa: " تا ", en: " to ", ar: " إلى ", tr: " - ", ja: "〜" };
+        time.textContent = `⏰ ${activity.start}${timeJoin[lang] || timeJoin.fa}${activity.end}`;
 
         const schedule = document.createElement("div");
         schedule.className = "activity-schedule";
 
+        const lang = masirCurrentLanguage();
+        const localizedDays = {
+            fa: ["یکشنبه", "دوشنبه", "سه‌شنبه", "چهارشنبه", "پنجشنبه", "جمعه", "شنبه"],
+            en: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+            ar: ["الأحد", "الاثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"],
+            tr: ["Pazar", "Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi"],
+            ja: ["日曜日", "月曜日", "火曜日", "水曜日", "木曜日", "金曜日", "土曜日"]
+        };
+        const scheduleLabels = {
+            fa: { daily: "برنامه: هر روز", days: "روزهای برنامه: " },
+            en: { daily: "Schedule: every day", days: "Scheduled days: " },
+            ar: { daily: "الجدول: كل يوم", days: "أيام الجدول: " },
+            tr: { daily: "Program: her gün", days: "Program günleri: " },
+            ja: { daily: "予定：毎日", days: "予定日：" }
+        };
+        const scheduleLabel = scheduleLabels[lang] || scheduleLabels.fa;
         if (activity.days.includes("daily")) {
-            schedule.textContent = "برنامه: هر روز";
+            schedule.textContent = scheduleLabel.daily;
         } else {
             const names = WEEK_ORDER
                 .filter(day => activity.days.includes(String(day)))
-                .map(day => WEEKDAY_NAMES[day]);
-
-            schedule.textContent = `روزهای برنامه: ${names.join("، ")}`;
+                .map(day => (localizedDays[lang] || localizedDays.fa)[day]);
+            schedule.textContent = scheduleLabel.days + names.join(lang === "ja" ? "、" : lang === "ar" ? "، " : ", ");
         }
 
         
         info.append(name, priority, category, time, schedule);
 
+
+        const editButton = document.createElement("button");
+        editButton.type = "button";
+        editButton.className = "secondary-button edit-button";
+        editButton.textContent = masirTranslate("ویرایش");
+        editButton.addEventListener("click", () => {
+            editingActivityId = String(activity.id);
+            document.getElementById("activityName").value = activity.name || "";
+            document.getElementById("startTime").value = activity.start || "";
+            document.getElementById("endTime").value = activity.end || "";
+            document.getElementById("activityCategory").value = activity.category || "general";
+            const selectedDays = new Set(activity.days.includes("daily") ? ["daily"] : activity.days);
+            document.querySelectorAll('input[name="activityDays"]').forEach(checkbox => {
+                checkbox.checked = selectedDays.has(checkbox.value);
+            });
+            document.getElementById("activityFormTitle").textContent = "✏️ " + masirTranslate("ویرایش فعالیت");
+            document.getElementById("activitySubmitButton").textContent = masirTranslate("ذخیره تغییرات");
+            const cancel = document.getElementById("cancelActivityEditButton");
+            cancel.textContent = masirTranslate("لغو ویرایش");
+            cancel.style.display = "block";
+            showPage("planning");
+            document.getElementById("activityName").focus();
+            document.getElementById("activityForm").scrollIntoView({ behavior: "smooth", block: "start" });
+        });
 
         const deleteButton = document.createElement("button");
         deleteButton.type = "button";
@@ -4201,7 +4264,7 @@ deleteButton.addEventListener("click", async () => {
         );
     }
 });
-        item.append(checkbox, info, deleteButton);
+        item.append(checkbox, info, editButton, deleteButton);
         list.appendChild(item);
     });
 }
@@ -4560,6 +4623,29 @@ document.getElementById("activityForm").addEventListener("submit", event => {
         return;
     }
 
+    if (editingActivityId) {
+        const existingIndex = activities.findIndex(activity => String(activity.id) === String(editingActivityId));
+        if (existingIndex < 0) {
+            resetActivityEditor();
+            alert("این فعالیت دیگر وجود ندارد. فهرست را بررسی کن.");
+            renderAll();
+            return;
+        }
+        activities[existingIndex] = {
+            ...activities[existingIndex],
+            name,
+            start,
+            end,
+            category,
+            days: selectedDays
+        };
+        resetActivityEditor();
+        saveActivities();
+        renderAll();
+        alert("تغییرات فعالیت ذخیره شد. 💜");
+        return;
+    }
+
     const newActivity = {
         id: Date.now().toString() + Math.random().toString(16).slice(2),
         name,
@@ -4586,10 +4672,15 @@ document.getElementById("activityForm").addEventListener("submit", event => {
 
     selectedDate.setHours(12, 0, 0, 0);
 
-    document.getElementById("activityForm").reset();
+    resetActivityEditor();
 
     renderAll();
     alert("فعالیت با موفقیت اضافه شد. 💜");
+});
+
+document.getElementById("cancelActivityEditButton").addEventListener("click", () => {
+    resetActivityEditor();
+    renderAll();
 });
 
 document.getElementById("activityCategoryFilter").addEventListener("change", event => {
