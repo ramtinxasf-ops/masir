@@ -206,4 +206,18 @@ test("activity category can be created, changed, and saved without a real Supaba
   const todayKey = await page.evaluate(() => getDateKey(new Date()));
   expect(await page.evaluate(() => getDateKey(selectedDate))).toBe(todayKey);
   await expect(dateJump).toHaveValue(await page.evaluate(() => localizedDateInputValue(new Date())));
+
+  // Japanese dates include an era prefix; the input and parser must agree.
+  await page.evaluate(() => {
+    const picker = document.getElementById("appLanguage");
+    picker.value = "ja";
+    picker.dispatchEvent(new Event("change", { bubbles: true }));
+  });
+  await expect(dateJump).toHaveAttribute("placeholder", "令和8/10/13");
+  await dateJump.evaluate(input => {
+    input.value = "令和8/10/21";
+    input.dispatchEvent(new Event("change", { bubbles: true }));
+  });
+  await expect(dateJump).toHaveValue("令和8/10/21");
+  expect(await page.evaluate(() => getDateKey(selectedDate))).toBe("2026-10-21");
 });
