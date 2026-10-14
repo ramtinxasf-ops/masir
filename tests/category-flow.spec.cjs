@@ -149,7 +149,7 @@ test("activity category can be created, changed, and saved without a real Supaba
 
   // Calendar navigation: direct date jump updates the selected day and weekly report.
   await page.evaluate(() => showPage("home"));
-  console.log("DATE DEBUG " + JSON.stringify(await page.evaluate(() => ({ lang: masirCurrentLanguage(), parsed: parseLocalizedDateInput("۱۴۰۵/۰۷/۲۹") ? getDateKey(parseLocalizedDateInput("۱۴۰۵/۰۷/۲۹")) : null, persianParts: getPersianDateParts(new Date(2026, 9, 21, 12)), input: document.getElementById("calendarDateJump").value }))));
+  console.log("DATE DEBUG " + JSON.stringify(await page.evaluate(() => ({ lang: masirCurrentLanguage(), parsed: parseLocalizedDateInput("۱۴۰۵/۰۷/۲۹") ? getDateKey(parseLocalizedDateInput("۱۴۰۵/۰۷/۲۹")) : null, direct: persianDateToGregorian("1405/07/29") ? getDateKey(persianDateToGregorian("1405/07/29")) : null, persianParts: getPersianDateParts(new Date(2026, 9, 21, 12)), input: document.getElementById("calendarDateJump").value }))));
   const dateJump = page.locator("#calendarDateJump");
   await expect(dateJump).toHaveValue(/^۱۴[۰-۹]{2}\/[۰-۹]{2}\/[۰-۹]{2}$/);
   await dateJump.evaluate(input => {
