@@ -4572,9 +4572,9 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
     <div style="width:100%;max-width:420px;max-height:95vh;overflow-y:auto;background:#151c30;padding:24px;border-radius:18px;box-sizing:border-box;color:white;">
         <h2 style="text-align:center;margin-top:0;">مسیر</h2>
         <p style="text-align:center;color:#aab3ca;">برای دسترسی به برنامه وارد حساب شو یا حساب تازه بساز.</p>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:16px 0;">
+        <div style="display:grid;grid-template-columns:1fr;gap:8px;margin:16px 0;">
             <button type="button" id="masir-email-tab" style="padding:10px;background:#352653;color:white;border:1px solid #a78bfa;">ایمیل و رمز</button>
-            <button type="button" id="masir-phone-tab" style="padding:10px;background:transparent;color:white;border:1px solid #39445f;">ورود با پیامک</button>
+            <button type="button" id="masir-phone-tab" style="display:none;padding:10px;background:transparent;color:white;border:1px solid #39445f;" aria-hidden="true" tabindex="-1">ورود با پیامک</button>
         </div>
         <form id="masir-email-auth" autocomplete="on" novalidate>
             <label for="masir-email">ایمیل</label>
