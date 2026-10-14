@@ -50,7 +50,7 @@ test("activity category can be created, changed, and saved without a real Supaba
   await page.route("**/*", route => {
     const url = route.request().url();
     if (url.startsWith("http://127.0.0.1:4173/")) return route.continue();
-    if (url.includes("/functions/v1/export-users")) return route.fulfill({ status: 200, contentType: "text/plain; charset=utf-8", headers: { "Content-Disposition": 'attachment; filename="masir-users-test.txt"' }, body: '\\uFEFFکاربر شماره ۱\\r\\nنام: کاربر\\r\\nنام خانوادگی: آزمایشی\\r\\nتلفن: +989123456789\\r\\nایمیل: test@example.invalid\\r\\nتاریخ ثبت‌نام: ۱۴۰۵/۰۷/۱۹' });
+    if (url.includes("/functions/v1/export-users")) return route.fulfill({ status: 200, contentType: "text/plain; charset=utf-8", headers: { "Content-Disposition": 'attachment; filename="masir-users-test.txt"' }, body: '\uFEFFکاربر شماره ۱\r\nنام: کاربر\r\nنام خانوادگی: آزمایشی\r\nتلفن: +989123456789\r\nایمیل: test@example.invalid\r\nتاریخ ثبت‌نام: ۱۴۰۵/۰۷/۱۹' });
     if (url.includes("cdn.jsdelivr.net/npm/@supabase/supabase-js@2")) {
       return route.fulfill({
         status: 200,
