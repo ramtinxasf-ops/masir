@@ -162,6 +162,23 @@ test("activity category can be created, changed, and saved without a real Supaba
   expect(saved[0].category).toBe("work");
   expect(await page.evaluate(() => window.__mockState.upserts.length)).toBeGreaterThan(0);
 
+  // Existing activities must allow start/end times to be edited and saved locally and remotely.
+  await page.evaluate(() => showPage("home"));
+  await page.locator("#activityList .edit-button").click();
+  await expect(page.locator("#startTime")).toHaveValue("09:00");
+  await expect(page.locator("#endTime")).toHaveValue("10:00");
+  await page.locator("#startTime").fill("11:15");
+  await page.locator("#endTime").fill("12:30");
+  await page.locator("#activityForm button[type='submit']").click();
+  await expect.poll(async () => page.evaluate(() => {
+    const items = JSON.parse(localStorage.getItem("masir_activities_v1_playwright-test-user") || "[]");
+    return items.some(activity => activity.name === "فعالیت آزمایشی دسته‌بندی" && activity.start === "11:15" && activity.end === "12:30" && activity.category === "work");
+  }), { timeout: 10000 }).toBe(true);
+  await page.evaluate(async () => { await window.masirSaveQueue; });
+  await expect.poll(async () => page.evaluate(() =>
+    window.__mockState.rows.some(row => row.data?.name === "فعالیت آزمایشی دسته‌بندی" && row.data?.start === "11:15" && row.data?.end === "12:30")
+  ), { timeout: 10000 }).toBe(true);
+
   await page.locator("#activityCategoryFilter").evaluate(select => {
     select.value = "study";
     select.dispatchEvent(new Event("change", { bubbles: true }));
