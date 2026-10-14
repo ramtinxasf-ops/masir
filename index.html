@@ -4744,10 +4744,9 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
     const sendOtpButton = document.getElementById("masir-send-otp");
     const verifyOtpButton = document.getElementById("masir-verify-otp");
     const forgotPasswordButton = document.getElementById("masir-forgot-password");
-    const ADMIN_EMAIL = "ramtinxasf@gmail.com";
     function updateAdminOnlyRecoveryVisibility() {
-        const allowed = String(emailInput && emailInput.value || "").trim().toLowerCase() === ADMIN_EMAIL;
-        if (forgotPasswordButton) forgotPasswordButton.style.display = allowed ? "block" : "none";
+        // Self-service password recovery is available to every account, not only the administrator.
+        if (forgotPasswordButton) forgotPasswordButton.style.display = "block";
     }
     if (emailInput) emailInput.addEventListener("input", updateAdminOnlyRecoveryVisibility);
     updateAdminOnlyRecoveryVisibility();
@@ -5030,7 +5029,7 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
         const adminResetPanel = document.getElementById("adminResetPasswordPanel");
         const profileChatLink = document.getElementById("profilePrivateChatLinkPanel");
         if (panel) panel.style.display = isAdmin ? "block" : "none";
-        if (securityPanel) securityPanel.style.display = isAdmin ? "block" : "none";
+        if (securityPanel) securityPanel.style.display = user ? "block" : "none";
         if (backupPanel) backupPanel.style.display = isAdmin ? "block" : "none";
         if (adminResetPanel) adminResetPanel.style.display = isAdmin ? "block" : "none";
         if (profileChatLink) profileChatLink.style.display = user && !isAdmin ? "block" : "none";
@@ -5226,9 +5225,9 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
         const user = window.masirCurrentUser;
         const target = document.getElementById("profileSecurityMessage");
         const isAdmin = Boolean(user && typeof user.email === "string" && user.email.trim().toLowerCase() === "ramtinxasf@gmail.com");
-        if (!isAdmin) {
+        if (!user) {
             if (target) {
-                target.textContent = "بازیابی رمز عبور فقط برای مدیر فعال است.";
+                target.textContent = "ابتدا وارد حساب شو.";
                 target.style.color = "#fb7185";
             }
             return;
@@ -5256,9 +5255,6 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
     });
     if (forgotPasswordButton) forgotPasswordButton.addEventListener("click", async function() {
         const email = emailInput.value.trim();
-        if (email.toLowerCase() !== ADMIN_EMAIL) {
-            return showMessage("بازیابی رمز عبور فقط برای مدیر فعال است.", true);
-        }
         if (!email) return showMessage("ابتدا ایمیل حسابت را وارد کن.", true);
         forgotPasswordButton.disabled = true;
         showMessage("در حال ارسال لینک بازیابی...");
