@@ -5877,7 +5877,7 @@ if($("adminSupportReplyButton"))$("adminSupportReplyButton").onclick=async()=>{c
       if(monthKey(date)!==targetMonth)btn.classList.add("outside-month");
       if(dayKey(date)===dayKey(today))btn.classList.add("is-today");
       if(dayKey(date)===dayKey(selectedMonthDay))btn.classList.add("is-selected");
-      btn.textContent=new Intl.NumberFormat(loc,{useGrouping:false}).format(Number(calendarParts(date).day));
+      btn.textContent=calendarParts(date).day;
       btn.setAttribute("role","gridcell");
       btn.setAttribute("aria-label",new Intl.DateTimeFormat(loc,{dateStyle:"full"}).format(date));
       btn.addEventListener("click",()=>{selectedMonthDay=new Date(date);shownMonth=new Date(date);render();});
