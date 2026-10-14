@@ -151,12 +151,10 @@ test("activity category can be created, changed, and saved without a real Supaba
   await page.evaluate(() => showPage("home"));
   const dateJump = page.locator("#calendarDateJump");
   await expect(dateJump).toHaveValue(/^۱۴[۰-۹]{2}\/[۰-۹]{2}\/[۰-۹]{2}$/);
-  console.log("DATE DEBUG before=" + JSON.stringify(await page.evaluate(() => ({ language: masirCurrentLanguage(), parsed: parseLocalizedDateInput("۱۴۰۵/۰۷/۲۹") ? getDateKey(parseLocalizedDateInput("۱۴۰۵/۰۷/۲۹")) : null, selected: getDateKey(selectedDate) }))));
   await dateJump.evaluate(input => {
     input.value = "۱۴۰۵/۰۷/۲۹";
     input.dispatchEvent(new Event("change", { bubbles: true }));
   });
-  console.log("DATE DEBUG after=" + JSON.stringify(await page.evaluate(() => ({ language: masirCurrentLanguage(), selected: getDateKey(selectedDate), value: document.getElementById("calendarDateJump").value }))));
   await expect(dateJump).toHaveValue("۱۴۰۵/۰۷/۲۹");
   expect(await page.evaluate(() => getDateKey(selectedDate))).toBe("2026-10-21");
   await expect(page.locator("#calendarMonth")).not.toBeEmpty();
