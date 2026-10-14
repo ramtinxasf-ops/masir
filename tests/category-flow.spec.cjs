@@ -6,7 +6,7 @@ test("activity category can be created, changed, and saved without a real Supaba
   page.on("console", message => { if (message.type() === "error") console.log("BROWSER ERROR:", message.text()); });
   page.on("dialog", dialog => dialog.accept());
   await page.addInitScript(() => {
-    window.__mockState = { rows: [], upserts: [], updates: [], signOutCalls: 0 };
+    window.__mockState = { rows: [], upserts: [], updates: [], signOutCalls: 0, resetPasswordCalls: [] };
     const user = { id: "playwright-test-user", email: "ramtinxasf@gmail.com", app_metadata: { role: "admin" }, user_metadata: { first_name: "آزمایشی", last_name: "کاربر", phone: "+989123456789", birth_date: "1998-04-23" } };
     const session = { user };
     window.__testSupabase = {
@@ -18,7 +18,7 @@ test("activity category can be created, changed, and saved without a real Supaba
           signUp: async () => ({ data: { user, session }, error: null }),
           signOut: async () => { window.__mockState.signOutCalls += 1; return { error: null }; },
           updateUser: async ({ data }) => { window.__mockState.updates.push(data); return { data: { user: { ...user, user_metadata: data } }, error: null }; },
-          resetPasswordForEmail: async () => ({ error: null }),
+          resetPasswordForEmail: async (email, options) => { window.__mockState.resetPasswordCalls.push({ email, options }); return { error: null }; },
           signInWithOtp: async () => ({ error: null }),
           verifyOtp: async () => ({ data: { user, session }, error: null })
         },
@@ -94,6 +94,15 @@ test("activity category can be created, changed, and saved without a real Supaba
   await expect(page.locator("#profileReadOnlyFirstName")).toHaveText("رامتین");
   await expect(page.locator("#profileReadOnlyLastName")).toHaveText("آزمایشی");
   await expect(page.locator("#profileReadOnlyBirthDate")).toHaveText("1998-04-24");
+
+  // Password recovery must be available to regular accounts, not only the administrator.
+  await page.evaluate(() => { document.getElementById("masir-auth-overlay").style.display = "flex"; });
+  await page.locator("#masir-email").fill("user@example.com");
+  await expect(page.locator("#masir-forgot-password")).toBeVisible();
+  await page.locator("#masir-forgot-password").click();
+  await expect.poll(() => page.evaluate(() => window.__mockState.resetPasswordCalls.length)).toBe(1);
+  expect(await page.evaluate(() => window.__mockState.resetPasswordCalls[0].email)).toBe("user@example.com");
+  await page.evaluate(() => { document.getElementById("masir-auth-overlay").style.display = "none"; });
 
   // Continue with category and calendar regression checks.
   await page.evaluate(() => showPage("planning"));
