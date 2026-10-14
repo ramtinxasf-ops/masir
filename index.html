@@ -1791,7 +1791,7 @@ var supabaseClient = window.supabase.createClient(
 <aside id="masirSideDrawer" aria-label="منوی اصلی" aria-hidden="true">
   <div id="masirDrawerHead"><strong>مسیر 💜</strong><button type="button" id="masirDrawerClose" aria-label="بستن منو">×</button></div>
   <nav id="masirDrawerItems">
-    <button type="button" data-masir-page="profile"><span>👤</span><span>حساب کاربری</span></button>
+    <button type="button" data-masir-page="account"><span>👤</span><span>اطلاعات حساب</span></button>
     <button type="button" data-masir-page="settings"><span>⚙️</span><span>تنظیمات</span></button>
     <button type="button" data-masir-page="password"><span>🔐</span><span>تغییر رمز عبور</span></button>
     <button type="button" data-masir-page="notes"><span>📝</span><span>یادداشت‌ها</span></button>
@@ -1971,6 +1971,10 @@ var supabaseClient = window.supabase.createClient(
 
     <div class="selected-date-title" id="selectedDateTitle"></div>
 
+    </section>
+
+<section class="card" id="activitySection" style="display:none;">
+    <h2>📋 فعالیت‌های روز</h2>
     <div class="activity-filter-row">
         <div class="activity-filter-field">
             <label for="activityCategoryFilter">نمایش بر اساس دسته‌بندی</label>
@@ -1988,6 +1992,7 @@ var supabaseClient = window.supabase.createClient(
     </div>
 
     <div class="activity-list" id="activityList"></div>
+
 </section>
 
 <section class="card" id="reportSection">
@@ -2029,9 +2034,22 @@ var supabaseClient = window.supabase.createClient(
     <div class="daily-report-list" id="dailyReportList"></div>
 </section>
     
+<section class="card" id="drawerAccountSection" style="display:none;">
+  <h2>👤 اطلاعات حساب کاربری</h2>
+  <p class="help-text">این بخش فقط برای مشاهده است. برای ثبت یا ویرایش اطلاعات از بخش «پروفایل» در نوار پایین استفاده کن.</p>
+  <div class="profile-panel">
+    <h3>اطلاعات حساب</h3>
+    <div class="profile-account-line"><span>ایمیل حساب</span><strong id="drawerProfileEmail">—</strong></div>
+    <div class="profile-account-line"><span>تلفن حساب</span><strong id="drawerProfilePhone">—</strong></div>
+    <div class="profile-account-line"><span>نام</span><strong id="drawerProfileFirstName">—</strong></div>
+    <div class="profile-account-line"><span>نام خانوادگی</span><strong id="drawerProfileLastName">—</strong></div>
+    <div class="profile-account-line"><span>تاریخ تولد</span><strong id="drawerProfileBirthDate">—</strong></div>
+  </div>
+</section>
+
 <section class="card" id="profileSection" style="display:none;">
     <h2>👤 پروفایل من</h2>
-    <p class="help-text">اطلاعات شخصی، امنیت حساب و پشتیبان‌گیری را از این بخش مدیریت کن.</p>
+    <p class="help-text">اطلاعات شخصی خود را از این بخش ثبت و ویرایش کن.</p>
     <div class="profile-panel">
         <h3>اطلاعات حساب</h3>
         <div class="profile-account-line"><span>ایمیل حساب</span><strong id="profileEmail">—</strong></div>
@@ -2051,41 +2069,6 @@ var supabaseClient = window.supabase.createClient(
         <h3>ارتباط با مدیر</h3>
         <p class="help-text">برای پشتیبانی یا ارسال پیام خصوصی به مدیر وارد صفحهٔ چت شو.</p>
         <button type="button" class="primary-button" id="openPrivateChatFromProfile" style="width:100%;">💬 چت خصوصی با مدیر</button>
-    </div>
-    <div class="profile-panel" id="adminUserExportPanel" style="display:none;">
-        <h3>مدیریت کاربران</h3>
-        <p class="help-text">این بخش فقط برای حساب مدیریتی مجاز فعال است. رمز قبلی کاربران نمایش داده نمی‌شود؛ می‌توانی رمز جدید تنظیم کنی.</p>
-        <button type="button" class="secondary-button" id="exportUsersCsvButton" style="width:100%;text-align:right;">📄 دریافت فهرست کاربران (متن مرتب)</button>
-        <p id="adminUserExportMessage" class="help-text" role="status" aria-live="polite"></p>
-        <form id="adminResetPasswordForm" style="margin-top:16px;padding:14px;border:1px solid rgba(167,139,250,.35);border-radius:12px;background:rgba(139,92,246,.06);">
-            <h4 style="margin:0 0 8px;font-size:15px;">تغییر رمز عبور یک کاربر</h4>
-            <p class="help-text" style="margin:0 0 12px;">ابتدا ایمیل همان حسابی را وارد کن که می‌خواهی رمز آن را تغییر بدهی؛ سپس رمز جدید را تعیین کن.</p>
-            <div class="form-field"><label for="adminTargetEmail">ایمیل حساب کاربر موردنظر</label><input type="email" id="adminTargetEmail" name="targetUserEmail" autocomplete="off" required placeholder="مثلاً user@example.com" aria-describedby="adminTargetEmailHelp"><small id="adminTargetEmailHelp" class="help-text">رمز فقط برای حسابی با همین ایمیل تغییر می‌کند.</small></div>
-            <div class="form-field"><label for="adminNewPassword">رمز عبور جدید</label><input type="password" id="adminNewPassword" name="newUserPassword" autocomplete="new-password" required aria-describedby="adminPasswordRules"></div>
-            <div id="adminPasswordRules" class="help-text" style="font-size:12px;margin-top:-6px;">
-                رمز باید هر ۴ شرط را داشته باشد:
-                <div data-admin-rule="length">○ حداقل ۸ کاراکتر</div>
-                <div data-admin-rule="upper">○ حداقل یک حرف بزرگ انگلیسی (A-Z)</div>
-                <div data-admin-rule="lower">○ حداقل یک حرف کوچک انگلیسی (a-z)</div>
-                <div data-admin-rule="number">○ حداقل یک عدد انگلیسی (0-9)</div>
-            </div>
-            <button type="submit" class="primary-button" id="adminResetPasswordButton" style="width:100%;margin-top:10px;">🔐 تنظیم رمز جدید کاربر</button>
-            <p id="adminResetPasswordMessage" class="help-text" role="status" aria-live="polite"></p>
-        </form>
-        
-    </div>
-    <div class="profile-panel" id="profileSecurityPanel" style="display:none;">
-        <h3>امنیت حساب</h3>
-        <p class="help-text">برای تغییر رمز، لینک بازیابی به ایمیل حسابت ارسال می‌شود.</p>
-        <button type="button" class="secondary-button" id="profileResetPasswordButton" style="width:100%;text-align:right;">🔐 بازیابی رمز عبور</button>
-        <p id="profileSecurityMessage" class="help-text" role="status" aria-live="polite"></p>
-    </div>
-    <div class="profile-panel" id="profileBackupPanel" style="display:none;">
-        <h3>پشتیبان‌گیری و بازیابی</h3>
-        <button type="button" class="secondary-button" id="exportBackupButton" style="width:100%;text-align:right;">💾 دریافت نسخه پشتیبان <span style="float:left;">↓</span></button>
-        <div id="backupStatus" style="margin-top:10px;padding:12px;background:#211b38;border-radius:10px;font-size:13px;line-height:1.8;">وضعیت پشتیبان‌گیری هنوز بررسی نشده است.</div>
-        <button type="button" class="secondary-button" id="importBackupButton" style="width:100%;margin-top:12px;text-align:right;">📂 بازیابی از فایل پشتیبان <span style="float:left;">↑</span></button>
-        <input type="file" id="backupFileInput" accept=".json,application/json" style="display:none;">
     </div>
     <div class="profile-panel">
         <button type="button" class="secondary-button" id="appInfoButton" style="width:100%;text-align:right;">ℹ️ اطلاعات برنامه <span style="float:left;">←</span></button>
@@ -2140,12 +2123,56 @@ var supabaseClient = window.supabase.createClient(
     </select>
     <p class="help-text">زبان انتخابی برای تمام بخش‌های رابط کاربری اعمال می‌شود. متن یادداشت‌های شخصی شما ترجمه نمی‌شود.</p>
   </div>
+
+  <div class="profile-panel" id="adminUserExportPanel" style="display:none;">
+        <h3>مدیریت کاربران</h3>
+        <p class="help-text">این بخش فقط برای حساب مدیریتی مجاز فعال است. رمز قبلی کاربران نمایش داده نمی‌شود؛ می‌توانی رمز جدید تنظیم کنی.</p>
+        <button type="button" class="secondary-button" id="exportUsersCsvButton" style="width:100%;text-align:right;">📄 دریافت فهرست کاربران (متن مرتب)</button>
+        <p id="adminUserExportMessage" class="help-text" role="status" aria-live="polite"></p>
+        
+        
+    </div>
+    
+  <div class="profile-panel" id="profileBackupPanel" style="display:none;">
+        <h3>پشتیبان‌گیری و بازیابی</h3>
+        <button type="button" class="secondary-button" id="exportBackupButton" style="width:100%;text-align:right;">💾 دریافت نسخه پشتیبان <span style="float:left;">↓</span></button>
+        <div id="backupStatus" style="margin-top:10px;padding:12px;background:#211b38;border-radius:10px;font-size:13px;line-height:1.8;">وضعیت پشتیبان‌گیری هنوز بررسی نشده است.</div>
+        <button type="button" class="secondary-button" id="importBackupButton" style="width:100%;margin-top:12px;text-align:right;">📂 بازیابی از فایل پشتیبان <span style="float:left;">↑</span></button>
+        <input type="file" id="backupFileInput" accept=".json,application/json" style="display:none;">
+    </div>
+    
 </section>
 <section class="card masir-utility-card" id="passwordSection" style="display:none;">
   <h2>🔐 تغییر رمز عبور</h2>
   <p class="help-text">برای حفظ امنیت حساب، لینک بازیابی رمز به ایمیل حساب شما ارسال می‌شود.</p>
   <button type="button" class="primary-button" id="masirOpenPasswordSettings" style="width:100%;">ادامه به مدیریت رمز عبور</button>
   <p class="help-text" role="status" id="masirPasswordPageStatus"></p>
+
+  <div class="profile-panel" id="profileSecurityPanel" style="display:none;">
+        <h3>امنیت حساب</h3>
+        <p class="help-text">برای تغییر رمز، لینک بازیابی به ایمیل حسابت ارسال می‌شود.</p>
+        <button type="button" class="secondary-button" id="profileResetPasswordButton" style="width:100%;text-align:right;">🔐 بازیابی رمز عبور</button>
+        <p id="profileSecurityMessage" class="help-text" role="status" aria-live="polite"></p>
+    </div>
+    
+  <div class="profile-panel" id="adminResetPasswordPanel" style="display:none;">
+  <h3>مدیریت رمز عبور کاربران</h3>
+  <form id="adminResetPasswordForm" style="margin-top:16px;padding:14px;border:1px solid rgba(167,139,250,.35);border-radius:12px;background:rgba(139,92,246,.06);">
+            <h4 style="margin:0 0 8px;font-size:15px;">تغییر رمز عبور یک کاربر</h4>
+            <p class="help-text" style="margin:0 0 12px;">ابتدا ایمیل همان حسابی را وارد کن که می‌خواهی رمز آن را تغییر بدهی؛ سپس رمز جدید را تعیین کن.</p>
+            <div class="form-field"><label for="adminTargetEmail">ایمیل حساب کاربر موردنظر</label><input type="email" id="adminTargetEmail" name="targetUserEmail" autocomplete="off" required placeholder="مثلاً user@example.com" aria-describedby="adminTargetEmailHelp"><small id="adminTargetEmailHelp" class="help-text">رمز فقط برای حسابی با همین ایمیل تغییر می‌کند.</small></div>
+            <div class="form-field"><label for="adminNewPassword">رمز عبور جدید</label><input type="password" id="adminNewPassword" name="newUserPassword" autocomplete="new-password" required aria-describedby="adminPasswordRules"></div>
+            <div id="adminPasswordRules" class="help-text" style="font-size:12px;margin-top:-6px;">
+                رمز باید هر ۴ شرط را داشته باشد:
+                <div data-admin-rule="length">○ حداقل ۸ کاراکتر</div>
+                <div data-admin-rule="upper">○ حداقل یک حرف بزرگ انگلیسی (A-Z)</div>
+                <div data-admin-rule="lower">○ حداقل یک حرف کوچک انگلیسی (a-z)</div>
+                <div data-admin-rule="number">○ حداقل یک عدد انگلیسی (0-9)</div>
+            </div>
+            <button type="submit" class="primary-button" id="adminResetPasswordButton" style="width:100%;margin-top:10px;">🔐 تنظیم رمز جدید کاربر</button>
+            <p id="adminResetPasswordMessage" class="help-text" role="status" aria-live="polite"></p>
+        </form>
+</div>
 </section>
 <section class="card masir-utility-card" id="notesSection" style="display:none;">
   <h2>📝 یادداشت‌ها</h2>
@@ -3156,7 +3183,7 @@ function applyMasirLanguage(language) {
     while (walker.nextNode()) nodes.push(walker.currentNode);
     nodes.forEach(node => {
         const parent = node.parentElement;
-        if (!parent || parent.closest("script,style,option,[data-no-translate],.activity-name,.daily-timeline-name,#profileEmail,#profilePhone,.profile-account-line strong,input,textarea,[contenteditable='true']")) return;
+        if (!parent || parent.closest("script,style,option,[data-no-translate],.activity-name,.daily-timeline-name,#profileEmail,#profilePhone,#drawerProfileEmail,#drawerProfilePhone,#drawerProfileFirstName,#drawerProfileLastName,#drawerProfileBirthDate,.profile-account-line strong,input,textarea,[contenteditable='true']")) return;
         const original = node.__masirOriginal || node.nodeValue;
         if (!node.__masirOriginal) node.__masirOriginal = original;
         const trimmed = original.trim();
@@ -3349,12 +3376,13 @@ let activities = [];
 
 function showPage(page) {
     const sections = {
-        home: ["homeStats", "homeProgress", "calendarSection"],
+        home: ["homeStats", "homeProgress", "calendarSection", "activitySection"],
         chat: ["chatSection"],
         daily: ["dailyOverviewSection"],
         planning: ["planningSection"],
         reports: ["reportSection"],
         profile: ["profileSection"],
+        account: ["drawerAccountSection"],
         settings: ["settingsSection"],
         password: ["passwordSection"],
         notes: ["notesSection"],
@@ -3371,6 +3399,8 @@ function showPage(page) {
         "calendarSection",
         "reportSection",
         "profileSection",
+        "drawerAccountSection",
+        "activitySection",
         "settingsSection",
         "passwordSection",
         "notesSection",
@@ -3413,7 +3443,7 @@ function showPage(page) {
 
     if (page === "chat") { if (window.masirConfigureChatPage) window.masirConfigureChatPage(); }
 
-    if (page === "profile" && window.masirCurrentUser) {
+    if ((page === "profile" || page === "account") && window.masirCurrentUser) {
         if (window.masirPopulateProfile) window.masirPopulateProfile(window.masirCurrentUser);
     }
 }
@@ -4913,6 +4943,17 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
         const phoneElement = document.getElementById("profilePhone");
         if (emailElement) emailElement.textContent = user.email || "بدون ایمیل";
         if (phoneElement) phoneElement.textContent = user.phone || metadata.phone || "ثبت نشده";
+        const readOnlyValues = {
+            drawerProfileEmail: user.email || "بدون ایمیل",
+            drawerProfilePhone: user.phone || metadata.phone || "ثبت نشده",
+            drawerProfileFirstName: metadata.first_name || metadata.firstName || "ثبت نشده",
+            drawerProfileLastName: metadata.last_name || metadata.lastName || "ثبت نشده",
+            drawerProfileBirthDate: metadata.birth_date || metadata.birthDate || "ثبت نشده"
+        };
+        Object.entries(readOnlyValues).forEach(([id, value]) => {
+            const element = document.getElementById(id);
+            if (element) element.textContent = value;
+        });
         setValue("profileFirstName", metadata.first_name || metadata.firstName);
         setValue("profileLastName", metadata.last_name || metadata.lastName);
         setValue("profilePhoneInput", user.phone || metadata.phone);
@@ -4924,10 +4965,12 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
         const panel = document.getElementById("adminUserExportPanel");
         const securityPanel = document.getElementById("profileSecurityPanel");
         const backupPanel = document.getElementById("profileBackupPanel");
+        const adminResetPanel = document.getElementById("adminResetPasswordPanel");
         const profileChatLink = document.getElementById("profilePrivateChatLinkPanel");
         if (panel) panel.style.display = isAdmin ? "block" : "none";
-        if (securityPanel) securityPanel.style.display = isAdmin ? "block" : "none";
+        if (securityPanel) securityPanel.style.display = user && user.email ? "block" : "none";
         if (backupPanel) backupPanel.style.display = isAdmin ? "block" : "none";
+        if (adminResetPanel) adminResetPanel.style.display = isAdmin ? "block" : "none";
         if (profileChatLink) profileChatLink.style.display = user && !isAdmin ? "block" : "none";
         const adminChat = document.getElementById("adminSupportInbox");
         const userChat = document.getElementById("userSupportChatPanel");
@@ -5119,12 +5162,12 @@ const MASIR_SYNC_URL = 'https://script.google.com/macros/s/AKfycbxyQoL2Wqsk5RSIA
     const resetPasswordButton = document.getElementById("profileResetPasswordButton");
     if (resetPasswordButton) resetPasswordButton.addEventListener("click", async function() {
         const user = window.masirCurrentUser;
-        if (!user || String(user.email || "").trim().toLowerCase() !== "ramtinxasf@gmail.com") {
-            const securityPanel = document.getElementById("profileSecurityPanel");
-            if (securityPanel) securityPanel.style.display = "none";
+        const target = document.getElementById("profileSecurityMessage");
+        if (!user || !user.email) {
+            target.textContent = "برای بازیابی رمز عبور، ابتدا وارد حساب دارای ایمیل شو.";
+            target.style.color = "#fb7185";
             return;
         }
-        const target = document.getElementById("profileSecurityMessage");
         if (!user || !user.email) {
             target.textContent = "برای بازیابی رمز عبور، حساب باید ایمیل داشته باشد.";
             target.style.color = "#fb7185";
@@ -5734,7 +5777,7 @@ if($("adminSupportReplyButton"))$("adminSupportReplyButton").onclick=async()=>{c
   function makeNoteId(){return "note-"+Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,9);}
   cancelButton.addEventListener("click",()=>{resetNoteForm();status.textContent="";});
   document.getElementById("masirOpenPasswordSettings").addEventListener("click",()=>{
-    if(typeof showPage==="function")showPage("profile");
+    if(typeof showPage==="function")showPage("password");
     window.scrollTo({top:0,behavior:"smooth"});
     const target=document.getElementById("profileSecurityPanel");
     if(target)target.scrollIntoView({behavior:"smooth",block:"center"});
