@@ -3242,18 +3242,21 @@ function applyMasirLanguage(language) {
     const picker = document.getElementById("appLanguage");
     if (picker && picker.value !== language) picker.value = language;
     try { localStorage.setItem(MASIR_LANGUAGE_KEY, language); } catch (_) {}
+}
+function refreshMasirPasswordRules() {
     ["masir-password", "masir-new-password", "adminNewPassword"].forEach(id => {
         const input = document.getElementById(id);
         if (input) input.dispatchEvent(new Event("input", { bubbles: true }));
     });
 }
+
 (function initMasirLanguage() {
     const picker = document.getElementById("appLanguage");
     let language = "fa";
     try { language = localStorage.getItem(MASIR_LANGUAGE_KEY) || "fa"; } catch (_) {}
     if (picker) {
         picker.value = language;
-        picker.addEventListener("change", () => { applyMasirLanguage(picker.value); if (typeof renderAll === "function") renderAll(); });
+        picker.addEventListener("change", () => { applyMasirLanguage(picker.value); refreshMasirPasswordRules(); if (typeof renderAll === "function") renderAll(); });
     }
     applyMasirLanguage(language);
     const observer = new MutationObserver(() => {
@@ -5797,6 +5800,7 @@ if($("adminSupportReplyButton"))$("adminSupportReplyButton").onclick=async()=>{c
     langSettings.addEventListener("change",()=>{
       langTop.value=langSettings.value;
       applyMasirLanguage(langSettings.value);
+      refreshMasirPasswordRules();
       if(typeof renderAll==="function")renderAll();
     });
     langTop.addEventListener("change",()=>{langSettings.value=langTop.value;});
