@@ -3922,7 +3922,7 @@ function parseLocalizedDateInput(value) {
     const from = lang === "ar" ? 2020 : Math.max(1900, year - 1);
     const to = lang === "ar" ? 2035 : Math.min(2200, year + 1);
     const formatter = new Intl.DateTimeFormat(localizedCalendarLocale(), {
-        year: "numeric", month: "numeric", day: "numeric"
+        year: "numeric", month: "numeric", day: "numeric", numberingSystem: "latn"
     });
     for (let timestamp = Date.UTC(from, 0, 1, 12); timestamp <= Date.UTC(to, 11, 31, 12); timestamp += 86400000) {
         const candidate = new Date(timestamp);
